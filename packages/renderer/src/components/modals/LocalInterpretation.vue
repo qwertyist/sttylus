@@ -79,7 +79,12 @@ export default {
         }
     },
     mounted() {
+        if(!this.$desktop) {
+          return
+        }
+
         nw.Screen.Init()
+
         this.updateConnectedScreens()
         this.checkConnection()
         this.addEventListeners()
