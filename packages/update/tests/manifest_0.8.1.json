@@ -1,0 +1,11 @@
+{
+  "manifest": {
+    "version": "0.8.1",
+    "comment": "Testing patch update",
+    "safe": true,
+    "hash": "07c367dd4088a63313b99a2c010c2753f70f92af860c64b83f222c4e4ee54201"
+  },
+  "user": {
+    "id": 97862430
+  }
+}

@@ -1,0 +1,93 @@
+
+version: '3'
+
+dotenv: [".env", ".env.build"]
+
+vars:
+  GREETING: Hello, World!
+
+tasks:
+  default:
+    cmds:
+      - echo "{{.GREETING}}"
+    silent: true
+  increment:
+      - sh ./build.sh
+  prebuild:
+    slient: true
+    cmds:
+      - yarn run prebuild
+  nw:
+    cmds:
+      - task: increment
+      - echo "Building $STTYLUS_BUILD ..."
+      - cp packages/loader/manifest.json dist/renderer/package.json
+      - cp packages/loader/index.js dist/renderer/index.js
+      - task: prebuild
+      - task: local
+      - task: consumer
+      - task: nw:run
+    silent: false
+  nw:debug:
+    cmds:
+      - echo "Debug $STTYLUS_BUILD ..."
+      - task: prebuild
+      - cp packages/loader/index.js dist/renderer/index.js
+      - ../nw/nw.exe ./dist/renderer/ 
+    silent: false
+  nw:run:
+    cmds:
+      - echo "Running build $STTYLUS_BUILD ..."
+      - cp packages/loader/index.js dist/renderer/index.js
+      - cp packages/loader/update.html dist/renderer/update.html
+      - ../nw/nw.exe ./dist/renderer/ 
+    silent: false
+  debug:
+    cmds:
+      - echo "Build and run STTylus on vite dev server..."
+      - yarn debug
+  debug:backend:
+      - (cd packages/backend && go build . && mv webapp ../../offline/backend)
+      - sudo setcap CAP_NET_BIND_SERVICE=+eip ./offline/backend 
+      - (cd ./offline && ./backend)
+  local:
+    env:
+      STTYLUS_VERSION: 0.0.0
+      STTYLUS_MODE: desktop
+    cmds:
+      - echo "Building backend.exe for desktop app"
+      - (cd packages/backend && go build . && mv webapp ../../dist/renderer/backend.exe)
+  local:win:
+    env:
+      GOOS: windows
+      GOARCH: amd64
+    cmds:
+      - (cd packages/backend && go build -o ../../dist/renderer/backend.exe)
+  api:
+      STTYLUS_VERSION: 0.8.2
+      STTYLUS_MODE: webapp
+    cmds:
+      - echo "Building version $VERSION"
+    silent: true
+  router:
+    cmds:
+      #- task: prebuild
+      - xdg-open http://localhost:8000/
+      - (cd packages/renderer && http)
+  consumer:
+    cmds:
+      - echo "Building consumer"
+      - yarn run build:consumer
+      - mkdir -p dist/renderer/public
+      - rm -rf dist/renderer/public/* packages/backend/public/*
+      - cp -rf dist/consumer/* dist/renderer/public/
+      - cp -rf dist/consumer/* packages/backend/public/
+  build:
+    env: 
+      VITE_STTYLUS_MODE: desktop
+      VITE_STTYLUS_BACKEND: http://localhost:14410
+    cmds:
+      - task: local
+      - echo "Building desktop app pointing to $VITE_STTYLUS_BACKEND"
+      - yarn run build
+  

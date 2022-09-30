@@ -1,0 +1,66 @@
+{
+  "name": "tabula test",
+  "testCases": {
+    "create_session": {
+      "path": "/session",
+      "method": "POST",
+      "body": {
+        "name": "",
+        "id": "12345678",
+        "description": "Testbokning som alla snällt får turas om att skriva i.",
+        "public": true
+      },
+      "expect": {
+        "header": {},
+        "body": {
+          "contains": {
+            "type": 0
+          },
+          "eq": {}
+        }
+      }
+    },
+    "create_session_zoom": {
+      "path": "/session",
+      "method": "POST",
+      "body": {
+        "name": "Självgående distanstolkning",
+        "id": "00000000",
+        "description": "En 'robot' håller låda för glatta livet.",
+        "recurring": true,
+        "public": true
+      },
+      "expect": {
+        "header": {},
+        "body": {
+          "contains": {
+            "type": 0
+          },
+          "eq": {}
+        }
+      }
+    },
+    "get_sessions": {
+      "path": "/sessions",
+      "method": "GET",
+      "expect": {
+        "body": {
+          "eq": {}
+        }
+      }
+    },
+    "get_session": {
+      "path": "/session/12345678",
+      "method": "GET",
+      "expect": {
+        "body": {
+          "eq": {
+            "id": "12345678"
+          }
+        }
+      }
+    }
+  },
+  "url": "sttylus.se:8888",
+  "header": {}
+}

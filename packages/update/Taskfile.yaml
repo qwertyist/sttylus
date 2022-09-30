@@ -1,0 +1,44 @@
+# https://taskfile.dev
+
+version: '3'
+
+vars:
+  GREETING: Hello, World!
+
+dotenv: [".env"]
+env:
+  STTYLUS_UPDATE_SERVER: "http://localhost:3000"
+
+tasks:
+  default:
+    cmds:
+      - echo "$STTYLUS_UPDATE_SERVER"
+      - task: create_manifest
+        #- task: get_latest_manifest
+        #- task: get_manifest
+        #- task: get_created_manifest
+        #- task: get_patch_manifests
+        #- task: get_minor_manifests
+      - task: get_major_manifests
+    silent: false
+  create_manifest:
+    cmds:
+      - curl -sS -X POST -d @tests/manifest_0.8.1.json "{{.STTYLUS_UPDATE_SERVER}}/admin/versions/"
+  get_manifest:
+    cmds:
+      - curl -sS "{{.STTYLUS_UPDATE_SERVER}}/versions/1.0.0/"
+  get_created_manifest:
+    cmds:
+      - curl -sS "{{.STTYLUS_UPDATE_SERVER}}/versions/0.8.1/"
+  get_latest_manifest:
+    cmds:
+      - curl -sS "{{.STTYLUS_UPDATE_SERVER}}/versions/latest"
+  get_patch_manifests:
+    cmds:
+      - curl -sS "{{.STTYLUS_UPDATE_SERVER}}/versions/0.8/"
+  get_minor_manifests:
+    cmds:
+      - curl -sS "{{.STTYLUS_UPDATE_SERVER}}/versions/0/"
+  get_major_manifests:
+    cmds:
+      - curl -sS "{{.STTYLUS_UPDATE_SERVER}}/versions/"

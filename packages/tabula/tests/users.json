@@ -1,0 +1,76 @@
+{
+  "name": "tabula test",
+  "testCases": {
+    "create_user_David": {
+      "path": "/user",
+      "method": "POST",
+      "body": {
+        "name": "David",
+        "email": "testare@testskolan.se",
+        "phone": "0707776622"
+      }
+    },
+    "create_user_David_again": {
+      "path": "/user",
+      "method": "POST",
+      "body": {
+        "name": "David",
+        "email": "testare@testskolan.se",
+        "phone": "0707776622"
+      },
+      "expect": {
+        "body": {
+          "eq": {
+            "error": "user already exists"
+          }
+        }
+      }
+    },
+    "create_user_Lennart": {
+      "path": "/user",
+      "method": "POST",
+      "body": {
+        "name": "Lennart",
+        "email": "enannan@user.se",
+        "phone": "090770000"
+      },
+      "expect": {
+        "external": "python get_user_by_id.py"
+      }
+    },
+    "delete_user_Lennart": {},
+    "get_user_by_email": {
+      "path": "/user/?email=testare@testskolan.se",
+      "method": "GET",
+      "expect": {
+        "body": {
+          "contains": {
+            "name": "David"
+          }
+        }
+      }
+    },
+    "get_user_by_phone": {
+      "path": "/user/?phone=0707776622",
+      "method": "GET",
+      "expect": {
+        "body": {
+          "contains": {
+            "name": "David"
+          }
+        }
+      }
+    },
+    "get_users": {
+      "path": "/users",
+      "method": "GET",
+      "expect": {
+        "body": {
+          "eq": {}
+        }
+      }
+    }
+  },
+  "url": "localhost:8080",
+  "header": {}
+}
