@@ -46,12 +46,23 @@ tasks:
     cmds:
       - echo "Build and run STTylus on vite dev server..."
       - yarn debug
+    silent: true
+  debug:webapp:
+    env:
+      VITE_STTYLUS_MODE: webapp
+      VITE_STTYLUS_BACKEND: https://sttylus.se
+    cmds:
+      - task: debug
+      - echo "[ run as webapp ]"
+    silent: true
   debug:backend:
+    cmds:
       - cp ../tools/sttylus.db ./offline
       - (cd packages/backend && go build . && mv webapp ../../offline/backend)
       - sudo setcap CAP_NET_BIND_SERVICE=+eip ./offline/backend 
       - (cd ./offline && ./backend)
       - rm ./offline/sttylus.db
+    silent: true
   local:
     env:
       STTYLUS_VERSION: 0.0.0
@@ -65,22 +76,23 @@ tasks:
       GOARCH: amd64
     cmds:
       - (cd packages/backend && go build -o ../../dist/renderer/backend.exe)
-  api:
+  webapp:
     env:
       STTYLUS_VERSION: 0.8.2
       STTYLUS_MODE: webapp
       VITE_STTYLUS_MODE: webapp
+      VITE_STTYLUS_BACKEND: https://sttylus.se
     cmds:
       - echo "Building STTylus webapp $STTYLUS_VERSION"
       - rm -rf ./dist/renderer/assets/*
       - yarn run prebuild
     silent: true
-  api:test:
+  webapp:test:
     cmds:
-      - task: api
+      - task: webapp
       - task: router
     silent: true
-  api:deploy:
+  webapp:deploy:
     silent: true
     cmds:
       - task: api
