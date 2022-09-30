@@ -41,12 +41,14 @@
             <span class="pl-3">{{ data.item.counter }}</span>
           </template>
           <template #cell(checkbox)="data">
-            <span v-if="data.item.temp"><em class="float-right">Alltid vald</em></span><span v-else><b-form-radio
+            <kbd>CTRL+{{ data.index + 1 }}</kbd>
+            <b-form-radio
               class="float-right"
               v-model="selectedStandard"
               :value="data.item.id"
-            /></span>
-          </template>
+            />         
+            </template>
+
         </b-table>
         <b-table
           fixed
@@ -269,8 +271,8 @@ export default {
       standardlistFields: [
         { key: "name", label: "Standardlistor" },
         { key: "counter", label: "Förkortningar" },
-
-        { key: "checkbox", label: "Välj en" },
+        { key: "index", label: "", tdClass: "d-none", thClass: "d-none" },
+        { key: "checkbox", label: "Välj en", thClass: "align-center" },
       ],
       addonlistFields: [
         { key: "name", label: "Ämneslistor" },
@@ -315,6 +317,10 @@ export default {
     },
   },
   methods: {
+    quickSelectStandard(i) {
+      this.selectedStandard = this.standardLists[i-1].id
+      EventBus.$emit("cacheAbbs")
+    },
     toggleSelectAddon(listIDs) {
       console.log("set selected addon in view:", this.selectedAddons.length)
       this.selectedAddons = listIDs
@@ -566,8 +572,8 @@ export default {
       this.selectedAddons = [];
       this.$store.commit("setSelectedAddons", this.selectedAddons);
     }
-
     window.addEventListener("scroll", this.onScrollAbbs);
+    EventBus.$on("changeStandardList", this.quickSelectStandard )
     EventBus.$on("createdAbb", (abb) => {
       if(abb.targetListId == this.viewedList.id) {
         this.getAbbs(abb.targetListId);
@@ -583,6 +589,7 @@ export default {
   },
   beforeDestroy() {
     window.removeEventListener("scroll", this.onScrollAbb);
+    EventBus.$off("changeStandardList");
     EventBus.$off("createdAbb");
     EventBus.$off("createdList");
     EventBus.$off("removedList");

@@ -565,7 +565,10 @@ export default class keyboard extends Keyboard {
         key: 49,
         ctrlKey: true,
         handler: function (range, context) {
-          EventBus.$emit("changeStandardList", 0)
+          if(store.getters.getModalOpen == false) {
+            EventBus.$emit("changeStandardList", 1)
+            return false
+          }
         }
       })
 
@@ -574,7 +577,10 @@ export default class keyboard extends Keyboard {
         key: 50,
         ctrlKey: true,
         handler: function (range, context) {
-          EventBus.$emit("changeStandardList", 1)
+          if(store.getters.getModalOpen == false) {
+            EventBus.$emit("changeStandardList",  2)
+            return false
+          }
         }
       })
 
@@ -583,7 +589,10 @@ export default class keyboard extends Keyboard {
         key: 51,
         ctrlKey: true,
         handler: function (range, context) {
-          EventBus.$emit("changeStandardList", 2)
+          if(store.getters.getModalOpen == false) {
+            EventBus.$emit("changeStandardList",  3)
+            return false
+          }
         }
       })
 
@@ -592,7 +601,10 @@ export default class keyboard extends Keyboard {
         key: 52,
         ctrlKey: true,
         handler: function (range, context) {
-          EventBus.$emit("changeStandardList", 3)
+          if(store.getters.getModalOpen == false) {
+            EventBus.$emit("changeStandardList",  4)
+            return false
+          }
         }
       })
 
@@ -601,7 +613,10 @@ export default class keyboard extends Keyboard {
         key: 53,
         ctrlKey: true,
         handler: function (range, context) {
-          EventBus.$emit("changeStandardList", 4)
+          if(!store.getters.getModalOpen) {
+            EventBus.$emit("changeStandardList",  5)
+            return false
+          }
         }
       })
     }

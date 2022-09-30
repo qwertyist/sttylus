@@ -58,6 +58,13 @@ export default {
         Math.floor(Math.random() * (999999 - 100000 + 1)) + 100000;
     },
     hotkeys(e) {
+      if (e.ctrlKey && this.view != "tabula") {
+        if(["1","2","3","4","5"].indexOf(e.key) != -1) {
+          EventBus.$emit("changeStandardList", e.key)
+          e.preventDefault();
+        }
+      }
+
       if (e.key == "F1") {
         e.preventDefault();
         this.$bvModal.show("support");
@@ -117,9 +124,10 @@ export default {
     //TEMP
     //this.$bvModal.show("support");
     //ENDTEMP
+    this.$store.commit("setModalOpen", false)
     this.cacheAbbs();
     window.addEventListener("keydown", this.hotkeys);
-
+    EventBus.$on("cacheAbbs", this.cacheAbbs);
     EventBus.$on("reloadEditor", this.reload);
     EventBus.$on("openSettings", this.openSettings);
     EventBus.$on("openTextView", this.openTextView);
