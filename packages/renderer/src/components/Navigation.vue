@@ -20,12 +20,12 @@
             <b>Skapa förkortning</b>
           </b-nav-item>
           <b-nav-item v-show="notLogin" @click="showSupport">Stödtolkning</b-nav-item>
-          <!--<b-nav-item
+          <b-nav-item
             v-if="!tester"
             v-show="textViewOnly"
             @click="showRemoteSettings"
           >Distanstolkning</b-nav-item>
-          <b-nav-item v-show="textViewOnly && inSession" i to="#" @click="showRemotePane">
+          <!--<b-nav-item v-show="textViewOnly && inSession" i to="#" @click="showRemotePane">
             <b-badge>
               Visa {{ connectedClients }}
               <span v-if="connectedClients > 1">anslutna</span>
