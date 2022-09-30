@@ -2,4 +2,6 @@ node_modules/
 dist/
 stats.html
 sttylus.db
+
 packages/frontpage/
+packages/backend/public/
