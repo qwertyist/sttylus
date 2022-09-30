@@ -25,6 +25,7 @@
         <h3>Distanstolkning</h3>
       </b-col>
       <b-col>
+        <!--
         <div class="float-right">
           <b-badge v-if="connected === 'online'" variant="success">Du är ansluten till internet</b-badge>
           <b-badge
@@ -40,6 +41,7 @@
             <b-spinner small label="Loading..." />
           </span>
         </div>
+        -->
       </b-col>
     </b-row>
     <b-tabs :tabindex="tabindex">
