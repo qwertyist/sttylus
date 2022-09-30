@@ -21,7 +21,7 @@ const cache = setupCache({
 
 function createAxiosInstance() {
   if (import.meta.env.VITE_STTYLUS_MODE != "desktop") {
-    console.log("Axios instance points to production server:\n", import.meta.env.VITE_STTYLUS_BACKEND + "/api2")
+//    console.log("Axios instance points to production server:\n", import.meta.env.VITE_STTYLUS_BACKEND + "/api2")
     return axios.create({
       baseURL: import.meta.env.VITE_STTYLUS_BACKEND + "/api2",
       headers: {
@@ -32,7 +32,7 @@ function createAxiosInstance() {
       }
     })
   } else {
-    console.log("Axios instance points to local server:\n", import.meta.env.VITE_STTYLUS_LOCAL_BACKEND + "/api")
+ //   console.log("Axios instance points to local server:\n", import.meta.env.VITE_STTYLUS_LOCAL_BACKEND + "/api")
     return axios.create({
       baseURL: import.meta.env.VITE_STTYLUS_LOCAL_BACKEND + "/api",
       headers: {
