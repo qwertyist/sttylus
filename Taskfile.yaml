@@ -47,9 +47,11 @@ tasks:
       - echo "Build and run STTylus on vite dev server..."
       - yarn debug
   debug:backend:
+      - cp ../tools/sttylus.db ./offline
       - (cd packages/backend && go build . && mv webapp ../../offline/backend)
       - sudo setcap CAP_NET_BIND_SERVICE=+eip ./offline/backend 
       - (cd ./offline && ./backend)
+      - rm ./offline/sttylus.db
   local:
     env:
       STTYLUS_VERSION: 0.0.0
@@ -64,6 +66,7 @@ tasks:
     cmds:
       - (cd packages/backend && go build -o ../../dist/renderer/backend.exe)
   api:
+    env:
       STTYLUS_VERSION: 0.8.2
       STTYLUS_MODE: webapp
     cmds:
