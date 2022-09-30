@@ -168,6 +168,7 @@ export default class keyboard extends Keyboard {
         //F2
         this.addBinding({
             key: 113,
+            shiftKey: false,
             handler: function (range, context) {
                 let phrase = ""
                 if (range.length > 0) {
@@ -176,6 +177,20 @@ export default class keyboard extends Keyboard {
                     phrase = context.prefix.split(" ").pop()
                 }
                 EventBus.$emit("addAbbreviation", phrase)
+            }
+        })
+        //Shift+F2
+        this.addBinding({
+            key: 113,
+            shiftKey: true,
+            handler: function (range, context) {
+                let phrase = ""
+                if (range.length > 0) {
+                    phrase = this.quill.getText(range.index, range.length)
+                } else {
+                    phrase = context.prefix.split(" ").pop()
+                }
+                EventBus.$emit("addAbbreviation", phrase.toLowerCase())
             }
         })
         //F3

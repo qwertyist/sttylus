@@ -317,6 +317,10 @@ export default {
     },
   },
   methods: {
+    onShow() {
+      this.$toast.info("do stuff");
+      this.viewList(this.selectedStandard)
+    },
     quickSelectStandard(i) {
       this.selectedStandard = this.standardLists[i-1].id
       EventBus.$emit("cacheAbbs")
@@ -332,17 +336,17 @@ export default {
     addList() {
       this.$bvModal.show("addList");
     },
-    editList() {
+    editList() { 
       this.$bvModal.show("editList");
     },
     viewList(list) {
-      console.log("view list:", list)
       this.perPage = 25;
       if (!list) {
         this.viewedList = { name: "Ingen lista vald", id: undefined };
       } else {
-        if (list.name == "") {
+        if (list.type == undefined) {
           console.log("hitta lista via id")
+          list = this.standardLists.find(l => l.id == list); 
         }
         this.viewedList = list;
         if (
@@ -358,9 +362,11 @@ export default {
           };
           this.$store.commit("setTargetList", targetList);
         } else {
-          this.$toast.warning(
-            "Kom ihåg att välja listan om du vill lägga till förkortningar i den.", { duration: 2000 }
-          );
+          if(this.$store.getters.getModalOpen) {
+            this.$toast.warning(
+              "Kom ihåg att välja listan om du vill lägga till förkortningar i den.", { duration: 2000 }
+            );
+          }
         }
         if (this.viewedList.id !== undefined) {
           this.getAbbs(list.id);
@@ -585,6 +591,7 @@ export default {
     });
     EventBus.$on("removedList", this.afterRemovedList);
     EventBus.$on("updatedList", this.afterUpdatedList);
+    EventBus.$on("showSettings", this.onShow);
     this.getLists(true);
   },
   beforeDestroy() {
@@ -594,6 +601,8 @@ export default {
     EventBus.$off("createdList");
     EventBus.$off("removedList");
     EventBus.$off("updatedList");
+    EventBus.$off("showSettings");
+
   },
 };
 </script>

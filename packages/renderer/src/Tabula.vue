@@ -69,11 +69,13 @@ export default {
         e.preventDefault();
         this.$bvModal.show("support");
       }
+
       if (e.key == "F5") {
         e.preventDefault();
         if (this.view == "tabula") {
           this.openSettings();
         } else {
+          EventBus.$emit("showTextView")
           this.openTextView();
         }
         //this.$router.push("/settings");
@@ -83,6 +85,7 @@ export default {
       this.showChat = false;
       if (this.view == "tabula") {
         this.$store.commit("setModalOpen", true)
+        EventBus.$emit("showSettings")
         api.saveSettings(null).then(() => {
         }).catch(err => {
           console.error("couldn't save settings", err)
@@ -104,6 +107,7 @@ export default {
           this.showNav = true;
           this.$store.commit("setModalOpen", false)
           EventBus.$emit("closeManuscriptEditor");
+          EventBus.$emit("openTextView");
           EventBus.$emit("refocus");
         }).catch(err => {
           console.error("couldn't save settings", err)

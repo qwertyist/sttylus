@@ -201,6 +201,9 @@ export default {
   },
 
   mounted() {
+    EventBus.$on("showTextView", () => {
+      this.$bvModal.hide("addAbb");
+    })
     this.currentLists = this.$store.state.settings.selectedLists;
     api
       .getLists([this.currentLists.standard].concat(this.currentLists.addon))
@@ -209,6 +212,7 @@ export default {
       });
   },
   beforeDestroy() {
+    EventBus.$off("showTextView")
   },
 };
 </script>

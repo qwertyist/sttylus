@@ -80,7 +80,7 @@ export default {
     );*/
     this.addEventListeners();
     setTimeout(() => {
-      this.quill.focus();
+      this.focus();
     }, 500)
 
   },
@@ -313,12 +313,15 @@ export default {
       /*
       this.$nextTick(() => {
         this.quill.focus();
-        this.quill.setSelection(this.quill.getText().length);
       })
       */
+      let editor = document.querySelector(".ql-editor")
+      console.log(editor)
       setTimeout(() => {
+        editor.focus();
         this.quill.focus();
-      }, 5)
+        this.quill.setSelection(this.quill.getText().length);
+      }, 25)
     },
     clear() {
       window.scrollTo(0, 0);
