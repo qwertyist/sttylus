@@ -1,7 +1,7 @@
 
 version: '3'
 
-dotenv: [".env", ".env.build"]
+dotenv: [".env", ".env.build", ".env.production"]
 
 vars:
   GREETING: Hello, World!
@@ -69,14 +69,27 @@ tasks:
     env:
       STTYLUS_VERSION: 0.8.2
       STTYLUS_MODE: webapp
+      VITE_STTYLUS_MODE: webapp
     cmds:
-      - echo "Building version $VERSION"
+      - echo "Building STTylus webapp $STTYLUS_VERSION"
+      - rm -rf ./dist/renderer/assets/*
+      - yarn run prebuild
     silent: true
+  api:test:
+    cmds:
+      - task: api
+      - task: router
+    silent: true
+  api:deploy:
+    silent: true
+    cmds:
+      - task: api
+      - rsync -av -e ssh --exclude="*.woff*" dist/renderer/ $VPS_USER@sttylus.se:$VPS_DEST
   router:
     cmds:
       #- task: prebuild
       - xdg-open http://localhost:8000/
-      - (cd packages/renderer && http)
+      - (cd dist/renderer && python -m http.server)
   consumer:
     cmds:
       - echo "Building consumer"
