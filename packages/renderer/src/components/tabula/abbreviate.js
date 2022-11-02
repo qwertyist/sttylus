@@ -19,6 +19,7 @@ export function abbreviate(index, abb, abbreviator, quill) {
             } else {
                 quill.insertText(index - abb.length, word + abbreviator, { bold: false, underscore: false, italic: false })
             }
+            quill.selection.scrollIntoView();
         })
 
 }

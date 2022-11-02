@@ -77,8 +77,9 @@ export default class keyboard extends Keyboard {
     unloadAbb(abb) {
 
     }
+
     wordBeforeCursor(prefix) {
-        return prefix.split(/[\u200B\s-\/\"\'\()]/).pop()
+        return prefix.split(/[\u200B\s-\/"'()]/).pop()
     }
 
     capitalize(word) {
@@ -113,6 +114,7 @@ export default class keyboard extends Keyboard {
                         }
 
                         this.insertAbbreviation(index, abb, abbreviator, word, quill)
+                        setTimeout(() => quill.setSelection(quill.getSelection().index, 0), 0)
                     }).catch(err => {
                         this.insertAbbreviation(index, abb, abbreviator, abb, quill)
                     })
@@ -364,10 +366,11 @@ export default class keyboard extends Keyboard {
                 this.scrollIntoView = true
             }
         })
+      
         //Backspace
         this.addBinding({
           key: 8,
-          handler: function (range, context) {
+          handler: function () {
             this.capitalizeNext = false
             return true
           }
@@ -538,6 +541,7 @@ export default class keyboard extends Keyboard {
                 return true
             }
         })
+
         // Down ↓
         this.addBinding({
             key: 40,
