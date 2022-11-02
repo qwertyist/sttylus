@@ -5,7 +5,7 @@
       <b-jumbotron>
         <div v-if="local && users">
           <h1>Välj användare</h1>
-          <b-list-group v-for="user in users" v-bind:key="user.id"><b-list-group-item @dblclick="loginAs(user)">{{ user.name }}</b-button></b-list-group-item></b-list-group>
+          <b-list-group v-for="user in users" v-bind:key="user['id']"><b-list-group-item @dblclick="loginAs(user)">{{ user["name"] }}</b-list-group-item></b-list-group>
         </div>
         <hr />
         <div v-if="local"><h1>Logga in och ladda ner användare lokalt</h1></div>
@@ -211,19 +211,19 @@ export default {
       }
     },
     onLogin() {
-      const data = JSON.stringify(this.form);
       this.$store
         .dispatch("AUTH_REQUEST", {
           email: this.form.email,
           password: this.form.password,
         })
-        .then((resp) => {
+        .then(() => {
           setTimeout(() => {
             this.$router.push("/");
           }, 250);
         })
         .catch((err) => {
           this.validPassword = false;
+          console.log(err)
         });
     },
     onNewPassword() {
@@ -233,7 +233,7 @@ export default {
       }
       const data = JSON.stringify(this.form);
       if (this.passwordprompt == "register") {
-        api.register(data).then((resp) => {
+        api.register(data).then(() => {
           //console.log("First time registration for user");
           this.$store
             .dispatch("AUTH_REQUEST", {
@@ -255,6 +255,7 @@ export default {
             })
             .catch((err) => {
               this.validPassword = false;
+              console.log(err)
             });
         });
       } else if (this.passwordprompt == "reset") {
@@ -303,7 +304,7 @@ export default {
           id: this.form.id,
           local: true,
       })
-      .then((resp) => {
+      .then(() => {
         setTimeout(() => {
           this.$router.push("/");
         }, 250);

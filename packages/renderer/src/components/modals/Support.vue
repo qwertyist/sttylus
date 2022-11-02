@@ -275,6 +275,7 @@ export default {
     closeModal() {
       this.$store.commit("setModalOpen", false)
       EventBus.$off("sharedAbbEvent")
+      this.$bvModal.hide("addAbb");
       window.removeEventListener("keydown", this.preventDefaults);
       EventBus.$emit("modalClosed");
       EventBus.$emit("closeNav");

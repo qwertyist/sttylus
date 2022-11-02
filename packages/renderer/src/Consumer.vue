@@ -3,9 +3,7 @@
 </template>
 
 <script>
-import EventBus from "./eventbus.js";
 import TextView from "./components/TextView.vue";
-import api from "./api/api.js";
 export default {
   name: "Consumer",
   components: {

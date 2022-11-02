@@ -6,10 +6,13 @@ import EventBus from "../../eventbus"
 import { promptManuscript, queryManuscript, removePreviews } from "./manuscript";
 var Keyboard = Quill.import('modules/keyboard');
 
+
 let capitalizeNext = true;
 let abbreviated = false;
 let functionKeys = ["F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F12"]
+
 let separators = [" ", ".", "!", "?", ":", ";", "-", "(", ")", "[", "]", "{", "}", "Enter"]
+
 export default class keyboard extends Keyboard {
     static DEFAULTS = {
         ...Keyboard.DEFAULTS,
@@ -106,7 +109,9 @@ export default class keyboard extends Keyboard {
                             console.log("Missed abb!")
                             store.commit("incrementMissedAbb", { word: abb, abb: word })
                             word = abb
+
                         }
+
                         this.insertAbbreviation(index, abb, abbreviator, word, quill)
                     }).catch(err => {
                         this.insertAbbreviation(index, abb, abbreviator, abb, quill)
@@ -359,7 +364,23 @@ export default class keyboard extends Keyboard {
                 this.scrollIntoView = true
             }
         })
+        //Backspace
+        this.addBinding({
+          key: 8,
+          handler: function (range, context) {
+            this.capitalizeNext = false
+            return true
+          }
+        })
 
+        this.addBinding({
+          key: 8,
+          ctrlKey: true,
+          handler: function (range, context) {
+            this.capitalizeNext = false
+            return true
+          }
+        })
         //Period
         this.addBinding({
             key: 190,

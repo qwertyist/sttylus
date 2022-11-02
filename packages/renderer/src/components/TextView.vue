@@ -316,7 +316,6 @@ export default {
       })
       */
       let editor = document.querySelector(".ql-editor")
-      console.log(editor)
       setTimeout(() => {
         editor.focus();
         this.quill.focus();

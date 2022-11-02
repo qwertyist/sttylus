@@ -3,7 +3,6 @@ import Vue from "vue"
 import Vuex from 'vuex';
 import VuexPersistence from 'vuex-persist';
 import VueCookie from 'vue-cookie';
-import axios from 'axios'
 import { router } from "../router.js"
 import api from '../api/api.js';
 import EventBus from '../eventbus.js';
@@ -26,7 +25,9 @@ const emptySession = {
 
 export const store = new Vuex.Store({
   plugins: [vuexLocal.plugin],
+  key: "offline",
   state: {
+    users: null,
     mode: 'test',
     connection: 'connecting',
     machineId: '',
@@ -319,7 +320,7 @@ export const store = new Vuex.Store({
       state.session = session;
 
     },
-    closeRemoteSession(state, id) {
+    closeRemoteSession(state) {
       state.session = {};
     },
     setSessionId(state, id) {
@@ -355,7 +356,7 @@ export const store = new Vuex.Store({
           this.$toast.error("Kunde inte spara dina inställningar.")
         });
     },
-    getStoredSettings(state, userId) {
+    getStoredSettings(state) {
       api.getSettings()
         .then(resp => {
           state.settings = resp.data;
@@ -364,7 +365,7 @@ export const store = new Vuex.Store({
           }
         });
     },
-    subscribeList(state, id) {
+    subscribeList() {
       /* console.log("subscribe to list:", state.userData.subscriptions, id)
        if (state.userData.subscriptions == undefined) {
          state.userData.subscriptions = [].push(id)
@@ -377,7 +378,7 @@ export const store = new Vuex.Store({
        state.userData.subscriptions.push(id)
        */
     },
-    unsubscribeList(state, id) {
+    unsubscribeList() {
       /* console.log("unsubscribe from list:", state.userData.subscriptions)
  
        const index = state.userData.subscriptions.indexOf(id)
@@ -385,12 +386,8 @@ export const store = new Vuex.Store({
          state.userData.subscriptions.splice(index)
        }*/
     },
-    addInterpreter(state, i) {
-
-    },
-    removeInterpreter(state, i) {
-
-    },
+    addInterpreter() {},
+    removeInterpreter() {},
     reset(state) {
       state.settings.selectedManuscripts = [];
       state.settings.selectedLists.addon = [];
@@ -462,7 +459,7 @@ export const store = new Vuex.Store({
     getSettings(state) { return state.settings }
   },
   actions: {
-    AUTH_REQUEST: ({ commit, dispatch }, user) => {
+    AUTH_REQUEST: ({ commit }, user) => {
       return new Promise((resolve, reject) => {
         commit('AUTH_REQUEST');
         api

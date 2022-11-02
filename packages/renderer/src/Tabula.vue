@@ -118,7 +118,7 @@ export default {
     cacheAbbs() {
       api
         .cacheAbbs()
-        .then((resp) => { })
+        .then(() => { })
         .catch((err) => {
           console.log("couldn't create cache", err);
         });

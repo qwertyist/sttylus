@@ -18,6 +18,10 @@ tasks:
     cmds:
       - yarn run prebuild
   nw:
+    env:
+      VITE_STTYLUS_MODE: desktop
+      VITE_STTYLUS_LOCAL_BACKEND: http://localhost
+      VITE_STTYLUS_BACKEND: http://localhost
     cmds:
       - task: increment
       - echo "Building $STTYLUS_BUILD ..."
@@ -36,13 +40,21 @@ tasks:
       - ../nw/nw.exe ./dist/renderer/ 
     silent: false
   nw:run:
+    env:
+      VITE_STTYLUS_MODE: desktop
+      VITE_STTYLUS_LOCAL_BACKEND: http://localhost
+      VITE_STTYLUS_BACKEND: http://localhost
     cmds:
       - echo "Running build $STTYLUS_BUILD ..."
       - cp packages/loader/index.js dist/renderer/index.js
       - cp packages/loader/update.html dist/renderer/update.html
-      - ../nw/nw.exe ./dist/renderer/ 
+      - ../nw/nw ./dist/renderer/ 
     silent: false
   debug:
+    env:
+      VITE_STTYLUS_MODE: desktop
+      VITE_STTYLUS_LOCAL_BACKEND: http://localhost
+      VITE_STTYLUS_BACKEND: http://localhost
     cmds:
       - echo "Build and run STTylus on vite dev server..."
       - yarn debug
@@ -74,8 +86,13 @@ tasks:
     env:
       GOOS: windows
       GOARCH: amd64
+      VITE_STTYLUS_MODE: desktop
+      VITE_STTYLUS_LOCAL_BACKEND: http://localhost
+      VITE_STTYLUS_BACKEND: http://localhost
     cmds:
+      - rm -rf ./dist/renderer/assets/*
       - (cd packages/backend && go build -o ../../dist/renderer/backend.exe)
+      - yarn run prebuild
   webapp:
     env:
       STTYLUS_VERSION: 0.8.2

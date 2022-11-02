@@ -21,7 +21,7 @@
           </b-nav-item>
           <b-nav-item v-show="notLogin" @click="showSupport">Stödtolkning</b-nav-item>
           <b-nav-item
-            v-if="!tester"
+            v-if="!desktop"
             v-show="textViewOnly"
             @click="showRemoteSettings"
           >Distanstolkning</b-nav-item>
@@ -110,10 +110,10 @@ export default {
     connected(n) {
       this.connectedClients = n;
     },
-    connects(who) {
+    connects() {
       this.connectedClients++;
     },
-    disconnects(who) {
+    disconnects() {
       this.connectedClients--;
     },
     addEventListeners() {

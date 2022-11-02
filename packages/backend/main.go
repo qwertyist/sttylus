@@ -82,6 +82,7 @@ func main() {
 	backupHandler := backup.NewBackupHandler(backupService)
 	backup.Endpoints(r, backupHandler)
 
+	printEndpoints(r)
 	errs := make(chan error, 2)
 	go func() {
 		fmt.Println("Listening on port:", cfg.port)
@@ -164,7 +165,6 @@ func getLocalIP(w http.ResponseWriter, r *http.Request) {
 
 		}
 	}
-
 	w.WriteHeader(http.StatusInternalServerError)
 	return
 }
@@ -192,6 +192,7 @@ func isPrivateIP(ip net.IP) bool {
 
 	return false
 }
+
 func notImplemented(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("This function is not implemented"))
 }

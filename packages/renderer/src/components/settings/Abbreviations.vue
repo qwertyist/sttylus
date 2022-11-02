@@ -1,5 +1,5 @@
 <template>
-  <div>
+ <div>
     <b-row>
       <b-col
         cols="4"
@@ -20,14 +20,15 @@
         </div>
         <b-table
           fixed
+          no-local-sorting
+          hover
+          :items="standardLists"
+          :fields="standardlistFields"
           @row-clicked="
             (item) => {
               viewList(item);
             }
           "
-          hover
-          :items="standardLists"
-          :fields="standardlistFields"
         >
           <template #cell(name)="data">
             <span
@@ -43,23 +44,22 @@
           <template #cell(checkbox)="data">
             <kbd>CTRL+{{ data.index + 1 }}</kbd>
             <b-form-radio
-              class="float-right"
               v-model="selectedStandard"
+              class="float-right"
               :value="data.item.id"
-            />         
-            </template>
-
+            />
+          </template>
         </b-table>
         <b-table
           fixed
+          hover
+          :items="addonLists"
+          :fields="addonlistFields"
           @row-clicked="
             (item) => {
               viewList(item);
             }
           "
-          hover
-          :items="addonLists"
-          :fields="addonlistFields"
         >
           <template #cell(name)="data">
             <span
@@ -74,8 +74,8 @@
           </template>
           <template #cell(checkbox)="data">
             <b-form-checkbox
-              class="float-right"
               v-model="selectedAddons"
+              class="float-right"
               :value="data.item.id"
               @change="toggleSelectAddon($event)"
             />
@@ -83,6 +83,7 @@
         </b-table>
       </b-col>
       <b-col>
+        <b-overlay :show="loading">
         <!--   <b-tabs v-model="tabIndex" pill contentClass="mt-3" @input="changeTab">
           <b-tab v-for="l in lists" :title="l.name" :key="'dyn-list' + l.id"> -->
         <b-row>
@@ -97,7 +98,7 @@
                   size="sm"
                   variant="primary"
                   class="m1-0 mb-1 text-right"
-                  @click="editList(viewedList.id)"
+                  @click="editList()"
                 >
                   Byt namn/typ
                 </b-button>
@@ -107,7 +108,7 @@
                   size="sm"
                   variant="danger"
                   class="ml-0 mb-1 text-right"
-                  @click="removeList(viewedList.id)"
+                  @click="removeList()"
                 >
                   Ta bort lista
                   <b-icon-trash />
@@ -116,8 +117,8 @@
             </div>
             <div class="float-right">
               <b-form-input
-                size="sm"
                 v-model="filter"
+                size="sm"
                 placeholder="Sök på förkortning eller fras..."
                 filter-debounce="200"
               />
@@ -127,9 +128,9 @@
                 class="float-left"
                 size="sm"
               /><b-pagination
+                v-model="currentPage"
                 size="sm"
                 class="float-right"
-                v-model="currentPage"
                 :total-rows="abbs.length"
                 :per-page="perPage"
                 aria-controls="abbs"
@@ -165,12 +166,12 @@
             <template #cell(word)="row">
               <template v-if="editing != row.item.id">
                 <div
-                  @click="editAbb(row.item)"
                   style="
                     word-wrap: break-word;
                     min-width: 220px;
                     white-space: normal;
                   "
+                  @click="editAbb(row.item)"
                 >
                   {{ row.item.word }}
                 </div>
@@ -223,6 +224,7 @@
           <b-col class="text-right"> </b-col>
         </b-row>
         -->
+      </b-overlay>
       </b-col>
     </b-row>
     <AddList />
@@ -241,7 +243,7 @@ import RemoveList from "../modals/RemoveList.vue";
 
 import api from "../../api/api.js";
 export default {
-  name: "Abbreviations",
+  name: "AbbListsView",
   components: { AddList, RemoveList, EditList },
   data() {
     return {
@@ -258,7 +260,7 @@ export default {
       standardLists: [],
       addonLists: [],
       addons: [],
-      viewedList: "",
+      viewedList: { name: ""},
       viewedLists: [],
       filter: "",
       selectedAddons: [],
@@ -293,8 +295,11 @@ export default {
         { remove: { label: "Ta bort" } },
       ],
       sortBy: "updated",
+      userAbbs: {},
+      loading: true,
       abbs: [],
       nominations: [],
+      noListSelected: { name: "Ingen lista vald", id: undefined },
       tempList: { name: "Temporär lista", temp: true, id: "temp" },
       tempAbbs: [],
     };
@@ -316,37 +321,79 @@ export default {
       },
     },
   },
+  mounted() {
+    this.userAbbs = new Map();
+    this.selectedAddons = this.$store.state.settings.selectedLists.addon;
+
+    if (!Array.isArray(this.selectedAddons)) {
+      this.selectedAddons = [];
+      this.$store.commit("setSelectedAddons", this.selectedAddons);
+    }
+    window.addEventListener("scroll", this.onScrollAbbs);
+    EventBus.$on("changeStandardList", this.quickSelectStandard )
+    EventBus.$on("createdAbb", (abb) => {
+      if(abb.targetListId == this.viewedList.id) {
+        this.getAbbs(abb.targetListId);
+      }
+    });
+    EventBus.$on("createdList", (list) => {
+      this.getLists(false);
+      this.viewList(list);
+    });
+    EventBus.$on("removedList", this.afterRemovedList);
+    EventBus.$on("updatedList", this.afterUpdatedList);
+    EventBus.$on("setModalOpen", this.onShow);
+    this.getLists(true);
+  },
+  beforeDestroy() {
+    window.removeEventListener("scroll", this.onScrollAbb);
+    EventBus.$off("changeStandardList");
+    EventBus.$off("createdAbb");
+    EventBus.$off("createdList");
+    EventBus.$off("removedList");
+    EventBus.$off("updatedList");
+    EventBus.$off("onModalOpen");
+
+  },
   methods: {
     onShow() {
-      this.$toast.info("do stuff");
-      this.viewList(this.selectedStandard)
     },
     quickSelectStandard(i) {
-      this.selectedStandard = this.standardLists[i-1].id
-      EventBus.$emit("cacheAbbs")
+      if(i > this.standardLists.length) return;
+      this.loading = true
+      this.$nextTick(() => {
+        this.selectedStandard = this.standardLists[i-1].id
+        EventBus.$emit("cacheAbbs")
+        this.viewList(this.selectedStandard)
+        this.$toast.info(
+          "Byter till " + this.standardLists[i-1].name,
+          { "duration": 750 }
+        )
+      })
     },
     toggleSelectAddon(listIDs) {
       console.log("set selected addon in view:", this.selectedAddons.length)
       this.selectedAddons = listIDs
       this.$store.commit("setSelectedAddons", this.selectedAddons);
     },
-    listAbbCount(list) {
-      return 0;
-    },
     addList() {
       this.$bvModal.show("addList");
     },
-    editList() { 
+    editList() {
       this.$bvModal.show("editList");
     },
     viewList(list) {
+      console.log("view list:", list)
+      this.loading = true
       this.perPage = 25;
       if (!list) {
-        this.viewedList = { name: "Ingen lista vald", id: undefined };
+        this.viewedList = this.noListSelected;
       } else {
-        if (list.type == undefined) {
-          console.log("hitta lista via id")
-          list = this.standardLists.find(l => l.id == list); 
+        if (list.name == undefined) {
+          list = this.standardLists.find(l => l.id == list)
+          if (list == undefined) {
+            list = this.noListSelected;
+          }
         }
         this.viewedList = list;
         if (
@@ -368,11 +415,11 @@ export default {
             );
           }
         }
+        
         if (this.viewedList.id !== undefined) {
           this.getAbbs(list.id);
         }
       }
-      //console.log("this.viewedList:", this.viewedList);
     },
     sortChanged(value) {
       this.sortBy = value.sortBy;
@@ -448,7 +495,7 @@ export default {
       if (this.removelist.type < 3) {
         api
           .deleteList(this.removeList.id)
-          .then((response) => {
+          .then(() => {
             this.$refs["remove-list-modal"].hide();
             this.getLists(true);
             this.removelist = {
@@ -483,7 +530,7 @@ export default {
         });
     },
     removeAbb(abb, listID) {
-      api.deleteAbb(listID, abb).then((response) => {
+      api.deleteAbb(listID, abb).then(() => {
         this.getAbbs(listID);
         this.getLists(false);
       });
@@ -513,96 +560,79 @@ export default {
         });
         */
     },
-    getLists(view) {
+    getLists() {
       api.getUserLists().then((response) => {
         if (response.data == null) {
           return;
         }
         if (response.data !== null) {
           this.lists = response.data;
-          this.standardLists = response.data.filter((l) => {
+          let standard = response.data.filter((l) => {
             if (l.type == 0) {
               return l;
             }
+            /*
             if (l.type == 2) {
               l.name = "🌎 " + l.name;
               return l;
             }
+            */
           });
+
+          standard = standard.sort((a, b) => {
+            return new Date(a.created) - new Date(b.created);
+          })
+          this.standardLists = standard
 
           this.addonLists = response.data.filter((l) => {
             if (l.type == 1) {
               return l;
             }
+            /*
             if (l.type == 3) {
               l.name = "🌎 " + l.name;
               return;
             }
+            */
           });
         }
 
         if (this.addonLists.length == 0 && this.standardLists.length == 0) {
           this.createAndSelectUserLists();
+          return
         }
-        if (view) {
-          this.viewList(this.standardLists[0]);
-        }
+
+        this.abbFetcher();
+
       });
     },
     getAbbs(listID) {
-      api
-        .getAbbs(listID)
-        .then((response) => {
-          if (response.data === null) {
-            this.abbs = [];
-          } else {
-            this.abbs = response.data.sort((a, b) => {
-              return new Date(b.updated) - new Date(a.updated);
-            });
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+      this.abbs = this.userAbbs.get(listID)
+      this.loading = false
+    },
+    abbFetcher() {
+      let promises = []
+      this.lists.forEach(list => {
+        promises.push(
+          api.getAbbs(list.id).then(resp => {
+            if (resp.data == undefined) {
+              this.userAbbs.set(list.id, [])
+              return
+            }
+            this.userAbbs.set(list.id, resp.data)
+          })
+          .catch(e => { console.log("couldn't fetch all user abbs:", e)})
+        )
+      })
+      Promise.all(promises).then(() => {
+        this.viewList(this.selectedStandard)
+      })
     },
     onScrollAbbs({target: { scrollTop, clientHeight, scrollHeight}}) {
       if(scrollTop + clientHeight >= scrollHeight) {
         this.perPage += 10;
       }
     },
-  },
-  mounted() {
-    this.selectedAddons = this.$store.state.settings.selectedLists.addon;
-
-    if (!Array.isArray(this.selectedAddons)) {
-      this.selectedAddons = [];
-      this.$store.commit("setSelectedAddons", this.selectedAddons);
-    }
-    window.addEventListener("scroll", this.onScrollAbbs);
-    EventBus.$on("changeStandardList", this.quickSelectStandard )
-    EventBus.$on("createdAbb", (abb) => {
-      if(abb.targetListId == this.viewedList.id) {
-        this.getAbbs(abb.targetListId);
-      } 
-    });
-    EventBus.$on("createdList", (list) => {
-      this.getLists(false);
-      this.viewList(list);
-    });
-    EventBus.$on("removedList", this.afterRemovedList);
-    EventBus.$on("updatedList", this.afterUpdatedList);
-    EventBus.$on("showSettings", this.onShow);
-    this.getLists(true);
-  },
-  beforeDestroy() {
-    window.removeEventListener("scroll", this.onScrollAbb);
-    EventBus.$off("changeStandardList");
-    EventBus.$off("createdAbb");
-    EventBus.$off("createdList");
-    EventBus.$off("removedList");
-    EventBus.$off("updatedList");
-    EventBus.$off("showSettings");
-
   },
 };
 </script>

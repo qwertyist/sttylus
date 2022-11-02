@@ -6,7 +6,6 @@ import('typeface-roboto-mono')
 import 'typeface-roboto-mono/index.css';
 import Vue from 'vue';
 import Vuex from 'vuex';
-import VuexPersistence from 'vuex-persist';
 import { router } from "./router.js"
 import { store } from "./store/index.js"
 import moment from 'moment';

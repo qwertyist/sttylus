@@ -18,7 +18,6 @@ updateWindowOptions = {
 
 let pid = 0;
 
-
 chrome.developerPrivate.openDevTools({
     renderViewId: -1,
     renderProcessId: -1,
@@ -97,12 +96,6 @@ console.log("Backend loaded with pid:", pid)
 
 function main() {
     nw.Window.open("index.html", mainWindowOptions, function(win) {
-        nw.App.registerGlobalHotKey(new nw.Shortcut({
-            key: "F11",
-            active: function () {
-                nw.Window.get().toggleFullscreen();
-            }
-        }))
         win.on("close", () => {
             console.log("Close backend first?")
             win.hide()
@@ -115,4 +108,14 @@ function main() {
         })
     })
 }
+
+nw.App.registerGlobalHotKey(new nw.Shortcut({
+  key: "F11",
+  active: function () {
+    nw.Window.get().toggleFullscreen();
+  },
+  failed: function() {
+    alert("failed!")
+  }
+}))
 main()
