@@ -131,7 +131,7 @@
                 v-model="currentPage"
                 size="sm"
                 class="float-right"
-                :total-rows="viewedList.counter"
+                :total-rows="paginationRows"
                 :per-page="perPage"
                 aria-controls="abbs"
               />
@@ -299,6 +299,7 @@ export default {
       ],
       sortBy: "updated",
       userAbbs: {},
+      paginationRows: 0,
       loading: true,
       abbs: [],
       nominations: [],
@@ -613,7 +614,10 @@ export default {
       if (ctx.listId != "" || ctx.listId == undefined) {
         api.filterAbbs(ctx)
         .then(resp => {
-          callback(resp.data)
+          if(ctx.filter != "") {
+            this.paginationRows = resp.data.rows;
+          }
+          callback(resp.data.abbs)
         })
         .catch(err => {
           this.$toast.warning("Kunde inte ladda förkortningar", {duration: 5000})

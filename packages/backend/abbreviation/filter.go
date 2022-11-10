@@ -5,6 +5,8 @@ import (
 	"log"
 	"net/http"
 	"sort"
+
+	"github.com/lithammer/fuzzysearch/fuzzy"
 )
 
 type abbProviderCtx struct {
@@ -14,6 +16,22 @@ type abbProviderCtx struct {
 	Filter      string `json:"filter"`
 	SortBy      string `json:"sortBy"`
 	SortDesc    bool   `json:"sortDesc"`
+}
+
+func fuzzyFind(filter string, userList []*Abbreviation) []*Abbreviation {
+	var result []*Abbreviation
+
+	for _, abb := range userList {
+		if fuzzy.Match(filter, abb.Abb) {
+			result = append(result, abb)
+			continue
+		}
+		if fuzzy.Match(filter, abb.Word) {
+			result = append(result, abb)
+		}
+	}
+	return result
+
 }
 
 func paginate(abbs []*Abbreviation, currPage, perPage int) []*Abbreviation {
@@ -75,8 +93,30 @@ func (h *abbHandler) FilterAbbs(w http.ResponseWriter, r *http.Request) {
 		})
 		break
 	}
-	abbs = paginate(abbs, ctx.CurrentPage-1, ctx.PerPage)
-	resp, err := json.Marshal(abbs)
+
+	log.Println(ctx.Filter)
+
+	if ctx.Filter != "" {
+		abbs = fuzzyFind(ctx.Filter, abbs)
+	}
+
+	result := struct {
+		Rows int             `json:"rows"`
+		Abbs []*Abbreviation `json:"abbs"`
+	}{
+		Rows: len(abbs),
+		Abbs: abbs,
+	}
+
+	result.Abbs = paginate(abbs, ctx.CurrentPage-1, ctx.PerPage)
+
+	if abbs == nil {
+		w.WriteHeader(http.StatusNoContent)
+		w.Write([]byte("[]"))
+		return
+
+	}
+	resp, err := json.Marshal(result)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte("couldn't marshal abbs for list " + ctx.ListID))

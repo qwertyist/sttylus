@@ -368,9 +368,9 @@ export default {
         { value: "shared", text: "från delad lista", disabled: true },
       ],
       targets: [
+        { value: "sttylus", text: "till STTylus", disable: false },
         { value: "textontop", text: "till TextOnTop", disabled: false },
         { value: "protype", text: "till Protype", disabled: false },
-        { value: "sttylus", text: "till STTylus", disable: false },
         { value: "textfile", text: "till textfil", disabled: true },
       ],
       from: "dontImport",
@@ -821,7 +821,7 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
-      setTimeout(() => { this.from = "sttylus"}, 500);
+      setTimeout(() => { this.from = "dontImport"}, 500);
     })
     this.$nextTick(() => {
       setTimeout(() => { this.to = "dontExport"}, 125);
