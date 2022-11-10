@@ -48,8 +48,58 @@ export default {
     return {
       loading: true,
       error: {},
-      latest: new Date("2022, 08, 26"),
+      latest: new Date("2022, 11, 10"),
       changelog: [
+        {
+          date: new Date("2022, 11, 10"),
+          changes: [ 
+            {
+              id: 0,
+              type: "update",
+              description: "Exportera/importera mellan STTylus-konton och mellan online/offline-versionerna.",
+            },
+            {
+              id: 1, 
+              type:"update",
+              description: "Optimerat förkortningsvyn kraftigt. 'Fuzzy search' i förkortningar, man behöver alltså inte söka på hela frasen eller stava rätt för att hitta matchande förkortningar."
+            },
+            {
+              id: 2,
+              type: "",
+              description: "",
+            },
+            {
+              id: 3,
+              type: "",
+              description:"",
+            }
+          ]
+        },
+        {
+          date: new Date("2022, 11, 4"),
+          changes: [ 
+            {
+              id: 0,
+              type: "fix",
+              description: "När förkortningar matas ut på sista raden/nästa rad så följer textmarkören med.",
+            },
+            {
+              id: 1, 
+              type:"fix",
+              description: "Åtgärdat en bugg där det blir stor bokstav på konstiga ställen om man backar förbi ett stort skiljetecken med <kbd>BACKSPACE</kbd> eller <kbd>CTRL+BACKSPACE</kbd>.",
+            },
+            {
+              id: 2,
+              type:"update",
+              description: "Offline-versionen av STTylus använder AppData så att användarinställningar sparas mellan uppdateringarna", 
+            },
+            {
+              id: 3,
+              type: "update",
+              description:"<kbd>F11</kbd> växlar till och från fullskärm i offline-versionen.",
+            }
+          ]
+        },
         {
           date: new Date("2022, 08, 26"),
           changes: [ 

@@ -73,9 +73,13 @@ export default {
       if (e.key == "F5") {
         e.preventDefault();
         if (this.view == "tabula") {
+          this.$bvModal.hide("support")
+          this.$bvModal.hide("addAbb")
           this.openSettings();
         } else {
           EventBus.$emit("showTextView")
+          this.$bvModal.hide("support")
+          this.$bvModal.hide("addAbb")
           this.openTextView();
         }
         //this.$router.push("/settings");

@@ -6,10 +6,10 @@
     hideHeader
     noFade
     hideBackdrop
+    @keyup.esc="catchEscape"
     @show="showModal"
-
-    @keydown.esc="closeModal"
     @hide="closeModal"
+    tabindex="1000"
   >
     <b-row v-if="collab">
       <b-col cols="6">
@@ -111,7 +111,7 @@
           <b-list-group-item
             class="p-1 pl-3"
             v-for="(abb, i) in sharedAbbsByLetter"
-            :key="'lookup_' + i"
+            :key="'shared_' + i"
           >
             {{ abb.abb }} - {{ abb.word }}
             <b-button
@@ -138,7 +138,18 @@
     <b-form @submit.prevent="lookup" autocomplete="off">
       <b-form-input ref="lookupInput" v-model="lookupPhrase" :autofocus="!sharingList" placeholder />
       <b-list-group>
-        <b-list-group-item v-for="abb in lookupResults" :key="'lookup_' + abb.id">{{ abb.abb }}</b-list-group-item>
+        <b-list-group-item v-for="m in lookupResults" :key="'lookup_' + m.id">
+        <span v-if="m.id >= 0">
+          {{ m.match }}
+        </span>
+        <span v-else-if="m.id == -1">
+          <b-badge variant="danger">{{ m.match }}</b-badge>
+        </span>
+        <span v-else>
+          <b-badge variant="warning">{{ m.match }}</b-badge>
+        </span>
+
+        </b-list-group-item>
       </b-list-group>
     </b-form>
 
@@ -249,11 +260,14 @@ export default {
     },
   },
   methods: {
+    catchEscape() {
+      this.$bvModal.hide("support");
+    },
     showModal() {
       this.$store.commit("setModalOpen", true)
       EventBus.$on("sharedAbbEvent", this.getSharedAbbs)
       EventBus.$emit("modalOpened");
-      window.addEventListener("keydown", this.preventDefaults);
+      document.addEventListener("keydown", this.preventDefaults);
       this.getSelectedLists();
       this.getSharedAbbs();
       this.filterMissedAbbs();
@@ -273,10 +287,11 @@ export default {
       })
     },
     closeModal() {
+      this.lookupPhrase = ""
       this.$store.commit("setModalOpen", false)
       EventBus.$off("sharedAbbEvent")
       this.$bvModal.hide("addAbb");
-      window.removeEventListener("keydown", this.preventDefaults);
+      document.removeEventListener("keydown", this.preventDefaults);
       EventBus.$emit("modalClosed");
       EventBus.$emit("closeNav");
       EventBus.$emit("refocus", "");
@@ -535,15 +550,40 @@ export default {
         api
           .lookup(this.lookupPhrase)
           .then((resp) => {
-            if (resp.status == "204") {
-              this.lookupResults = [
-                { id: "0", abb: "Hittade inga förkortningar" },
-              ];
+            if (resp.status == "204" || resp.data == {}) {
+              this.lookupResults = [ {id: -1, match: "Hittade inga förkortningar" } ];
               return;
+
             }
-            this.lookupResults = resp.data.UserAbbs;
+            var results = []
+            var i = 0;
+            for (const [list, matches] of Object.entries(resp.data)) {
+              if (matches.length == 0) {
+                this.lookupResults = [ {id: -1, match: "Hittade inga förkortningar" } ];
+                return;
+              }
+              if (matches.length > 50) {
+                this.lookupResults = [ { id: -500, match: "För många träffar" } ]
+                return
+              }
+              matches.forEach(
+                match => { 
+                  results.push(
+                    { 
+                      id: i, 
+                      match: `${match} (${list})`
+                    }
+                  ) 
+                  i += 1
+                }
+              )
+            }
+            this.lookupResults = results
+            console.log("Lookup results:", this.lookupResults)
           })
           .catch((err) => {
+            this.$toast.error("kunde inte slå upp fras", err)
+            console.error(err)
             if (err.response) {
               console.log(err.response);
             }
@@ -604,7 +644,7 @@ export default {
         if (e.key == "3") {
           e.preventDefault();
           this.show.suggestedAbbs = false;
-          this.$refs.lookupInput.focus();
+          this.$refs["lookupInput"].focus();
         }
         if (e.key == "4") {
           e.preventDefault();
@@ -645,6 +685,8 @@ export default {
         e.preventDefault();
       }
     },
+  },
+  created() {
   },
   mounted() {
     this.letters = this.letters.concat(

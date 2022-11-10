@@ -499,13 +499,13 @@ func (h *abbHandler) Lookup(w http.ResponseWriter, r *http.Request) {
 	phrase := vars["phrase"]
 	userID := r.Header.Get("X-Id-Token")
 
-	abbs, found := h.abbService.Lookup(userID, phrase)
-	if found == false {
+	abbs := h.abbService.Lookup(userID, phrase)
+	if len(abbs) == 0 {
 		w.WriteHeader(http.StatusNoContent)
 		return
 	}
-	lookup := lookup{UserAbbs: abbs}
-	json, err := json.Marshal(lookup)
+
+	json, err := json.Marshal(abbs)
 	if err != nil {
 		log.Printf("handler|Lookup couldn't marshal: %q\n", err)
 		w.WriteHeader(http.StatusInternalServerError)

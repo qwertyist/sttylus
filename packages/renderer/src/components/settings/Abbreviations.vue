@@ -244,7 +244,7 @@ import EditList from "../modals/EditList.vue";
 import RemoveList from "../modals/RemoveList.vue";
 
 import api from "../../api/api.js";
-import abbs from "../../api/abbs.js";
+
 export default {
   name: "AbbListsView",
   components: { AddList, RemoveList, EditList },
@@ -424,7 +424,6 @@ export default {
       }
 
         if (this.viewedList.id !== undefined) {
-          this.$toast.info("Laddar förkortningar")
           this.getAbbs(list.id);
 
         }
@@ -614,9 +613,7 @@ export default {
       if (ctx.listId != "" || ctx.listId == undefined) {
         api.filterAbbs(ctx)
         .then(resp => {
-          if(ctx.filter != "") {
-            this.paginationRows = resp.data.rows;
-          }
+          this.paginationRows = resp.data.rows;
           callback(resp.data.abbs)
         })
         .catch(err => {

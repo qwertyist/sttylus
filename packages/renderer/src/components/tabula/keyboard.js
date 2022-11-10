@@ -169,7 +169,7 @@ export default class keyboard extends Keyboard {
                     removePreviews(range.index, this.quill)
                 }
                 this.quill.setSelection(end)
-                return false
+                return true
             }
         })
         //F2
@@ -519,6 +519,15 @@ export default class keyboard extends Keyboard {
                     return false
                 }
                 return true
+            }
+        })
+        // Ctrl+Right →
+        this.bindings[39].unshift({
+            key: 39,
+            ctrlKey: true,
+            handler: function (range, context) {
+              if (range.index == this.quill.getText().length-1) return false
+              return true
             }
         })
         // ALT+Right →

@@ -14,7 +14,7 @@ import (
 //AbbService is
 type AbbService interface {
 	Abbreviate(userID, abbQuery string) (string, bool)
-	Lookup(userID, abb string) ([]*Abbreviation, bool)
+	Lookup(userID, abb string) AbbsInList
 
 	CreateAbb(listID string, abb *Abbreviation) error
 	CreateManyAbbs(listID string, abbs []*Abbreviation) error
@@ -155,9 +155,31 @@ func (s *abbService) Abbreviate(userID, abbQuery string) (string, bool) {
 	return abbQuery, false
 }
 
-func (s *abbService) Lookup(userID, word string) ([]*Abbreviation, bool) {
-	abbs, found := s.cache.UserLookup[userID][strings.ToLower(word)]
-	return abbs, found
+func (s *abbService) Lookup(userID, word string) AbbsInList {
+	result := make(AbbsInList)
+
+	for _, listID := range s.cache.UserAbbLists[userID] {
+		abbs, err := s.GetAbbs(listID)
+		if err != nil {
+			log.Println("lookup couldnt get abbs from chached user list IDs", err)
+			return nil
+		}
+		matches := fuzzyFind(word, abbs)
+		if matches != nil {
+			list, err := s.GetList(listID)
+			if err != nil {
+				log.Println("lookup found cached abbs without stored list", err)
+				return nil
+			}
+
+			for _, m := range matches {
+				match := m.Abb + " = " + m.Word
+				result[list.Name] = append(result[list.Name], match)
+			}
+		}
+	}
+
+	return result
 }
 
 func (s *abbService) GetAbb(listID, ID string) (*Abbreviation, error) {

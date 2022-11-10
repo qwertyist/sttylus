@@ -101,6 +101,9 @@ export default {
     }
   },
   methods: {
+    catchEscape() {
+      this.$toast.info("haha")
+    },
     handleKeydown(e) {
       console.log(e)
     },
@@ -120,6 +123,11 @@ export default {
       }
     },
     showModal() {
+      document.addEventListener("keyup", e => {
+        if (e.key == "Escape") {
+          this.$bvModal.hide("support")
+        }
+      })
       this.$store.commit("setModalOpen", true)
       EventBus.$emit("modalOpened");
       this.updateLists();
@@ -129,6 +137,11 @@ export default {
       this.index = this.$store.state.targetList.index;
     },
     closeModal() {
+      document.removeEventListener("keyup", e => {
+        if (e.key == "Escape") {
+          this.$bvModal.hide("support")
+        }
+      })
       this.$store.commit("setModalOpen", false)
       this.$bvModal.hide("addAbb");
       EventBus.$emit("closeNav");
@@ -203,6 +216,7 @@ export default {
   mounted() {
     EventBus.$on("showTextView", () => {
       this.$bvModal.hide("addAbb");
+      this.$bvModal.hide("support");
     })
     this.currentLists = this.$store.state.settings.selectedLists;
     api

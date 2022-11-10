@@ -33,3 +33,7 @@ type List struct {
 	Updated time.Time `json:"updated"`
 	Deleted time.Time `json:"deleted"`
 }
+
+type AbbsInList map[string][]string 
+	
+
