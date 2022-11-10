@@ -65,13 +65,13 @@ export default {
             },
             {
               id: 2,
-              type: "",
-              description: "",
+              type: "fix",
+              description: "Alla dialogrutor stänger om man trycker på escape",
             },
             {
               id: 3,
-              type: "",
-              description:"",
+              type: "fix",
+              description: "<kbd>CTRL+HÖGERPIL</kbd> stannar vid sista positionen i texten.",
             }
           ]
         },

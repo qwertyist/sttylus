@@ -11,6 +11,8 @@ tasks:
     cmds:
       - echo "{{.GREETING}}"
     silent: true
+  backup:
+      - cp -rf dist/renderer /run/media/botvid/LACIE\ MUSIC/latest
   increment:
       - sh ./build.sh
   prebuild:
@@ -33,11 +35,13 @@ tasks:
       - task: nw:run
     silent: false
   nw:debug:
+    env:
+      VITE_STTYLUS_MODE: desktop
     cmds:
       - echo "Debug $STTYLUS_BUILD ..."
-      - task: prebuild
+      - yarn run prebuild
       - cp packages/loader/index.js dist/renderer/index.js
-      - ../nw/nw.exe ./dist/renderer/ 
+      - ../nw/nw ./dist/renderer/ 
     silent: false
   nw:run:
     env:
@@ -53,7 +57,8 @@ tasks:
   debug:
     env:
       VITE_STTYLUS_MODE: desktop
-      VITE_STTYLUS_LOCAL_BACKEND: http://localhost
+      VITE_STTYLUS_BACKEND: http://localhost:14411
+      VITE_STTYLUS_LOCAL_BACKEND: http://localhost:14411
       VITE_STTYLUS_BACKEND: http://localhost
     cmds:
       - echo "Build and run STTylus on vite dev server..."
@@ -61,11 +66,13 @@ tasks:
     silent: true
   debug:webapp:
     env:
+      VITE_STTYLUS_LOCAL_BACKEND: http://localhost
+      VITE_STTYLUS_BACKEND: http://localhost
       VITE_STTYLUS_MODE: webapp
-      VITE_STTYLUS_BACKEND: https://sttylus.se
+      VITE_STTYLUS_DEBUG: true
     cmds:
-      - task: debug
       - echo "[ run as webapp ]"
+      - yarn debug
     silent: true
   debug:backend:
     cmds:
@@ -102,7 +109,7 @@ tasks:
     cmds:
       - echo "Building STTylus webapp $STTYLUS_VERSION"
       - rm -rf ./dist/renderer/assets/*
-      - yarn run prebuild
+      - yarn run debug
     silent: true
   webapp:test:
     cmds:
