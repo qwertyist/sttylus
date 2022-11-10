@@ -14,6 +14,7 @@ type abbCache struct {
 	UserSharedList  map[string]string
 	SharedAbbs      map[string]map[string]string
 
+	PublicLists  map[string]*List
 	GlobalAbbs   map[string][]*Abbreviation
 	GlobalLookup map[string][]*Abbreviation
 }
@@ -31,6 +32,8 @@ func (s *abbService) InitCache(userIDs []string) {
 		s.cache.UserAbbs[u] = make(map[string]*Abbreviation)
 		s.cache.UserLookup[u] = make(map[string][]*Abbreviation)
 	}
+
+	s.cache.PublicLists = make(map[string]*List)
 }
 
 func (s *abbService) Cache(q query) error {

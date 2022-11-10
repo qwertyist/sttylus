@@ -74,13 +74,47 @@
         <div v-if="to == 'textontop'">
           <h3>Exportera till TextOnTop</h3>
         </div>
+        <div v-if="to == 'sttylus'">
+          <h3>Exportera till STTylus</h3>
+            <b-list-group>
+              <b-list-group-item v-for="standard in standardLists" v-bind:key="standard.value">
+                <b-row>
+                  <b-col cols="4">
+                    <b>{{ standard.text }}</b>
+                  </b-col>
+                  <b-col>
+                      <span  style="font-size: 1.2em;"><b-badge size="md">{{ standard.value.split("-")[0] }}</b-badge></span>
+                    </b-col>
+                  <b-col>
+                <small>{{ standard.counter }} förkortningar</small> <b-button class="float-right" size="sm" @click="exportSTTylus(standard.value)">Exportera</b-button>
+              </b-col>
+            </b-row>
+          </b-list-group-item>
+          <b-list-group-item v-for="addon in addonLists" v-bind:key="addon.value">
+            <b-row>
+              <b-col cols="4">
+                {{ addon.text }} 
+              </b-col>
+              <b-col>
+                <span  style="font-size: 1.2em;"><b-badge size="md">{{ addon.value.split("-")[0] }}</b-badge></span>
+              </b-col>
+              <b-col>
+                <small>{{ addon.counter }} förkortningar</small>
+                <b-button class="float-right" size="sm" @click="exportSTTylus(standard.value)">Exportera</b-button>
+
+              </b-col>
+              </b-row>
+            </b-list-group-item>
+          </b-list-group>
+        </div>
+        <div v-if="to != 'sttylus'">
         <b-form @change="listenToEvent" @submit.prevent="submitExport">
           <b-form-radio-group v-model="exportForm.standard" :required="to == 'protype'">
             <b-list-group>
               <b-list-group-item v-for="standard in standardLists" v-bind:key="standard.value">
                 <b-row>
                   <b-col cols="9">
-                    <b-form-radio :value="standard.value">{{ standard.text }}</b-form-radio>
+                    <b-form-radio :value="standard.value"><b>{{ standard.text }}</b></b-form-radio>
                   </b-col>
                   <b-col>
                     <small>{{ standard.counter }} förkortningar</small>
@@ -104,10 +138,21 @@
           <hr />
           <b-button type="submit">Exportera</b-button>
         </b-form>
+        </div>
       </div>
       <div v-if="!confirm">
         <div v-if="from == 'sttylus'">
           <h3>Importera från STTylus</h3>
+          <b-form @submit.prevent="importSTTylus">
+            Ange listans ID:
+            <b-row>
+              <b-col cols="4">
+                <b-form-input v-model="form.id" />
+              </b-col>
+            </b-row>
+            <br />
+            <b-button type="submit">Hämta</b-button>
+          </b-form>
         </div>
 
         <div v-if="from == 'protype'">
@@ -177,18 +222,24 @@ förkortning=fras"
       </div>
       <div v-if="confirm || safe">
         <b-row>
-          <b-col cols="7">
+          <b-col cols="8">
             <h3 v-if="safe">Redigera importerade förkortningar</h3>
             <h3 v-else>Kontrollera importerade förkortningar</h3>
           </b-col>
           <b-col>
-            <b-badge variant="warning" v-if="nConflicts > 0">
-              Det finns
-              <span v-if="nConflicts == 1">ett</span>
-              <span v-else>{{ nConflicts }}</span> fel eller
-              <span v-if="nConflicts == 1">konflikt</span>
-              <span v-else>konflikter</span> att korrigera
-            </b-badge>
+          <span v-if="nConflicts > 0">
+              <b-badge class="float-right" variant="warning">
+                Det finns
+                <span v-if="nConflicts == 1">ett</span>
+                <span v-else>{{ nConflicts }}</span> fel eller
+                <span v-if="nConflicts == 1">konflikt</span>
+                <span v-else>konflikter</span> att korrigera
+              </b-badge>
+            </span>
+            <span class="float-right">
+                Ersätt alla 
+                <b-form-checkbox class="pt-1" inline model="replaceAll" @change="changeOverwriteAll"></b-form-checkbox>
+            </span>
           </b-col>
           <b-col>
             <b-pagination
@@ -201,82 +252,90 @@ förkortning=fras"
           </b-col>
         </b-row>
         <b-form autocomplete="off">
-          <b-table
-            :perPage="10"
-            :currentPage="currentPage"
-            :items="abbs"
-            :fields="abbFields"
-            :sort-by="sortBy"
-            :sort-desc="sortDesc"
-            @sort-changed="sortChanged"
+          <div
+            style="height: 68vh !important; overflow-y: auto;"
           >
-            <template v-slot:cell(abb)="row">
-              <div style="min-width: 110px; max-width: 100px; white-space: normal">
+            <b-table
+              small
+              responsive
+              hover
+              striped
+              :perPage="10"
+              :currentPage="currentPage"
+              :items="abbs"
+              :fields="abbFields"
+              :sort-by="sortBy"
+              :sort-desc="sortDesc"
+              @sort-changed="sortChanged"
+            >
+              <template v-slot:cell(abb)="row">
+                <div style="min-width: 110px; max-width: 100px; white-space: normal">
+                  <b-form-input
+                    v-model="row.item.abb"
+                    size="md"
+                    class="mb-0"
+                    @change="onUpdateAbb(row.item)"
+                    :state="row.item.validabb"
+                  />
+                </div>
+              </template>
+              <template v-slot:cell(word)="row">
                 <b-form-input
-                  v-model="row.item.abb"
+                  v-model="row.item.word"
                   size="md"
                   class="mb-0"
-                  @change="onUpdateAbb(row.item)"
-                  :state="row.item.validabb"
+                  @change="onUpdateWord(row.item)"
+                  :state="row.item.validword"
                 />
-              </div>
-            </template>
-            <template v-slot:cell(word)="row">
-              <b-form-input
-                v-model="row.item.word"
-                size="md"
-                class="mb-2"
-                @change="onUpdateWord(row.item)"
-                :state="row.item.validword"
-              />
-            </template>
-            <template v-slot:cell(issue)="row">
-              <span v-if="debug">
-                <b-button size="sm" :id="'popover' + row.item.id">?</b-button>
-                <b-popover :target="'popover' + row.item.id" triggers="hover" placement="left">
-                  validabb: {{ row.item.validabb }}
-                  <br />
-                  validword: {{ row.item.validword }}
-                  <br />
-                  dup: {{ row.item.notduplicate }}
-                  <br />
-                  issue: {{ row.item.issue }}
-                  <br />
-                </b-popover>
-              </span>
-              <span v-if="row.item.notduplicate != null">
-                <b-badge variant="warning" v-if="!row.item.notduplicate">Konflikt</b-badge>
-                <br />
-                <span v-if="row.item.issue == '__textduplicate__'">Dubblett i textfil</span>
-                <span v-else-if="row.item.issue == '__importduplicate__'">Dubblett vid importering</span>
-                <span v-else>
-                  <b-form-checkbox
-                    v-model="row.item.overwrite"
-                    @change="changeOverwriteAbb(row.item)"
-                  >
-                    Ersätt
-                    <i>{{ row.item.issue }}</i>
-                  </b-form-checkbox>
+              </template>
+              <template v-slot:cell(issue)="row">
+                <span v-if="debug">
+                  <b-button size="sm" :id="'popover' + row.item.id">?</b-button>
+                  <b-popover :target="'popover' + row.item.id" triggers="hover" placement="left">
+                    validabb: {{ row.item.validabb }}
+                    <br />
+                    validword: {{ row.item.validword }}
+                    <br />
+                    dup: {{ row.item.notduplicate }}
+                    <br />
+                    issue: {{ row.item.issue }}
+                    <br />
+                  </b-popover>
                 </span>
-              </span>
-              <span
-                v-if="
-                  row.item.notduplicate == null &&
-                  (row.item.validword != null || row.item.validabb != null)
-                "
-              >
-                <b-badge variant="danger">Fel format</b-badge>
-                <br />
-                <span v-if="row.item.issue == '__formaterror__'">Fel format vid importering</span>
-                <span v-else>{{ row.item.issue }}</span>
-              </span>
-            </template>
-            <template v-slot:cell(delete)="row">
-              <b-button class="float-right" variant="danger" @click="onDeleteAbb(row.item)">
-                <b-icon icon="trash" />
-              </b-button>
-            </template>
-          </b-table>
+                <span v-if="row.item.notduplicate != null">
+                  <b-badge variant="warning" v-if="!row.item.notduplicate">Konflikt</b-badge>
+                  <br />
+                  <span v-if="row.item.issue == '__textduplicate__'">Dubblett i textfil</span>
+                  <span v-else-if="row.item.issue == '__importduplicate__'">Dubblett vid importering</span>
+                  <span v-else>
+                    <b-form-checkbox
+                      v-model="row.item.overwrite"
+                      @change="changeOverwriteAbb(row.item)"
+                    >
+                      Ersätt
+                      <i>{{ row.item.issue }}</i>
+                    </b-form-checkbox>
+                  </span>
+                </span>
+                <span
+                  v-if="
+                    row.item.notduplicate == null &&
+                    (row.item.validword != null || row.item.validabb != null)
+                  "
+                >
+                  <b-badge variant="danger">Fel format</b-badge>
+                  <br />
+                  <span v-if="row.item.issue == '__formaterror__'">Fel format vid importering</span>
+                  <span v-else>{{ row.item.issue }}</span>
+                </span>
+              </template>
+              <template v-slot:cell(delete)="row">
+                <b-button class="float-right" variant="danger" @click="onDeleteAbb(row.item)">
+                  <b-icon icon="trash" />
+                </b-button>
+              </template>
+            </b-table>
+          </div>
           <b-button @click="resolveConflicts(null)">Kontrollera fel/konflikter</b-button>
         </b-form>
       </div>
@@ -301,6 +360,7 @@ export default {
       output: "",
       debug: false,
       sources: [
+        { value: "sttylus", text: "från STTylus", disabled: false },
         { value: "protype", text: "från ProType", disabled: false },
         { value: "textontop", text: "från TextOnTop", disabled: false },
         { value: "illumitype", text: "från IllumiType", disabled: false },
@@ -310,6 +370,7 @@ export default {
       targets: [
         { value: "textontop", text: "till TextOnTop", disabled: false },
         { value: "protype", text: "till Protype", disabled: false },
+        { value: "sttylus", text: "till STTylus", disable: false },
         { value: "textfile", text: "till textfil", disabled: true },
       ],
       from: "dontImport",
@@ -326,8 +387,10 @@ export default {
       confirm: false,
       conflicts: true,
       nConflicts: -1,
+      replaceAll: false,
       form: {
         file: null,
+        id: "",
       },
       sortBy: "issue",
       sortDesc: true,
@@ -339,17 +402,20 @@ export default {
           label: "Förkortning",
           sortable: true,
           thStyle: { width: "10%" },
+          tdClass: [ "conflictTableCell" ]
         },
         {
           key: "word",
           label: "Text/Fras",
           sortable: true,
-          thStyle: { textAlign: "center", width: "60%" },
+          thStyle: { textAlign: "center", width: "50%" },
+          tdClass: [ "conflictTableCell" ]
         },
         {
           key: "issue",
           label: "Fel/Konflikt",
           sortable: true,
+          tdClass: [ "conflictInfo", "conflictTableCell" ]
           /*          thStyle: { textAlign: "center", width: "30%" },
 
           tdClass: "text-center",
@@ -360,6 +426,7 @@ export default {
           label: "Ta bort",
           sortable: false,
           thStyle: { textAlign: "right" },
+          tdClass: [ "conflictTableCell" ]
         },
       ],
       lists: [],
@@ -400,10 +467,37 @@ export default {
       }).map(addon => {
         return { value: addon.id, text: addon.name, counter: addon.counter }
       })
+    },
+    abbsToConfirm() {
     }
   },
   methods: {
     listenToEvent(value) {
+    },
+    importSTTylus(short_id) {
+      this.$toast.info("Försöker hämta lista med kort-ID:" + this.form.id)
+      api.importSTTylus(this.form.id)
+      .then(resp => {
+        this.$toast.info("Hämtar listan...")
+        this.confirm = true;
+        this.populateAbbs(resp.data.abbs);
+      })
+    },
+    exportSTTylus(list) {
+      this.$toast.info("List:"+ list)
+      api.getList(list)
+      .then(resp => {
+        api.exportSTTylus(resp.data)
+        .then(resp => {
+          this.$toast.success("Listan går att importera online/offline med ID-numret\n" + list.id)
+        })
+        .catch(err => {
+          this.$toast.warning("Listan kunde inte exporteras:" + err, { duration: 5000})
+        })
+      })
+      .catch(err => {
+        this.$toast.error("Något gick fel:" + err, { duration: 5000})
+      })
     },
     submitExport() {
       if (this.exportForm.standard == "" && this.exportForm.addons.length == 0) {
@@ -457,6 +551,14 @@ export default {
       this.abbs.splice(i, 1);
       this.resolveConflicts();
     },
+    changeOverwriteAll(val) {
+      console.log(this.abbs)
+      this.replaceAll = val
+      this.abbs = this.abbs.map(a => { 
+        a.overwrite = val
+        return a
+      })
+    },
     changeFrom(value) {
       switch (this.from) {
         case "dontImport":
@@ -471,7 +573,7 @@ export default {
           this.getSharedAbbs(true);
           break;
         case "sttylus":
-          this.safe = true;
+          this.safe = false;
           break;
       }
     },
@@ -527,7 +629,9 @@ export default {
         }
       }
     },
-    sortChanged(val) { },
+    sortChanged(val) { 
+
+    },
     uploadProType() {
       let data = new FormData();
       data.append("file", this.form.file);
@@ -716,6 +820,12 @@ export default {
     },
   },
   mounted() {
+    this.$nextTick(() => {
+      setTimeout(() => { this.from = "sttylus"}, 500);
+    })
+    this.$nextTick(() => {
+      setTimeout(() => { this.to = "dontExport"}, 125);
+    })
     this.addEventListeners();
     this.getSharedAbbs(true);
     api.getUserLists().then((resp) => {
@@ -730,7 +840,12 @@ export default {
 </script>
 <style scoped>
 ::v-deep .table > tbody > tr > td {
-  padding: 0.3em;
-  padding-top: 0.7em;
+  padding: 0.1em;
+  padding-top: 0.3em;
+}
+
+::v-deep .conflictInfo {
+  white-space: nowrap;
+  padding: 0em !important;
 }
 </style>

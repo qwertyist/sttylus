@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
 
@@ -27,25 +28,34 @@ func getEnvVariables(fileName string) *envVariables {
 
 	log.Printf("Running build #%s\n", os.Getenv("STTYLUS_BUILD"))
 	port := ":" + os.Getenv("STTYLUS_PORT")
-	db := os.Getenv("STTYLUS_DB")
-	dbFileName := os.Getenv("STTYLUS_DB_FILENAME")
 	serverURL := os.Getenv("STTYLUS_SERVER_URL")
 	globalStandard := os.Getenv("STTYLUS_GLOBAL_STANDARD")
 
 	mode := os.Getenv("STTYLUS_MODE")
+
+	db := os.Getenv("STTYLUS_DB")
+	dbFileName := os.Getenv("STTYLUS_DB_FILENAME")
+	if dbFileName == "" {
+		dbFileName = "./sttylus.db"
+	}
+
+	if mode == "desktop" {
+		appData, err := os.UserConfigDir()
+		fmt.Println(err)
+		if err == nil {
+			dbFileName = appData + "/STTylus/sttylus.db"
+		}
+	}
+
 	version := os.Getenv("STTYLUS_VERSION")
 	updateURL := os.Getenv("STTYLUS_UPDATE_URL")
 
 	if port == ":" {
-		port = ":80"
+		port = ":14411"
 	}
 
 	if db == "" {
 		db = "boltdb"
-	}
-
-	if dbFileName == "" {
-		dbFileName = "./sttylus.db"
 	}
 
 	if serverURL == "" {

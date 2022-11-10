@@ -1,5 +1,5 @@
 {
-  "name": "sttylus",
+  "name": "sttylus-loader",
   "version": "0.8.2",
   "main": "dist/main/index.cjs",
   "author": "David Johansson",
@@ -80,5 +80,17 @@
     "nw-builder": "^3.7.4",
     "request": "^2.88.2",
     "vue-swatches": "^2.1.1"
-  }
+  },
+  "description": "Full-fledged suite for typing really fast for the people who need it the most.",
+  "directories": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/qwertyist/sttylus.git"
+  },
+  "bugs": {
+    "url": "https://github.com/qwertyist/sttylus/issues"
+  },
+  "homepage": "https://github.com/qwertyist/sttylus#readme"
 }

@@ -22,8 +22,12 @@ const cache = setupCache({
 function createAxiosInstance() {
   if (import.meta.env.VITE_STTYLUS_MODE != "desktop") {
 //    console.log("Axios instance points to production server:\n", import.meta.env.VITE_STTYLUS_BACKEND + "/api2")
+    let api = "/api2"
+    if (import.meta.env.VITE_STTYLUS_DEBUG == "true"){
+      api = "/api"
+    }
     return axios.create({
-      baseURL: import.meta.env.VITE_STTYLUS_BACKEND + "/api2",
+      baseURL: import.meta.env.VITE_STTYLUS_BACKEND + api,
       headers: {
         'Cache-Control': 'no-cache',
         common: {
@@ -78,6 +82,9 @@ export default {
   },
   getLists(listIDs) {
     return HTTP.post("/abbs/lists", { list_ids: listIDs })
+  },
+  filterAbbs(ctx) {
+    return HTTP.post("/abbs/filter", ctx)
   },
   getUserLists() {
     return HTTP.get("/abbs/lists", { cache: { ignoreCache: true, identifer: "user_lists" } })
@@ -183,6 +190,13 @@ export default {
   },
   uploadTxt(abbs) {
     return HTTP.post("/abbs/upload/txt", abbs)
+  },
+  importSTTylus(short_id) {
+    return HTTP.get("/abbs/public/" + short_id)
+  },
+  exportSTTylus(list) {
+    console.log("api got list:", list)
+    return HTTP.post("/abbs/public/" + list.id, list )
   },
   exportLists(target, lists) {
     return HTTP.post("/abbs/export/" + target, { user: store.state.userData.name, standard: lists.standard, addon: lists.addons }, { responseType: "blob", cache: { ignoreCache: true } })

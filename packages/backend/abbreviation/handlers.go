@@ -16,6 +16,7 @@ import (
 type AbbHandler interface {
 	Abbreviate(w http.ResponseWriter, r *http.Request)
 	Lookup(w http.ResponseWriter, r *http.Request)
+	FilterAbbs(w http.ResponseWriter, r *http.Request)
 
 	GetAbb(w http.ResponseWriter, r *http.Request)
 	GetAbbs(w http.ResponseWriter, r *http.Request)
@@ -54,6 +55,8 @@ type AbbHandler interface {
 	ImportProType(w http.ResponseWriter, r *http.Request)
 
 	ExportLists(w http.ResponseWriter, r *http.Request)
+	GetPublicList(w http.ResponseWriter, r *http.Request)
+	CreatePublicList(w http.ResponseWriter, r *http.Request)
 }
 
 type abbHandler struct {
@@ -82,6 +85,7 @@ func Endpoints(r *mux.Router, h AbbHandler) {
 
 	r.HandleFunc("/api/abbs/lists", h.GetLists).Methods("POST")
 	r.HandleFunc("/api/abbs/lists", h.GetUserLists).Methods("GET")
+	r.HandleFunc("/api/abbs/filter", h.FilterAbbs).Methods("POST")
 	r.HandleFunc("/api/abbs/standardlist/{id}", h.CopyStandardList).Methods("GET")
 	r.HandleFunc("/api/abbs/list/{id}", h.GetList).Methods("GET")
 	r.HandleFunc("/api/abbs/list", h.CreateList).Methods("POST")
@@ -110,6 +114,8 @@ func Endpoints(r *mux.Router, h AbbHandler) {
 	r.HandleFunc("/api/abbs/import/{listID}", h.ImportTo).Methods("POST")
 	r.HandleFunc("/api/abbs/conflicts/{listID}", h.CheckForConflicts).Methods("POST")
 	r.HandleFunc("/api/abbs/export/{target}", h.ExportLists).Methods("POST")
+	r.HandleFunc("/api/abbs/public/{id}", h.CreatePublicList).Methods("POST")
+	r.HandleFunc("/api/abbs/public/{short_id}", h.GetPublicList).Methods("GET")
 
 }
 
@@ -757,4 +763,70 @@ func (h *abbHandler) CheckForConflicts(w http.ResponseWriter, r *http.Request) {
 
 func (h *abbHandler) ImportProType(w http.ResponseWriter, r *http.Request) {
 
+}
+
+func (h *abbHandler) GetPublicList(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	short_id := vars["short_id"]
+	log.Println("short_id:", short_id)
+	publicList, err := h.abbService.GetPublicList(short_id)
+
+	if err != nil {
+		w.WriteHeader(http.StatusNotFound)
+		w.Write([]byte("no public list with ID corresponding to short_id"))
+		return
+	}
+
+	if publicList.Name == "" {
+		publicList, err = h.abbService.GetList(publicList.ID)
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			w.Write([]byte("get public list metadata failed"))
+			return
+		}
+	}
+
+	abbs, err := h.abbService.GetAbbs(publicList.ID)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte("get public list abbs failed"))
+		return
+	}
+
+	if len(abbs) == 0 {
+		w.WriteHeader(http.StatusNoContent)
+		return
+	}
+
+	publicListObject := map[string]interface{}{
+		"metadata": publicList,
+		"abbs":     abbs,
+	}
+
+	resp, err := json.Marshal(publicListObject)
+
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte("couldn't marshal public list "))
+		return
+	}
+
+	w.Write(resp)
+}
+
+func (h *abbHandler) CreatePublicList(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id := vars["id"]
+	var list List
+	log.Println(id)
+	decoder := json.NewDecoder(r.Body)
+
+	err := decoder.Decode(&list)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		log.Println("couldn't decode body", err)
+		return
+	}
+
+	h.abbService.CreatePublicList(id, &list)
 }

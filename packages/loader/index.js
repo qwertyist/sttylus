@@ -5,6 +5,20 @@ const compare = require("compare-versions");
 const AdmZip = require("adm-zip");
 const fs = require("fs");
 
+const debug = process.env.DEBUG || false
+
+let appData = process.env.APPDATA + "/STTylus"
+if (process.platform != "windows") {
+  appData = process.env.HOME + "/.config/STTylus"
+}
+
+console.log("Dina inställningar sparas i:", appData)
+
+if (!fs.existsSync(appData)) {
+  fs.mkdirSync(appData)
+}
+
+
 mainWindowOptions = {
     width: 1200,
     height: 700,
@@ -18,11 +32,13 @@ updateWindowOptions = {
 
 let pid = 0;
 
-chrome.developerPrivate.openDevTools({
-    renderViewId: -1,
-    renderProcessId: -1,
-    extensionId: chrome.runtime.id
-})
+if (!debug) { 
+  chrome.developerPrivate.openDevTools({
+      renderViewId: -1,
+      renderProcessId: -1,
+      extensionId: chrome.runtime.id
+  })
+}
 
 
 function checkForUpdates() {
@@ -78,6 +94,14 @@ var path = "./backend.exe"
 pid = -1
 function loadBackend() {
     const backend = spawn(path)
+    backend.on("error", e => { 
+      console.log("kunde inte starta backend", e)
+      if (path == "./backend") {
+        return 
+      }
+      path = "./backend"
+      loadBackend()
+    })
     backend.stdout.on("data", (data) => {
         console.log(`stdout: ${data}`)
     })
@@ -91,22 +115,24 @@ function loadBackend() {
     return backend.pid
 }
 
-pid = loadBackend()
-console.log("Backend loaded with pid:", pid)
+if(!debug) {
+  pid = loadBackend()
+  console.log("Backend loaded with pid:", pid)
+}
 
 function main() {
-    nw.Window.open("index.html", mainWindowOptions, function(win) {
-        win.on("close", () => {
-            console.log("Close backend first?")
-            win.hide()
-            nw.Window.getAll(windowList => { windowList[1].close(true) })
+  nw.Window.open("index.html", mainWindowOptions, function(win) {
+      win.on("close", () => {
+          console.log("Close backend first?")
+          win.hide()
+          nw.Window.getAll(windowList => { windowList[1].close(true) })
 
-            if(pid != -1) {
-                process.kill(pid)
-            }
-            win.close(true)
-        })
-    })
+          if(pid != -1) {
+              process.kill(pid)
+          }
+          win.close(true)
+      })
+  })
 }
 
 nw.App.registerGlobalHotKey(new nw.Shortcut({

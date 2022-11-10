@@ -131,7 +131,7 @@
                 v-model="currentPage"
                 size="sm"
                 class="float-right"
-                :total-rows="abbs.length"
+                :total-rows="viewedList.counter"
                 :per-page="perPage"
                 aria-controls="abbs"
               />
@@ -148,12 +148,14 @@
             hover
             small
             responsive
-            :items="abbs"
+            :items="abbProvider"
             :fields="abbFields"
+            primary-key="id"
             :filter="filter"
             :filter-function="searchAbb"
             :per-page="perPage"
             :current-page="currentPage"
+            no-local-sorting
             :sort-by="sortBy"
             sort-desc
             @sort-changed="sortChanged"
@@ -242,6 +244,7 @@ import EditList from "../modals/EditList.vue";
 import RemoveList from "../modals/RemoveList.vue";
 
 import api from "../../api/api.js";
+import abbs from "../../api/abbs.js";
 export default {
   name: "AbbListsView",
   components: { AddList, RemoveList, EditList },
@@ -323,12 +326,14 @@ export default {
   },
   mounted() {
     this.userAbbs = new Map();
+    this.getLists();
     this.selectedAddons = this.$store.state.settings.selectedLists.addon;
 
     if (!Array.isArray(this.selectedAddons)) {
       this.selectedAddons = [];
       this.$store.commit("setSelectedAddons", this.selectedAddons);
     }
+
     window.addEventListener("scroll", this.onScrollAbbs);
     EventBus.$on("changeStandardList", this.quickSelectStandard )
     EventBus.$on("createdAbb", (abb) => {
@@ -343,7 +348,6 @@ export default {
     EventBus.$on("removedList", this.afterRemovedList);
     EventBus.$on("updatedList", this.afterUpdatedList);
     EventBus.$on("setModalOpen", this.onShow);
-    this.getLists(true);
   },
   beforeDestroy() {
     window.removeEventListener("scroll", this.onScrollAbb);
@@ -383,10 +387,9 @@ export default {
       this.$bvModal.show("editList");
     },
     viewList(list) {
-      console.log("view list:", list)
       this.loading = true
-      this.perPage = 25;
       if (!list) {
+        this.$toast.info("Ingen lista vald", {duration: 1500})
         this.viewedList = this.noListSelected;
       } else {
         if (list.name == undefined) {
@@ -395,7 +398,8 @@ export default {
             list = this.noListSelected;
           }
         }
-        this.viewedList = list;
+
+        this.viewedList = list
         if (
           [this.selectedStandard]
             .concat(this.selectedAddons)
@@ -415,11 +419,14 @@ export default {
             );
           }
         }
-        
-        if (this.viewedList.id !== undefined) {
-          this.getAbbs(list.id);
-        }
+
       }
+
+        if (this.viewedList.id !== undefined) {
+          this.$toast.info("Laddar förkortningar")
+          this.getAbbs(list.id);
+
+        }
     },
     sortChanged(value) {
       this.sortBy = value.sortBy;
@@ -561,22 +568,20 @@ export default {
         */
     },
     getLists() {
-      api.getUserLists().then((response) => {
-        if (response.data == null) {
+      api.getUserLists().then(resp => {
+        if (resp.data == null) {
           return;
         }
-        if (response.data !== null) {
-          this.lists = response.data;
-          let standard = response.data.filter((l) => {
+        if (resp.data !== null) {
+          this.lists = resp.data;
+          let standard = resp.data.filter((l) => {
             if (l.type == 0) {
               return l;
             }
-            /*
             if (l.type == 2) {
               l.name = "🌎 " + l.name;
               return l;
             }
-            */
           });
 
           standard = standard.sort((a, b) => {
@@ -584,16 +589,14 @@ export default {
           })
           this.standardLists = standard
 
-          this.addonLists = response.data.filter((l) => {
+          this.addonLists = resp.data.filter((l) => {
             if (l.type == 1) {
               return l;
             }
-            /*
             if (l.type == 3) {
               l.name = "🌎 " + l.name;
               return;
             }
-            */
           });
         }
 
@@ -602,31 +605,24 @@ export default {
           return
         }
 
-        this.abbFetcher();
-
+        this.viewList(this.standardLists[0])
       });
     },
-    getAbbs(listID) {
-      this.abbs = this.userAbbs.get(listID)
-      this.loading = false
+    abbProvider(ctx, callback) {
+      ctx.listId = this.viewedList.id
+      if (ctx.listId != "" || ctx.listId == undefined) {
+        api.filterAbbs(ctx)
+        .then(resp => {
+          callback(resp.data)
+        })
+        .catch(err => {
+          this.$toast.warning("Kunde inte ladda förkortningar", {duration: 5000})
+        })
+      }
     },
-    abbFetcher() {
-      let promises = []
-      this.lists.forEach(list => {
-        promises.push(
-          api.getAbbs(list.id).then(resp => {
-            if (resp.data == undefined) {
-              this.userAbbs.set(list.id, [])
-              return
-            }
-            this.userAbbs.set(list.id, resp.data)
-          })
-          .catch(e => { console.log("couldn't fetch all user abbs:", e)})
-        )
-      })
-      Promise.all(promises).then(() => {
-        this.viewList(this.selectedStandard)
-      })
+    getAbbs(listID) {
+      this.$root.$emit('bv::refresh::table', 'abbs')
+      this.loading = false
     },
     onScrollAbbs({target: { scrollTop, clientHeight, scrollHeight}}) {
       if(scrollTop + clientHeight >= scrollHeight) {

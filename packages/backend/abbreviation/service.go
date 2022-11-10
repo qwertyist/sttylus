@@ -56,6 +56,8 @@ type AbbService interface {
 	CheckForConflicts(listID string, abbs []*Abbreviation) ([]conflict, error)
 	CreateToTExport(standard string, addon []string) (textOnTopExport, error)
 	CreateProtypeExport(user, standard string, addon []string) error
+	GetPublicList(short_id string) (*List, error)
+	CreatePublicList(id string, list *List) error
 
 	TouchAllAbbs(userIDs []string)
 }
