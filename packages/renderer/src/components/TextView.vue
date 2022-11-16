@@ -109,6 +109,8 @@ export default {
       EventBus.$on("createSession", this.createSession);
       EventBus.$on("leaveRemoteSession", this.leaveSession)
       EventBus.$on("sendSessionData", this.sendSessionData)
+      EventBus.$on("sendReadySignal", this.sendReadySignal);
+      EventBus.$on("recvReadySignal", this.recvReadySignal);
 
       EventBus.$on("connectLocal", this.connectLocal)
       EventBus.$on("disconnectLocal", this.disconnectLocal)
@@ -136,6 +138,9 @@ export default {
       EventBus.$off("createSession");
       EventBus.$off("connectLocal")
       EventBus.$off("disconnectLocal")
+      EventBus.$off("sendSessionData")
+      EventBus.$off("sendReadySignal")
+      EventBus.$off("recvReadySignal")
       EventBus.$off("websocketConnected")
       EventBus.$off("websocketClosed")
       EventBus.$off("websocketDropped")
@@ -179,24 +184,40 @@ export default {
         
     },
     clientConnected(rx) {
-      if (!rx.msg) return;
-      if (rx.interpreter) {
-        this.$toast.success("En tolk anslöt")
-        return
+      switch (rx.msg) {
+        case "interpreter":
+          this.$toast.success("En tolk anslöt")
+          return
+        case "user":
+          this.$toast.success("En tolkanvändare anslöt")
+          return
+        default:
+          return
       }
-      this.$toast.success("En tolkanvändare anslöt")
     },
     clientDisconnected(rx) {
-      if (!rx.msg) return;
-      if (rx.interpreter) {
-        this.$toast.success("En tolk kopplade ner")
-        return
+      switch (rx.msg) {
+        case "interpreter":
+          this.$toast.success("En tolk kopplade ner")
+          return
+        case "user":
+          this.$toast.success("En tolkanvändare kopplade ner")
+          return
+        default:
+          return
       }
-      this.$toast.success("En tolkanvändare kopplade ner")
     },
     sendSessionData(data) {
       console.log("should send session data")
       this.websocket.sendSessionData(data)
+    },
+    recvReadySignal() {
+      this.$toast.info("Kollega redo att ta över")
+    },
+    sendReadySignal() {
+      if(this.websocket != null) {
+        this.websocket.sendReadySignal();
+      }
     },
     startPresentation(child) {
       this.presentation = true

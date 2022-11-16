@@ -66,8 +66,8 @@ export default {
       connectedClients: 0,
       query: "",
       showRemote: false,
-
       secondary: false,
+      toast: false,
     };
   },
   computed: {
@@ -141,19 +141,7 @@ export default {
     },
     addAbb(word) {
       this.$store.commit("setSelectedWord", word);
-      let currentLists = this.$store.state.settings.selectedLists;
-      let targetList = this.$store.state.targetList.id;
-      if (
-        [currentLists.standard]
-          .concat(currentLists.addon)
-          .indexOf(targetList) == -1
-      ) {
-        this.$toast.warning(
-          "Du kan bara lägga till förkortningar i listor du valt."
-        );
-      } else {
-        this.$bvModal.show("addAbb");
-      }
+      this.$bvModal.show("addAbb");
     },
     showSupport() {
       this.$bvModal.show("support");
@@ -166,7 +154,7 @@ export default {
     }
   },
   mounted() {
-
+    this.toast = false
     this.addEventListeners();
   },
   beforeDestroy() {

@@ -14,7 +14,7 @@ const (
 
 type Session struct {
 	ID       string    `json:"id" validate:"required,alphanum"`
-	Name     string    `json:"name" validate:"required,alphanumunicode`
+	Name     string    `json:"name" validate:"required,alphanumunicode"`
 	From     time.Time `json:"from" validate:"required"`
 	To       time.Time `json:"to" validate:"required"`
 	Password string    `json:"password,omitempty" validate:"omitempty,alphanumunicode"`
@@ -37,9 +37,9 @@ type Session struct {
 type ClientType int
 
 type User struct {
-	ID          string `json:"id" validate: "required, alphanum"`
-	Name        string `json:"name" validate: "required"`
-	Email       string `json:"email" validate: "email"`
+	ID          string `json:"id" validate:"required, alphanum"`
+	Name        string `json:"name" validate:"required"`
+	Email       string `json:"email" validate:"email"`
 	Phone       string `json:"phone"`
 	Creator     bool   `json:"creator"`
 	Description string `json:"description"`

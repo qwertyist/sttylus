@@ -203,7 +203,8 @@ export default class keyboard extends Keyboard {
         //F3
         this.addBinding({
             key: 114,
-            handler: function (range, context) {
+            handler: function () {
+              EventBus.$emit("sendReadySignal")
             }
         })
         //F4

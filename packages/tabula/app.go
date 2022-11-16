@@ -45,16 +45,22 @@ func (a *App) serveWebsocket(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println(err)
 	}
-	log.Println("ID:", string(p))
+	var interpreter bool
+
+	if string(p) == "interpreter" {
+		interpreter = true
+	}
+
 	if a.pools[id] == nil {
 		a.CreatePool(id)
 		conn.WriteJSON(ws.Message{Type: ws.CreateSession})
 	}
 
 	client := &ws.Client{
-		ID:   string(p),
-		Conn: conn,
-		Pool: a.pools[id],
+		ID:          string(p),
+		Interpreter: interpreter,
+		Conn:        conn,
+		Pool:        a.pools[id],
 	}
 	a.pools[id].Register <- client
 	client.Read()

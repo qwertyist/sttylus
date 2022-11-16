@@ -17,6 +17,7 @@ const mt = {
     RXAbb: 25,
     TXManuscript: 26,
     RXManuscript: 27,
+    ReadySignal:  28,
     RetrieveDoc: 30,
     Loss: 500,
     Ping: 200,
@@ -201,6 +202,9 @@ export default class wsConnection {
                 case this.mt.RXAbb:
                     EventBus.$emit("sharedAbb", rx.abb)         
                     break
+              case this.mt.ReadySignal:
+                    EventBus.$emit("recvReadySignal")
+                    break
             }
         }
         //this.quill.updateContents()
@@ -242,6 +246,12 @@ export default class wsConnection {
         })
         self.websocket.send(sessionDataMessage)
     }   
+    sendReadySignal() {
+      let readySignalMessage = JSON.stringify({
+            type: this.mt.ReadySignal,
+      })
+      self.websocket.send(readySignalMessage)
+    }
 
     createsession() {
         console.log("version:", this.quill.version)
@@ -249,7 +259,7 @@ export default class wsConnection {
         waitForConnection(self.websocket, function () { self.websocket.send(createMessage) })
     }
     joinsession() {
-        let JoinMessage = JSON.stringify({ type: this.mt.JoinSession, interpreter: true })
+        let JoinMessage = JSON.stringify({ type: this.mt.JoinSession, msg:"interpreter"})
         console.log("join:", JoinMessage)
         waitForConnection(self.websocket, function () { self.websocket.send(JoinMessage) })
 

@@ -159,7 +159,7 @@ export default {
   destroyed() { },
 
   beforeDestroy() {
-    window.removeEventListener("keydown", this.openSettings);
+    window.removeEventListener("keydown", this.hotkeys);
     EventBus.$off("reloadEditor");
     EventBus.$off("toggleNav");
     EventBus.$off("closeNav");

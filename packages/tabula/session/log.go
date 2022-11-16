@@ -8,11 +8,12 @@ import (
 	"net/http"
 )
 
+const debug = false
+
 func printRequestBody(r *http.Request) {
 	if !debug {
-		return 
+		return
 	}
-k$
 	var bodyBytes []byte
 	var err error
 

@@ -14,6 +14,11 @@ export default {
     Navigation,
     UserSettings,
   },
+  data() { 
+    return {
+      toast: false
+    }
+  },
   mounted() {
     window.addEventListener("keydown", this.hotKeys);
   },
@@ -36,9 +41,14 @@ export default {
             .concat(currentLists.addon)
             .indexOf(targetList) == -1
         ) {
-          this.$toast.warning(
-            "Du kan bara lägga till förkortningar i listor du valt."
-          );
+          if (!this.toast) {
+            this.toast = true
+            this.$toast.warning(
+              "Du kan bara lägga till förkortningar i listor du valt.", {
+                duration: 3000,
+                onDismiss: () => { this.toast = false },
+            });
+          }
         } else {
           this.$bvModal.show("addAbb");
         }

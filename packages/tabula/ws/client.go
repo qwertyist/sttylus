@@ -51,6 +51,7 @@ const (
 	RXAbb                     = 25
 	TXManuscript              = 26
 	RXManuscript              = 27
+	ReadySignal               = 38
 	RetrieveDoc               = 30
 	Ping                      = 200
 	Pong                      = 300
@@ -64,7 +65,6 @@ func (c *Client) messageHandler(msg Message) (*Message, bool) {
 		log.Println("CreateSession")
 		c.Pool.Tabula = collab.NewTabula(collab.Delta{Version: msg.Body.Version, Delta: &msg.Body.Delta})
 		return nil, false
-		break
 	case JoinSession:
 		log.Println("JoinSession:", msg)
 		if c.Pool.Tabula != nil {
@@ -75,6 +75,11 @@ func (c *Client) messageHandler(msg Message) (*Message, bool) {
 			m.Body.Delta = *d.Delta
 			m.Body.Version = d.Version
 			m.Body.Index = d.Index
+			if c.Pool.Started {
+				m.Msg = "started"
+			} else {
+				m.Msg = "waiting"
+			}
 			c.Conn.WriteJSON(m)
 		} else {
 			log.Println("No session exists")
@@ -85,14 +90,16 @@ func (c *Client) messageHandler(msg Message) (*Message, bool) {
 	case LeaveSession:
 		log.Println("LeaveSession:", msg)
 		return &msg, true
-		break
 	case Info:
 		log.Println("Info:", msg)
 		return &msg, true
-		break
 	case TXDelta:
 		//		log.Printf("TXDelta: (version %d) %v", msg.Body.Version, msg.Body.Delta)
 		if c.Pool.Tabula != nil {
+			if !c.Pool.Started {
+				c.Pool.Started = 
+				msg.Msg = "starting"
+			}
 			d := collab.Delta{
 				Version: msg.Body.Version,
 				Delta:   &msg.Body.Delta,
@@ -101,6 +108,7 @@ func (c *Client) messageHandler(msg Message) (*Message, bool) {
 			msg.Body.Version = u.Version
 			msg.Body.Index = u.Index
 			msg.Type = RXDelta
+
 			//c.Pool.Tabula.ToText()
 			return &msg, true
 		} else {
@@ -110,24 +118,20 @@ func (c *Client) messageHandler(msg Message) (*Message, bool) {
 		c.Pool.Tabula.ClearHandler()
 		msg.Type = RXClear
 		return &msg, true
-		break
 	case RXDelta:
 		return nil, false
-		break
 	case TXAbb:
 		msg.Type = RXAbb
 		return &msg, true
-		break
+	case ReadySignal:
+		return &msg, true
 	case RetrieveDoc:
 		return nil, false
-		break
 	case Ping:
 		msg = Message{Type: Pong}
 		return &msg, false
-		break
 	case Pong:
 		return nil, false
-		break
 	}
 	return &msg, true
 }

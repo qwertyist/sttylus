@@ -54,7 +54,8 @@ export default class wsConnection {
         try {
             self.websocket = new WebSocket(endpoint);
         } catch (err) {
-            console.log("Couldn't connect:", err)
+            console.error("tried endpoint", endpoint)
+            console.error("Couldn't connect:", err)
             EventBus.$emit("localConnection", false)
             EventBus.$emit("websocketFailed")
             return
@@ -123,7 +124,7 @@ export default class wsConnection {
         if(self.websocket) {
             if(this.status == "disconnected" || this.status == "pending") {
                 setTimeout(() => {
-                    EventBus.$emit("websocketFailed")
+                    EventBus.$emit("websocketFailed", e)
                 }, 250)
                 return
             }
@@ -171,11 +172,15 @@ export default class wsConnection {
                     console.log("User disconnected")
                     break
                 case this.mt.RXDelta:
+                    if (rx.msg == "starting") {
+                        console.log("NU KÖR VI IGÅNG!")
+                        this.quill.setContents(rx.body.delta, "collab")
+                        this.quill.setSelection(rx.body.index, 0, "collab")
+                        this.quill.version = rx.body.version
+                        this.ready = true
+                        return
+                    }
                     if (this.ready) {
-                        for (var i = 0; i < this.buffer.length; i++) {
-                            console.log(i)
-                            console.log(this.buffer[i])
-                        }
                         if (rx.body.version > this.quill.version) {
                             this.quill.updateContents(rx.body.delta, "collab")
                             this.quill.setSelection(rx.body.index, 0, "collab")
@@ -195,7 +200,18 @@ export default class wsConnection {
                     this.quill.setText("")
                     break
                 case this.mt.RetrieveDoc:
-                    console.log("RetrieveDoc:", rx.body.version, rx.body.delta)
+                    console.log("RetrieveDoc:", rx.body.version, rx.msg, rx.body.delta)
+                    switch (rx.msg) {
+                      case "waiting":
+                        EventBus.$emit("joinedEmptySession")
+                        return
+                      case "started":
+                        EventBus.$emit("joinedRunningSession")
+                        break
+                      default:
+                        break
+                    }
+                
                     this.quill.version = rx.body.version
                     this.quill.setContents(rx.body.delta, "collab")
                     this.quill.setSelection(rx.body.index);

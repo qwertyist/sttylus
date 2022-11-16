@@ -157,9 +157,16 @@ export default {
       api
         .getLists([this.currentLists.standard].concat(this.currentLists.addon))
         .then((resp) => {
+          if (resp.data == null || resp.data == "null") {
+            console.log("addAbb updateLists no result", resp.data)
+            this.form.lists = []
+            return
+          }
           this.form.lists = resp.data;
         })
-        .catch((err) => { });
+        .catch((err) => { 
+          console.error("Couldnt get addAbb lists:", err)
+        });
     },
     onSubmit() {
       let targetListId = null;
@@ -197,6 +204,7 @@ export default {
         });
     },
     nextList() {
+      if (this.form.lists.length < 2) return
       if (this.index < this.form.lists.length - 1) {
         this.index++;
         this.form.selected = this.form.lists[this.index].id;
@@ -219,11 +227,18 @@ export default {
       this.$bvModal.hide("support");
     })
     this.currentLists = this.$store.state.settings.selectedLists;
-    api
-      .getLists([this.currentLists.standard].concat(this.currentLists.addon))
-      .then((resp) => {
-        this.form.lists = resp.data;
-      });
+    api.getLists([this.currentLists.standard].concat(this.currentLists.addon))
+    .then(resp => {
+      if (resp.data == null){
+        this.form.lists = []
+        return
+      }
+      this.form.lists = resp.data;
+    })
+    .catch(err => {
+      console.error("addabb failed to get lists after mounted:", err)
+    
+    })
   },
   beforeDestroy() {
     EventBus.$off("showTextView")

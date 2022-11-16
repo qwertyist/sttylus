@@ -3,8 +3,10 @@
     <slot name="toolbar"></slot>
     <div
       ref="quillContainer"
+      id="quill-container"
       :class="{ 'ql-container': true }"
       :style="settings.font"
+
       spellcheck="false"
     ></div>
   </div>
@@ -26,6 +28,7 @@ export default {
       name: "",
       capitalize: true,
       version: 0,
+      waiting: true,
       settings: {
         font: {
           fontFamily: "Arial",
@@ -82,8 +85,6 @@ export default {
           this.joinSession(id)
           return
         }
-        this.quill.setContents(JSON.parse('{"ops":[{"insert":"Det här är en testbokning för att se hur STTylus distanstolkningar fungerar på olika enheter. "},{"retain":1},{"insert":"\\nSka vi byta?\\nSka vi byta "},{"insert":{"preview":"grejer? "}},{"insert":"\\n"}]}'))
-        this.quill.updateContents()
 
       } else {
         this.$store.commit("setSessionID", "local")
@@ -120,10 +121,11 @@ export default {
       EventBus.$on("sizeChange", this.changeTextSize);
       EventBus.$on("colorChange", this.changeColor);
       EventBus.$on("joinRemoteSession", this.joinSession);
+      EventBus.$on("joinedEmptySession", this.joinedEmptySession)
+      EventBus.$on("joinedRunningSession", this.joinedRunningSession)
       EventBus.$on("createSession", this.createSession);
       EventBus.$on("setSessionData", this.setSessionData)
       EventBus.$on("leaveRemoteSession", this.leaveSession)
-
 
       EventBus.$on("websocketConnected", this.websocketConnected)
       EventBus.$on("websocketClosed", this.websocketClosed)
@@ -139,6 +141,8 @@ export default {
       EventBus.$off("sizeChange");
       EventBus.$off("colorChange");
       EventBus.$off("joinRemoteSession");
+      EventBus.$off("joinedEmptySession")
+      EventBus.$off("joinedRunningSession")
       EventBus.$off("createSession");
       EventBus.$off("setSessionData")
 
@@ -165,11 +169,22 @@ export default {
       this.websocket = new wsConnection(this.quill, this.$collab + "conn/" + id);
 
     },
+    joinedEmptySession() {
+      console.log("joined waiting session")
+      this.waiting = true
+      this.quill.setText("Du är en ansluten till tolkningen, men den har inte börjat än.", "collab")
+    },
+    joinedRunningSession() {
+      this.$toast.success("Distanstolkningen har startat")
+      this.quill.setText("...", "collab")
+      this.waiting = false
+    },
     websocketConnected() {
       this.$toast.success("Du kopplades upp")
     },
     websocketFailed(err) {
       this.$toast.error("Anslutningen misslyckades")
+      this.quill.setText("Tyvärr kunde du inte ansluta till distanstolkningen. Meddela din kontaktperson för uppdraget så får du hjälp.\nFelmeddelande: \n" + JSON.stringify(err, ["message", "argumentes", "type", "name"]), "collab")
       if(this.websocket) {
         this.websocket = null;
       }
@@ -215,14 +230,6 @@ export default {
       this.settings.font.color = colors.foreground;
       this.settings.font.colorID = colors.colorID;
       this.$store.commit("setFontColorID", this.settings.font.colorID)
-    },
-    openAddModal(phrase) {
-      console.log("add phrase", phrase);
-      this.$store.commit("setSelectedWord", phrase);
-      this.$bvModal.show("addAbb");
-    },
-    addAbb() {
-
     },
     focus() {
       this.loadTextSettings();

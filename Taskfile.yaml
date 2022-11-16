@@ -104,7 +104,7 @@ tasks:
     env:
       STTYLUS_VERSION: 0.8.2
       STTYLUS_MODE: webapp
-      VITE_STTYLUS_MODE: webapp
+      VITE_STTYLUS_MODE: api
       VITE_STTYLUS_BACKEND: https://sttylus.se
     cmds:
       - echo "Building STTylus webapp $STTYLUS_VERSION"
@@ -122,9 +122,16 @@ tasks:
     silent: true
   deploy:
     cmds:
-      - ./deploy_backup.sh
-      - ./deploy_backend.sh
-      - ./deploy_webapp.sh
+      - task: webapp:build
+      - task: consumer
+      - sh ./deploy_backup.sh
+      - sh ./deploy_backend.sh
+      - sh ./deploy_webapp.sh
+      - sh ./deploy_consumer.sh
+  deploy:consumer:
+    cmds:
+      - task: consumer
+      - sh ./deploy_consumer.sh
   router:
     cmds:
       #- task: prebuild

@@ -14,6 +14,7 @@ type Pool struct {
 	Clients    map[*Client]bool
 	Broadcast  chan Broadcast
 	Tabula     *collab.Tabula
+	Started    bool
 }
 
 func NewPool() *Pool {
@@ -31,7 +32,7 @@ func (pool *Pool) Start() {
 		case client := <-pool.Register:
 			pool.Clients[client] = true
 			fmt.Println("Size of connection pool: ", len(pool.Clients))
-			for c, _ := range pool.Clients {
+			for c := range pool.Clients {
 				if c == client {
 					continue
 				}
@@ -41,16 +42,21 @@ func (pool *Pool) Start() {
 			}
 			break
 		case client := <-pool.Unregister:
+			interpreter := client.Interpreter
 			delete(pool.Clients, client)
 			fmt.Println("Size of connection pool:", len(pool.Clients))
-			for client, _ := range pool.Clients {
+			for client := range pool.Clients {
 				msg := Message{Type: LeaveSession}
-				msg.Msg = "Client disconnected"
+				if interpreter {
+					msg.Msg = "interpreter"
+				} else {
+					msg.Msg = "user"
+				}
 				client.Conn.WriteJSON(msg)
 			}
 			break
 		case broadcast := <-pool.Broadcast:
-			for client, _ := range pool.Clients {
+			for client := range pool.Clients {
 				if broadcast.Conn != client.Conn {
 
 					client.mu.Lock()

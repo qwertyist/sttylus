@@ -1,6 +1,6 @@
 {
   "name": "sttylus-loader",
-  "version": "0.8.2",
+  "version": "1.0.0",
   "main": "dist/main/index.cjs",
   "author": "David Johansson",
   "license": "MIT",
