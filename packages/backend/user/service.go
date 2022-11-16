@@ -151,12 +151,10 @@ func (s *userService) GetUsers() ([]*User, error) {
 
 func (s *userService) UpdateUser(u *User) error {
 	old, err := s.GetUser(u.ID)
-	log.Println("old user settings:", old.Settings.Font)
 	if err != nil {
 		return err
 	}
 
-	log.Print("new user settings:", u.Settings.Font)
 	u.PasswordHash = old.PasswordHash
 	u.Salt = old.Salt
 

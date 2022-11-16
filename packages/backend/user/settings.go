@@ -2,7 +2,6 @@ package user
 
 import (
 	"fmt"
-	"log"
 )
 
 func (s *userService) GetSettings(id string) (*Settings, error) {
@@ -15,13 +14,11 @@ func (s *userService) GetSettings(id string) (*Settings, error) {
 }
 
 func (s *userService) UpdateSettings(id string, settings *Settings) error {
-	log.Println("Recevied settings:", settings.Font)
 	u, err := s.repo.GetUser(id)
 	if err != nil {
 		return fmt.Errorf("service|UpdateSettings couldn't get user: %s", err)
 	}
 	u.Settings = *settings
-	log.Println("Repouser settigns:", u.Settings.Font)
 	err = s.UpdateUser(u)
 	if err != nil {
 		return fmt.Errorf("service|UpdateSettings couldn't update user: %s", err)

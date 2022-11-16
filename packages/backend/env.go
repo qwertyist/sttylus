@@ -32,6 +32,9 @@ func getEnvVariables(fileName string) *envVariables {
 	globalStandard := os.Getenv("STTYLUS_GLOBAL_STANDARD")
 
 	mode := os.Getenv("STTYLUS_MODE")
+	if mode == "" {
+		mode = "api"
+	}
 
 	db := os.Getenv("STTYLUS_DB")
 	dbFileName := os.Getenv("STTYLUS_DB_FILENAME")
@@ -66,7 +69,6 @@ func getEnvVariables(fileName string) *envVariables {
 		globalStandard = "ed03f3fc-f552-437b-8103-cdbd7f61a59e"
 	}
 
-	mode = "desktop"
 	if version == "" {
 		version = "0.8.1"
 	}
