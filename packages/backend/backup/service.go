@@ -37,7 +37,6 @@ func (s *backupService) DumpUsers() error {
 	}
 	file, _ := os.OpenFile("users_dump.json", os.O_CREATE|os.O_WRONLY, os.ModePerm)
 	defer file.Close()
-	log.Printf("Got users: %v\n", uu)
 	encoder := json.NewEncoder(file)
 	err = encoder.Encode(uu)
 	if err != nil {

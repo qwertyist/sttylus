@@ -42,7 +42,6 @@ func (s *abbService) ImportTextOnTop(userID string, dat []byte) (map[string][]*A
 	json.Unmarshal(dat, &totlist)
 
 	for abb, word := range totlist.Autocorrect.Default.List {
-		fmt.Println(abb, "=", word)
 		ac = append(ac, &Abbreviation{
 			ID:      uuid.New().String(),
 			Word:    word,

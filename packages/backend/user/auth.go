@@ -109,7 +109,6 @@ func (s *userService) GetMachineID() (string, error) {
 }
 
 func (s *userService) Login(login loginRequest) (*User, error) {
-	log.Println("what email are we looking for?", login.Email)
 	user, err := s.repo.Login(login.Email, "")
 	if user == nil || err != nil {
 		log.Println("repo.Login found no user")

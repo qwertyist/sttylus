@@ -29,7 +29,7 @@ type User struct {
 	Created  time.Time `json:"created,omitempty"`
 	Updated  time.Time `json:"updated,omitempty"`
 	LastSync time.Time `json:"last_sync,omitempty"`
-	active   bool      `json:"active"`
+	active   bool
 
 	Name   string `json:"name,omitempty"`
 	Email  string `json:"email,omitempty"`

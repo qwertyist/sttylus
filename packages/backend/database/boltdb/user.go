@@ -124,7 +124,6 @@ func (r *repo) Login(email, password string) (*user.User, error) {
 			if err != nil {
 				return fmt.Errorf("repo|Login failed unmarshalling: %s", err)
 			}
-			log.Println("user:", tmp)
 			if tmp.Email == email {
 				u = tmp
 				return nil
