@@ -3,7 +3,6 @@ package backup
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"os"
 
 	"github.com/botvid/webapp/repository"

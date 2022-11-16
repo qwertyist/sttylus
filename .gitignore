@@ -2,6 +2,8 @@ todo.md
 node_modules/
 dist/
 stats.html
+
+production.db
 sttylus.db
 
 packages/frontpage/
@@ -12,3 +14,4 @@ offline/*
 .env.build
 deploy.sh
 deploy2.sh
+exclude.txt

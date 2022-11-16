@@ -11,10 +11,11 @@ import (
 )
 
 type Client struct {
-	ID   string
-	Conn *websocket.Conn
-	Pool *Pool
-	mu   sync.Mutex
+	ID          string
+	Interpreter bool
+	Conn        *websocket.Conn
+	Pool        *Pool
+	mu          sync.Mutex
 }
 
 type Message struct {

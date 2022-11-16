@@ -178,19 +178,21 @@ export default {
         this.$toast.info(msg, tries)
         
     },
-    clientConnected(c) {
-      if (c == "user") {
-        this.$toast.success("En tolkanvändare anslöt")
+    clientConnected(rx) {
+      if (!rx.msg) return;
+      if (rx.interpreter) {
+        this.$toast.success("En tolk anslöt")
         return
       }
-      this.$toast.success("En tolk anslöt")
+      this.$toast.success("En tolkanvändare anslöt")
     },
-    clientDisconnected(c) {
-      if (c == "user") {
-        this.$toast.success("En tolkanvändare kopplade ner")
+    clientDisconnected(rx) {
+      if (!rx.msg) return;
+      if (rx.interpreter) {
+        this.$toast.success("En tolk kopplade ner")
         return
       }
-      this.$toast.success("En tolk kopplade ner")
+      this.$toast.success("En tolkanvändare kopplade ner")
     },
     sendSessionData(data) {
       console.log("should send session data")

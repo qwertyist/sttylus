@@ -170,10 +170,11 @@ export default class wsConnection {
                     break
                 case this.mt.JoinSession:
                     console.log("JoinSession message", rx)
-                    EventBus.$emit("clientConnected", rx.msg)
+                    EventBus.$emit("clientConnected", rx)
                     break
                 case this.mt.LeaveSession:
-                    EventBus.$emit("clientDisconnected", rx.msg)
+                    console.log("LeaveSession message", rx)
+                    EventBus.$emit("clientDisconnected", rx)
                     break
                 case this.mt.RXDelta:
                     //console.log("RXDelta (version: ", rx.body.version, "):", rx.body.delta, rx.body.index)
@@ -248,7 +249,7 @@ export default class wsConnection {
         waitForConnection(self.websocket, function () { self.websocket.send(createMessage) })
     }
     joinsession() {
-        let JoinMessage = JSON.stringify({ type: this.mt.JoinSession, msg: "interpreter" })
+        let JoinMessage = JSON.stringify({ type: this.mt.JoinSession, interpreter: true })
         console.log("join:", JoinMessage)
         waitForConnection(self.websocket, function () { self.websocket.send(JoinMessage) })
 

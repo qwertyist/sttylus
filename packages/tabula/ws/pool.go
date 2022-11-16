@@ -36,7 +36,7 @@ func (pool *Pool) Start() {
 					continue
 				}
 				msg := Message{Type: JoinSession}
-				msg.Msg = "New User joined"
+				msg.Msg = "Client connected"
 				c.Conn.WriteJSON(msg)
 			}
 			break
@@ -45,7 +45,7 @@ func (pool *Pool) Start() {
 			fmt.Println("Size of connection pool:", len(pool.Clients))
 			for client, _ := range pool.Clients {
 				msg := Message{Type: LeaveSession}
-				msg.Msg = "User disconnected"
+				msg.Msg = "Client disconnected"
 				client.Conn.WriteJSON(msg)
 			}
 			break
