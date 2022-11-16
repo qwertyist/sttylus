@@ -45,7 +45,7 @@ import VueToast from 'vue-toast-notification';
 
 import VueCookie from 'vue-cookie';
 
-Vue.use(VueToast, { duration: 4000 });
+Vue.use(VueToast, { duration: 4000, position: "top-right" });
 
 //const isOnline = import('is-online');
 
