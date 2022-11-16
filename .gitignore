@@ -4,6 +4,7 @@ dist/
 stats.html
 
 *.db
+*.dat
 
 packages/frontpage/
 packages/backend/public/
