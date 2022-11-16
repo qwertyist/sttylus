@@ -48,8 +48,43 @@ export default {
     return {
       loading: true,
       error: {},
-      latest: new Date("2022, 11, 10"),
+      latest: new Date("2022, 11, 16"),
       changelog: [
+        {
+          date: new Date("2022, 11, 16"),
+          changes: [ 
+            {
+              id: 0,
+              type: "update",
+              description: "<h2>Zoom-funktionaliteten är släckt tills vidare</h2>"
+            },
+            {
+              id: 1,
+              type: "update",
+              description: "Meddela kollegan i distanstolkningen att det är dags att byta med <kbd>F3</kbd>",
+            },
+            {
+              id: 2, 
+              type:"minor",
+              description: "Bättre meddelanden kring distanstolkning:<ul><li>Tolkanvändare kan ansluta i förväg, men informeras att bokningen inte börjat än</li><li>Korrekta meddelanden vid upp- och nedkoppling från tolkar och tolkanvändare.</li></ul>"
+            },
+            {
+              id: 3,
+              type: "minor",
+              description: "Flyttat infomeddelanden till övre högra hörnet",
+            },
+            {
+              id: 4,
+              type: "minor",
+              description: "Flyttat infomeddelanden till övre högra hörnet",
+            },
+            {
+              id: 5,
+              type:"update",
+              description: "Byt standardlista med <kbd>CTRL+1...5</kbd>"
+            }
+          ]
+        },
         {
           date: new Date("2022, 11, 10"),
           changes: [ 
