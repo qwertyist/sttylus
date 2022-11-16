@@ -12,6 +12,6 @@ offline/*
 
 .env.production
 .env.build
-deploy.sh
-deploy2.sh
+deploy*.sh
+include.txt
 exclude.txt

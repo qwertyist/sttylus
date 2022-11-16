@@ -109,18 +109,22 @@ tasks:
     cmds:
       - echo "Building STTylus webapp $STTYLUS_VERSION"
       - rm -rf ./dist/renderer/assets/*
-      - yarn run debug
     silent: true
   webapp:test:
     cmds:
       - task: webapp
-      - task: router
+      - yarn run debug
     silent: true
-  webapp:deploy:
-    silent: true
+  webapp:build:
     cmds:
-      - task: api
-      - rsync -av -e ssh --exclude="*.woff*" dist/renderer/ $VPS_USER@sttylus.se:$VPS_DEST
+      - task: webapp
+      - yarn run prebuild
+    silent: true
+  deploy:
+    cmds:
+      - ./deploy_backup.sh
+      - ./deploy_backend.sh
+      - ./deploy_webapp.sh
   router:
     cmds:
       #- task: prebuild
