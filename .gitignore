@@ -3,8 +3,7 @@ node_modules/
 dist/
 stats.html
 
-production.db
-sttylus.db
+*.db
 
 packages/frontpage/
 packages/backend/public/
