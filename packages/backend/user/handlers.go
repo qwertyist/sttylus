@@ -46,23 +46,23 @@ func NewUserHandler(userService UserService, mode string) UserHandler {
 
 //Endpoints adds User methods to the API router
 func Endpoints(r *mux.Router, h UserHandler) {
-	r.HandleFunc("/api/user", h.CreateUser).Methods("POST")
-	r.HandleFunc("/api/users", h.GetUsers).Methods("GET")
-	r.HandleFunc("/api/user/{id}", h.GetUser).Methods("GET")
-	r.HandleFunc("/api/user/{id}", h.UpdateUser).Methods("PUT")
-	r.HandleFunc("/api/user/{id}", h.DeleteUser).Methods("DELETE")
+	r.HandleFunc("/user", h.CreateUser).Methods("POST")
+	r.HandleFunc("/users", h.GetUsers).Methods("GET")
+	r.HandleFunc("/user/{id}", h.GetUser).Methods("GET")
+	r.HandleFunc("/user/{id}", h.UpdateUser).Methods("PUT")
+	r.HandleFunc("/user/{id}", h.DeleteUser).Methods("DELETE")
 
-	r.HandleFunc("/api/settings/", h.UpdateSettings).Methods("POST")
-	r.HandleFunc("/api/settings/", h.GetSettings).Methods("GET")
+	r.HandleFunc("/settings/", h.UpdateSettings).Methods("POST")
+	r.HandleFunc("/settings/", h.GetSettings).Methods("GET")
 
-	r.HandleFunc("/api/auth", h.Auth).Methods("POST")
-	r.HandleFunc("/api/login", h.Login).Methods("POST")
-	r.HandleFunc("/api/register", h.RegisterWeb).Methods("POST")
-	r.HandleFunc("/api/registered/{email}", h.IsRegistered).Methods("GET")
-	r.HandleFunc("/api/password", h.UpdatePassword).Methods("POST")
-	r.HandleFunc("/api/password", h.ResetPassword).Methods("PUT")
+	r.HandleFunc("/auth", h.Auth).Methods("POST")
+	r.HandleFunc("/login", h.Login).Methods("POST")
+	r.HandleFunc("/register", h.RegisterWeb).Methods("POST")
+	r.HandleFunc("/registered/{email}", h.IsRegistered).Methods("GET")
+	r.HandleFunc("/password", h.UpdatePassword).Methods("POST")
+	r.HandleFunc("/password", h.ResetPassword).Methods("PUT")
 
-	r.HandleFunc("/api/sync", h.SyncUser).Methods("POST")
+	r.HandleFunc("/sync", h.SyncUser).Methods("POST")
 }
 
 func LogUnauthorizedRequest(w http.ResponseWriter, r *http.Request) {

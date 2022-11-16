@@ -46,7 +46,7 @@ func main() {
 	}
 	r := mux.NewRouter().StrictSlash(true)
 	if cfg.mode == "desktop" {
-		r.HandleFunc("/api/ip", getLocalIP).Methods("GET")
+		r.HandleFunc("/ip", getLocalIP).Methods("GET")
 		r.PathPrefix("/assets").Handler(
 			http.StripPrefix("/assets",
 				http.FileServer(

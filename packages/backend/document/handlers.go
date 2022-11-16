@@ -38,11 +38,11 @@ func NewDocHandler(docService DocService) DocHandler {
 
 //Endpoints sets handlers to the provided router
 func Endpoints(r *mux.Router, h DocHandler) {
-	r.HandleFunc("/api/docs", h.GetDocs).Methods("GET")
-	r.HandleFunc("/api/docs/{id}", h.GetDoc).Methods("GET")
-	r.HandleFunc("/api/docs", h.CreateDoc).Methods("POST")
-	r.HandleFunc("/api/docs", h.UpdateDoc).Methods("PUT")
-	r.HandleFunc("/api/docs/{id}", h.DeleteDoc).Methods("DELETE")
+	r.HandleFunc("/docs", h.GetDocs).Methods("GET")
+	r.HandleFunc("/docs/{id}", h.GetDoc).Methods("GET")
+	r.HandleFunc("/docs", h.CreateDoc).Methods("POST")
+	r.HandleFunc("/docs", h.UpdateDoc).Methods("PUT")
+	r.HandleFunc("/docs/{id}", h.DeleteDoc).Methods("DELETE")
 }
 
 func (h *docHandler) CreateDoc(w http.ResponseWriter, r *http.Request) {

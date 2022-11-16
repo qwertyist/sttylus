@@ -28,9 +28,9 @@ func NewBackupHandler(backupService BackupService) BackupHandler {
 }
 
 func Endpoints(r *mux.Router, h BackupHandler) {
-	r.HandleFunc("/api/export", h.DumpAll).Methods("GET")
-	r.HandleFunc("/api/export/users", h.DumpUsers).Methods("GET")
-	r.HandleFunc("/api/export/abbs", h.DumpAbbs).Methods("GET")
+	r.HandleFunc("/export", h.DumpAll).Methods("GET")
+	r.HandleFunc("/export/users", h.DumpUsers).Methods("GET")
+	r.HandleFunc("/export/abbs", h.DumpAbbs).Methods("GET")
 }
 
 func (h *backupHandler) DumpUsers(w http.ResponseWriter, r *http.Request) {

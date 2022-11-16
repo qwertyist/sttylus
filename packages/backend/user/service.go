@@ -122,7 +122,7 @@ func (s *userService) GetUserByEmail(email string) (*User, error) {
 	if user == nil {
 		log.Println("No user found, try online")
 		if s.mode == "desktop" {
-			resp, err := http.Get("https://sttylus.se/api/registered/" + email)
+			resp, err := http.Get("https://sttylus.se/api2/registered/" + email)
 			if err != nil {
 				return nil, fmt.Errorf("couldn't reach server %s", err)
 			}

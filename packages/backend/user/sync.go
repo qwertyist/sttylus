@@ -217,7 +217,7 @@ func (s *userService) SyncUserAbbs(userID string, lists []*abbreviation.List) ([
 		Timeout: time.Second * 10,
 	}
 
-	//r.HandleFunc("/api/abbs/abbreviations/{listID}", h.GetAbbs).Methods("POST")
+	//r.HandleFunc("/abbs/abbreviations/{listID}", h.GetAbbs).Methods("POST")
 	for _, list := range lists {
 		req := authedRequest("POST", "abbs/abbreviations/"+list.ID, userID, nil)
 		if req == nil {
