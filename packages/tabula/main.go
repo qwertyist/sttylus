@@ -6,6 +6,8 @@ import (
 	"github.com/qwertyist/tabula/ws"
 )
 
+const debug = false
+
 func main() {
 	a := App{pools: make(map[string]*ws.Pool)}
 	a.Initialize()

@@ -174,7 +174,7 @@
             </div>
           </b-card-text>
         </b-card>
-        <b-card v-show="inSession == true" title="Lösenordsskydda distanstolkningen">
+        <!--<b-card v-show="inSession == true" title="Lösenordsskydda distanstolkningen">
           <b-card-text>
             <b-form inline class="float-right" @submit.prevent="setSessionPassword">
               <b-form-input placeholder="Välj ett lösenord..." v-model="session.password" />
@@ -214,12 +214,12 @@
               <b-button v-if="!connectedBreakout" @click="bindBreakoutRoom">Byt rum</b-button>
               <b-button v-if="connectedBreakout" @click="leaveBreakoutRoom">Lämna rum</b-button>
             </b-form>
-            -->!
             <div v-if="thirdPartyError && !session.token" class="text-danger float-right">
               <small>Felmeddelande: {{ thirdPartyError }}</small>
             </div>
           </b-card-text>
         </b-card>
+        -->
       </b-tab>
     </b-tabs>
   </b-overlay>
