@@ -33,7 +33,7 @@ func getEnvVariables(fileName string) *envVariables {
 
 	mode := os.Getenv("STTYLUS_MODE")
 	if mode == "" {
-		mode = "api"
+		mode = "desktop"
 	}
 
 	db := os.Getenv("STTYLUS_DB")
@@ -54,7 +54,7 @@ func getEnvVariables(fileName string) *envVariables {
 	updateURL := os.Getenv("STTYLUS_UPDATE_URL")
 
 	if port == ":" {
-		port = ":14411"
+		port = ":80"
 	}
 
 	if db == "" {

@@ -24,7 +24,7 @@ function createAxiosInstance() {
 //    console.log("Axios instance points to production server:\n", import.meta.env.VITE_STTYLUS_BACKEND + "/api2")
     let api = "/api2"
     if (import.meta.env.VITE_STTYLUS_DEBUG == "true"){
-      api = "/api"
+      api = "/"
     }
     return axios.create({
       baseURL: import.meta.env.VITE_STTYLUS_BACKEND + api,
@@ -38,7 +38,7 @@ function createAxiosInstance() {
   } else {
  //   console.log("Axios instance points to local server:\n", import.meta.env.VITE_STTYLUS_LOCAL_BACKEND + "/api")
     return axios.create({
-      baseURL: import.meta.env.VITE_STTYLUS_LOCAL_BACKEND + "/api",
+      baseURL: import.meta.env.VITE_STTYLUS_LOCAL_BACKEND + "/",
       headers: {
         'Cache-Control': 'no-cache',
         common: {

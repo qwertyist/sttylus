@@ -127,12 +127,10 @@ export const store = new Vuex.Store({
         state.local.connected = false
         api.getUsers().then((resp) => {
           if (resp.data != null) {
-            resp.data.map(user => {
-              console.log("local user:", user.email)
-            });
+            console.log(resp.data.length, "local users")
           }
         }).catch(err => {
-          console.log("Store couldn't get local users:", err)
+          console.error("Store couldn't get local users:", err)
         })
       }
 

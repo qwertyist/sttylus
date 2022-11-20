@@ -3,12 +3,12 @@
     <Navigation :view="'login'" />
     <b-overlay :show="loading">
       <b-jumbotron>
-        <div v-if="local && users">
+        <div v-if="desktop && users">
           <h1>Välj användare</h1>
           <b-list-group v-for="user in users" v-bind:key="user['id']"><b-list-group-item @dblclick="loginAs(user)">{{ user["name"] }}</b-list-group-item></b-list-group>
         </div>
         <hr />
-        <div v-if="local"><h1>Logga in och ladda ner användare lokalt</h1></div>
+        <div v-if="desktop"><h1>Logga in och ladda ner användare lokalt</h1></div>
         <h1 v-else>Logga in</h1>
         <div v-if="step == 0">
           <b-form @submit.prevent="next">
@@ -134,13 +134,13 @@ export default {
     };
   },
   computed: {
-    local() {
-      console.log(this.$mode)
-      return this.$mode == "desktop" ? true : false
+    desktop() {
+      console.log("Login mode: ", this.$mode)
+      return this.$mode == "desktop"
     }
   },
   mounted() {
-    if (this.local) {
+    if (this.desktop) {
       console.log("Local login")
       api.getUsers().then(resp => {
         console.log(resp.data)

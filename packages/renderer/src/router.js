@@ -25,27 +25,10 @@ const ifAuthenticated = (to, from, next) => {
 };
 
 function createRouter() {
-    if (import.meta.env.VITE_STTYLUS_MODE == "desktop") {
-      console.log("Create desktop router")
-      console.log("router base: \/")
-      return new VueRouter({
-        mode: 'hash',
-        base: '/',
-        routes: [
-          { path: '/', component: Tabula, beforeEnter: ifNotAuthenticated },
-          {
-            path: '/settings',
-            component: Settings,
-            beforeEnter: ifNotAuthenticated,
-          },
-          { path: '/login', component: Login },
-          { path: "/presentation", component: Presentation },
-        ],
-      });
-    }
 
+    if (import.meta.env.VITE_STTYLUS_MODE == "api") {
     console.log("Create webapp router")
-    console.log("router base: \/app2\/")
+    console.log("router base: \/app\/")
     return new VueRouter({
       mode: 'history',
       base: '/app/',
@@ -59,6 +42,24 @@ function createRouter() {
         { path: '/login', component: Login },
         { path: "/view", component: Consumer }
 
+      ],
+    });
+    }
+
+    console.log("Create desktop router")
+    console.log("router base: \/")
+    return new VueRouter({
+      mode: 'hash',
+      base: '/',
+      routes: [
+        { path: '/', component: Tabula, beforeEnter: ifNotAuthenticated },
+        {
+          path: '/settings',
+          component: Settings,
+          beforeEnter: ifNotAuthenticated,
+        },
+        { path: '/login', component: Login },
+        { path: "/presentation", component: Presentation },
       ],
     });
 }

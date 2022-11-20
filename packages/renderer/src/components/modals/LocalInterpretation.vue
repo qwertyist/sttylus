@@ -79,7 +79,7 @@ export default {
         }
     },
     mounted() {
-        if(!this.$desktop) {
+        if(!this.$mode == "desktop") {
           return
         }
 

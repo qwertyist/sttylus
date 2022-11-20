@@ -71,18 +71,17 @@ Vue.filter('formatChangeLogDate', function (value: string) {
 
 Vue.prototype.$lastUpdate = import.meta.env.VITE_STTYLUS_BUILD_DATE
 Vue.config.productionTip = false;
-Vue.prototype.$mode = import.meta.env.VITE_STTYLUS_MODE
-if (import.meta.env.VITE_STTYLUS_MODE == "desktop") {
-  Vue.prototype.$desktop = true
-    console.log("Running as desktop app")
-  Vue.prototype.$backend =
-    import.meta.env.VITE_STTYLUS_LOCAL_BACKEND;
+
+if(import.meta.env.VITE_STTYLUS_MODE == undefined || import.meta.env.VITE_STTYLUS_MODE == "desktop") {
+  Vue.prototype.$mode = "desktop"
+  Vue.prototype.$backend = import.meta.env.VITE_STTYLUS_LOCAL_BACKEND;
   Vue.prototype.$collabServer = "wss://sttylus.se/ws/"
   Vue.prototype.$collabAPI= "https://sttylus.se/ws/"
   Vue.prototype.$localCollab = import.meta.env.VITE_STTYLUS_LOCAL_COLLAB;
-} else {
-  Vue.prototype.$desktop = false
+}
 
+if (import.meta.env.VITE_STTYLUS_MODE == "api") {
+  Vue.prototype.$mode = "webapp"
   if (import.meta.env.PROD) {
     console.log("Running in production")
     Vue.prototype.$backend = import.meta.env.VITE_STTYLUS_BACKEND
@@ -96,9 +95,9 @@ if (import.meta.env.VITE_STTYLUS_MODE == "desktop") {
   Vue.prototype.$collabServer = "wss://sttylus.se/ws/"
   Vue.prototype.$collabAPI= "https://sttylus.se/ws/"
     Vue.prototype.$localCollab = import.meta.env.VITE_STTYLUS_LOCAL_COLLAB;
-
   }
-}
+} 
+
 console.log("pointing to backend ", Vue.prototype.$backend)
 
 import EventBus from './eventbus.js';

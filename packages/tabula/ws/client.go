@@ -97,7 +97,7 @@ func (c *Client) messageHandler(msg Message) (*Message, bool) {
 		//		log.Printf("TXDelta: (version %d) %v", msg.Body.Version, msg.Body.Delta)
 		if c.Pool.Tabula != nil {
 			if !c.Pool.Started {
-				c.Pool.Started = 
+				c.Pool.Started = true
 				msg.Msg = "starting"
 			}
 			d := collab.Delta{

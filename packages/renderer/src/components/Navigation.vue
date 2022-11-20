@@ -97,7 +97,7 @@ export default {
       return this.$store.state.userData.name;
     },
     desktop() {
-      return this.$desktop;
+      return this.$mode == "desktop";
     },
     tester() {
       if (this.$store.state.userData.role == "tester") {

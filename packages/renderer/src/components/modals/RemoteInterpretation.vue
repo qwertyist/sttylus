@@ -289,7 +289,7 @@ export default {
       });
     },
     showModal() {
-      if (this.$desktop && this.$store.state.local.connected) {
+      if (this.desktop && this.$store.state.local.connected) {
           console.log("Already connected to local session")
           this.localsession = true
       } else {
@@ -509,6 +509,9 @@ export default {
     },
   },
   computed: {
+    desktop() {
+      return this.$mode == "desktop"
+    },
     you() {
       return this.$store.getters.getUserId
     },

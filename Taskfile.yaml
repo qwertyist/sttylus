@@ -32,7 +32,7 @@ tasks:
       - task: prebuild
       - task: local
       - task: consumer
-      - task: nw:run
+      - cp -r dist/renderer/* /tmp/latest/
     silent: false
   nw:debug:
     env:
@@ -66,15 +66,17 @@ tasks:
     silent: true
   debug:webapp:
     env:
-      VITE_STTYLUS_LOCAL_BACKEND: http://localhost
-      VITE_STTYLUS_BACKEND: http://localhost
-      VITE_STTYLUS_MODE: webapp
+      VITE_STTYLUS_LOCAL_BACKEND: http://localhost:14411
+      VITE_STTYLUS_BACKEND: http://localhost:14411
+      VITE_STTYLUS_MODE: api
       VITE_STTYLUS_DEBUG: true
     cmds:
       - echo "[ run as webapp ]"
       - yarn debug
     silent: true
   debug:backend:
+    env:
+      STTYLUS_PORT: 14411
     cmds:
       - cp ../tools/sttylus.db ./offline
       - (cd packages/backend && go build . && mv webapp ../../offline/backend)
@@ -128,6 +130,10 @@ tasks:
       - sh ./deploy_backend.sh
       - sh ./deploy_webapp.sh
       - sh ./deploy_consumer.sh
+  deploy:webapp:
+    cmds:
+      - task: webapp:build
+      - sh ./deploy_webapp.sh
   deploy:consumer:
     cmds:
       - task: consumer
