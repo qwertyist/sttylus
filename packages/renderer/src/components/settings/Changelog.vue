@@ -1,8 +1,10 @@
 <template>
-  <b-tabs>
+  <!--<b-tabs>
     <b-tab title="Uppdateringslogg">
-      <br />
+    -->
+<div>
       <p>
+        <br />
         Här listas uppdateringar, ändringar och buggfixar som gjorts i programmet
         eller distanstolkningstjänsten.
       </p>
@@ -25,7 +27,7 @@
           </b-card-group>
         </b-col>
       </b-row>
-    </b-tab>
+    <!--</b-tab>
     <b-tab title="Version">
       <b-overlay :show="loading">
         <b-jumbotron>
@@ -38,6 +40,8 @@
       </b-overlay>
     </b-tab>
   </b-tabs>
+  -->
+</div>
 </template>
 
 <script>

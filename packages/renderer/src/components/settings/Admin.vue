@@ -1,5 +1,8 @@
 <template>
   <div>
+    <template v-if="usersLoaded">
+      <AdminListView :users="users" />
+    </template>
     <b-container fluid>
       <b-row>
         <b-col>
@@ -71,30 +74,7 @@
           </b-button>
         </template>
       </b-table>
-      <h4>Förkortningslistor</h4>
-      <b-table
-        responsive
-        fluid
-        sticky-header
-        small
-        striped
-        hover
-        :items="lists"
-        :fields="listFields"
-        :sort-by="sortListBy"
-        sort-desc
-        @sort-changed="listSortChanged"
-      >
-        <template #cell(type)="row">
-          <span v-if="row.item.type">Ämneslista</span><span v-else>Standardlista</span>
-        </template><template #cell(download)="row">
-          <b-button @click="downloadList(row.item.id, row.item.owner)">
-            <b-icon icon="download" />
-          </b-button>
-        </template>
-      </b-table>
     </b-container>
-
     <CreateUser />
   </div>
 </template>
@@ -104,9 +84,11 @@ import api from "../../api/api.js";
 import EventBus from "../../eventbus.js";
 
 import CreateUser from "../modals/CreateUser.vue";
+import AdminListView from "./admin/ListView.vue";
+
 export default {
   name: "Admin",
-  components: { CreateUser },
+  components: { CreateUser, AdminListView },
   data() {
     return {
       show: false,
@@ -118,15 +100,6 @@ export default {
         { remove: { label: "Ta bort" } },
       ],
       users: [],
-      listFields: [
-        { key: "name", label: "Namn", sortable: true },
-        { key: "type", label: "Typ" },
-        { key: "owner", label: "Ägare", sortable: true },
-        { key: "counter", label: "Antal förkortningar", sortable: true },
-        { download: { label: "Ladda ner" } },
-      ],
-      lists: [],
-      sortListBy: "counter",
       errors: [],
       sortBy: "email",
       sortDesc: false,
@@ -139,18 +112,20 @@ export default {
       ],
     };
   },
+  computed: {
+    usersLoaded() {
+      return this.users.length > 0
+    },
+  },
   methods: {
-    getUsers(asc) {
+    getUsers() {
       api
         .getUsers()
         .then((resp) => {
           this.users = resp.data;
-          this.users.map((u) => {
-            this.getLists(u);
-          });
         })
         .catch((err) => {
-          this.errors = err;
+          this.$toast.warning("kunde inte hämta användarna:" +  err);
         });
     },
     createUser() {
@@ -182,7 +157,8 @@ export default {
                 this.getUsers();
               })
               .catch((err) => {
-                console.log("failed in api call", err);
+                this.$toast.warning("kunde inte ta bort användaren:", err)
+                console.log("deleteUser failed api call", err);
               });
           }
         })
@@ -196,34 +172,6 @@ export default {
     onUpdateRole(user) {
       api.updateUser(user).then(() => {
         this.getUsers();
-      });
-    },
-    getLists(user) {
-      api.getUserListsByID(user.id).then((resp) => {
-        if (resp.data != null) {
-          resp.data.map((list) => {
-            list.owner = user.name;
-            this.lists.push(list);
-          });
-        }
-      });
-    },
-    listSortChanged(sort) {
-    },
-    downloadList(id, owner) {
-      let exportedList = { meta: null, abbs: null };
-      api.getList(id).then((resp) => {
-        exportedList.meta = resp.data;
-        api.getAbbs(id).then((resp) => {
-          exportedList.abbs = resp.data;
-          var blob = new Blob([JSON.stringify(exportedList)], {
-            type: "application/json",
-          });
-          let link = document.createElement("a");
-          link.href = window.URL.createObjectURL(blob);
-          link.download = owner + "_" + exportedList.meta.name + ".json";
-          link.click();
-        });
       });
     },
   },

@@ -289,7 +289,13 @@ func (h *abbHandler) GetList(w http.ResponseWriter, req *http.Request) {
 	id := vars["id"]
 	list, err := h.abbService.GetList(id)
 	if err != nil {
-		log.Printf("handler|GetList failed: %s\n", err.Error())
+		log.Printf("handler|GetList %s failed: %s\n", id, err.Error())
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	if list == nil {
+		w.WriteHeader(http.StatusNoContent)
+		return
 	}
 	response, _ := json.Marshal(list)
 
@@ -378,11 +384,14 @@ func (h *abbHandler) CreateList(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	userID := r.Header.Get("X-Id-Token")
-	list.Creator = userID
-	if userID == "" {
-		w.WriteHeader(http.StatusMethodNotAllowed)
-		return
+
+	if list.Creator == "" {
+		userID := r.Header.Get("X-Id-Token")
+		if userID == "" {
+			w.WriteHeader(http.StatusMethodNotAllowed)
+			return
+		}
+		list.Creator = userID
 	}
 	id, err := h.abbService.CreateList(&list)
 

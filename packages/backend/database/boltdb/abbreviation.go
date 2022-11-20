@@ -172,9 +172,11 @@ func (r *repo) GetList(id string) (*abbreviation.List, error) {
 	err := r.bolt.View(func(tx *bolt.Tx) error {
 		b := tx.Bucket([]byte("lists"))
 		meta := b.Get([]byte(id))
-		err := json.Unmarshal(meta, &list)
-		if err != nil {
-			return fmt.Errorf("repo|GetList failed unmarshalling: %s", err)
+		if meta != nil {
+			err := json.Unmarshal(meta, &list)
+			if err != nil {
+				return fmt.Errorf("repo|GetList failed unmarshalling: %s", err)
+			}
 		}
 		return nil
 	})

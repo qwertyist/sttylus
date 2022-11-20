@@ -245,12 +245,7 @@ func (s *abbService) DeleteAbbByID(listID, ID string) (*Abbreviation, error) {
 }
 
 func (s *abbService) GetList(listID string) (*List, error) {
-	list, err := s.repo.GetList(listID)
-	if err != nil {
-		return list, err
-	}
-
-	return list, nil
+	return s.repo.GetList(listID)
 }
 
 func (s *abbService) GetLists(listIDs []string) ([]*List, error) {
@@ -283,7 +278,9 @@ func (s *abbService) CopyStandardList(userID string) (string, error) {
 }
 
 func (s *abbService) CreateList(list *List) (string, error) {
-	list.ID = uuid.New().String()
+	if list.ID == "" {
+		list.ID = uuid.New().String()
+	}
 	list.Created = time.Now()
 	list.Updated = time.Now()
 

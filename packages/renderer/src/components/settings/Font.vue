@@ -257,7 +257,7 @@ export default {
     },
   },
   methods: {
-    onFontSizeChange(evt) {
+    onFontSizeChange() {
       if (this.form.size <= 20) {
         this.form.size = 20;
       } else if (this.form.size >= 200) {
@@ -265,7 +265,7 @@ export default {
       }
       this.setFontSettings();
     },
-    onMarginLinkedChange(val) {
+    onMarginLinkedChange() {
 
     },
     onMarginChange(val) {
@@ -279,7 +279,7 @@ export default {
         this.form.margins.bottom = this.form.margins.right = this.form.margins.left = this.form.margins.top = val
       }
     },
-    onChange(evt) {
+    onChange() {
       this.setFontSettings();
     },
     onReset() { },
