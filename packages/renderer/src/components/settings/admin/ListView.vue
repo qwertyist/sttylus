@@ -105,7 +105,7 @@ export default {
   data() {
     return {
       show: {
-        toolbox: true,
+        toolbox: false,
         lists: false,
       },
       batchImport: {
@@ -328,7 +328,6 @@ export default {
       if (a.name > b.name) { return 1 }
       return 0
     })
-    this.$bvModal.show("batchImportModal")
   },
 }
 </script>
