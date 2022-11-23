@@ -104,6 +104,7 @@ export function promptManuscript(index, q, action = "insertWord", context) {
     if (manuscript.line == manuscript.content.length) {
         manuscript.prompt = false
     }
+
     let offset = 0
     if (!manuscript.prompt) {
         console.log("Got to end")

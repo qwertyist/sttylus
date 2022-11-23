@@ -20,6 +20,12 @@
         <p class="lead">Du är redan ansluten till en lokal tolkning</p>
       </div>
     </template>
+    <b-overlay :show="qr.show" @click="toggleQRCode" rounded="sm">
+    <template #overlay>
+      <div class="text-center">
+        <qrcode-vue :value="qr.value" :size="400" level="H" />
+      </div>
+    </template>
     <b-row>
       <b-col>
         <h3>Distanstolkning</h3>
@@ -62,12 +68,6 @@
                       {{ sess.name }}
                       <div v-if="sess.ref == you">(Din tolkning)</div>
                     </b>
-                    <br />
-                    {{ sess.from | formatDate }}-{{
-                      sess.to | formatHour
-                    }}
-                  </b-col>
-                  <b-col>
                     <b-button @click.prevent :id="'details' + sess.id" variant="info">Visa detaljer</b-button>
                     <b-popover :target="'details' + sess.id" placement="left">
                       <template #title>Bokningsdetaljer: {{ sess.id }}</template>
@@ -113,7 +113,10 @@
                       <br />
                       <br />
                     </b-popover>
+                  </b-col>
+                  <b-col>
                     <b-button @click="copyLink(sess.id)" variant="secondary">Kopiera länk</b-button>
+                    <b-button @click="toggleQRCode(sess.id)" variant="secondary">Visa QR-kod</b-button>
                     <b-button
                       v-if="!inSession"
                       variant="primary"
@@ -223,14 +226,20 @@
       </b-tab>
     </b-tabs>
   </b-overlay>
+  </b-overlay>
   </b-modal>
 </template>
 <script>
+import QrcodeVue from 'qrcode.vue'
+
 import EventBus from "../../eventbus.js";
 import axios from "axios";
 import eventbus from '../../eventbus.js';
 
 export default {
+  components: {
+    QrcodeVue,
+  },
   data() {
     return {
       localsession: null,
@@ -239,6 +248,10 @@ export default {
         password: "",
         token: "",
         breakout: "",
+      },
+      qr: {
+        show: false,
+        value: ""
       },
       id: 0,
       breakout: false,
@@ -264,6 +277,10 @@ export default {
     copyLink(id) {
       var copyText = "https://sttylus.se/view2.html?id=" + id
       navigator.clipboard.writeText(copyText);
+    },
+    toggleQRCode(id) {
+      this.qr.value = "https://sttylus.se/view2.html?id=" + id
+      this.qr.show = !this.qr.show;
     },
     getSessionType(type) {
       if (type == 0) {

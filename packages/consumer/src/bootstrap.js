@@ -7,6 +7,8 @@ import {
     FormPlugin,
     FormSelectPlugin,
     ModalPlugin,
+    LayoutPlugin,
+    OverlayPlugin
 } from "bootstrap-vue";
 
 export default {
@@ -18,6 +20,8 @@ export default {
         app.use(ButtonPlugin)
         app.use(FormPlugin)
         app.use(FormSelectPlugin)
+        app.use(LayoutPlugin)
         app.use(ModalPlugin)
+        app.use(OverlayPlugin)
     }
 }

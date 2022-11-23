@@ -27,6 +27,7 @@
             Större
           </b-button>
           <b-button size="md" @click="changeColor">Byt färger</b-button>
+          <b-button size="md" class="float-right">Visa QR-kod</b-button>
         </div>
         <b-input-group prepend="Typsnitt">
           <b-form-select
@@ -60,18 +61,20 @@
           }"
           v-html="example"
         ></div>
-        <div v-show="isMobile">
-          <b-button size="md" @click="decreaseTextSize">
-            <b-icon icon="dash-square-fill" aria-hidden="true"></b-icon>
-            Mindre
-          </b-button>
-          <b-button size="md" @click="increaseTextSize">
-            <b-icon icon="plus-square-fill" aria-hidden="true"></b-icon>
-            Större
-          </b-button>
-          <b-button size="md" @click="changeColor">Byt färger</b-button>
-        </div>
       </b-form>
+        <div v-show="isMobile" class="d-flex justify-content-between align-items-center">
+            <b-button size="md" @click="decreaseTextSize">
+              <b-icon icon="dash-square-fill" aria-hidden="true"></b-icon>
+              Mindre
+            </b-button>
+            <b-button size="md" @click="increaseTextSize">
+              <b-icon icon="plus-square-fill" aria-hidden="true"></b-icon>
+              Större
+            </b-button>
+            <b-button size="md" @click="changeColor">Byt färger</b-button>
+        </div>
+      <br />
+      <b-button @click="toggleQRCode()" size="md" class="float-right" variant="info">QR-kod</b-button>
     </b-modal>
   </div>
 </template>
@@ -152,8 +155,11 @@ export default {
       localStorage.setItem("fontSettings", data);
     }
   },
-
   methods: {
+    toggleQRCode() {
+      this.$bvModal.hide("consumerSettings")
+      EventBus.$emit("toggleQRCode");
+    },
     increaseTextSize() {
       this.fontSettings.size += 4;
       this.updateSettings();

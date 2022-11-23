@@ -1,15 +1,15 @@
 <template>
-  <div @dblclick="doubleClickHandler" class="quillWrapper" :style="wrapper">
-    <slot name="toolbar"></slot>
-    <div
-      ref="quillContainer"
-      id="quill-container"
-      :class="{ 'ql-container': true }"
-      :style="settings.font"
+   <div @dblclick="doubleClickHandler" class="quillWrapper" :style="wrapper">
+      <slot name="toolbar"></slot>
+      <div
+        ref="quillContainer"
+        id="quill-container"
+        :class="{ 'ql-container': true }"
+        :style="settings.font"
 
-      spellcheck="false"
-    ></div>
-  </div>
+        spellcheck="false"
+      ></div>
+    </div>
 </template>
 <script>
 import EventBus from "../eventbus";
@@ -162,10 +162,11 @@ export default {
       if (id == "local") {
         let uri = window.location.href.split("http://")[1]
         console.log("uri:", uri)
-
+        EventBus.$emit("setQRCodeURL", window.location.href)
         this.websocket = new wsConnection(this.quill,  "ws://" + uri + "conn/" + "local");
         return
       }
+      EventBus.$emit("setQRCodeURL", window.location.href)
       this.websocket = new wsConnection(this.quill, this.$collab + "conn/" + id);
 
     },

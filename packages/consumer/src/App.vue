@@ -1,27 +1,71 @@
 <template>
+  <b-overlay :show="qr.show" @click="toggleQRCode()" rounded="sm">
+    <template #overlay>
+      <div class="text-center">
+        <qrcode-vue :value="qr.url" :size="350" level="H" />
+      </div>
+    </template>
     <div id="app" @mousedown="handleMouseDown" @dbclick="handleDblClick">
-     <Consumer />
-     <ConsumerSettings />
+      <Consumer />
+      <ConsumerSettings />
     </div>
+  </b-overlay>
 </template>
 <script>
-import Login from "./components/modals/Login.vue"
-import Consumer from "./components/Consumer.vue";
+//import Login from "./components/modals/Login.vue"
+
 import ConsumerSettings from "./components/modals/ConsumerSettings.vue"
+import EventBus from "./eventbus"
+
+import QrcodeVue from 'qrcode.vue'
 export default {
     components: {
-    ConsumerSettings
-},
+        ConsumerSettings,
+        QrcodeVue
+    },
     data() {
         return {
-            clisk: 0,
+            qr: {
+              show: true,
+              url: "",
+            },
+            clicks: 0,
             timer: null,
+            screenLock: {}
         }
     },
     mounted() {
-        console.log("MOBILE:", this.$mobile)
+
+      EventBus.$on("toggleQRCode", this.toggleQRCode)
+      EventBus.$on("setQRCodeURL", this.setQRCode)
+      this.getScreenLock();
+    },
+    beforeDestroy() {
+      EventBus.$off("toggleQRCode")
+      EventBus.$off("setQRCodeURL")
+      if(typeof this.screenLock !== "undefined" && this.screenLock != null) {
+          this.screenLock.release()
+          .then(() => {
+            console.log("Lock released 🎈");
+            this.screenLock = null;
+          });
+      }
     },
     methods: {
+        setQRCode(val) {
+          this.qr.url = val
+        },
+        toggleQRCode() {
+          this.qr.show = !this.qr.show; 
+        },
+        getScreenLock() {
+            navigator.wakeLock.request("screen")
+            .then(lock => {
+              this.screenLock = lock
+            })
+            .catch(err => {
+              console.log(err.name, err.message)});
+        },
         handleDblClick() {
             console.log("Open settings");
         },

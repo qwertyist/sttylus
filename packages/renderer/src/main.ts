@@ -10,6 +10,7 @@ import { router } from "./router.js"
 import { store } from "./store/index.js"
 import moment from 'moment';
 import Vue2TouchEvents from 'vue2-touch-events';
+
 declare module 'vue/types/vue' {
   interface Vue {
     $backend: string;
@@ -69,6 +70,7 @@ Vue.filter('formatChangeLogDate', function (value: string) {
   }
 })
 
+Vue.prototype.$version = __APP_VERSION__;
 Vue.prototype.$lastUpdate = import.meta.env.VITE_STTYLUS_BUILD_DATE
 Vue.config.productionTip = false;
 
@@ -147,10 +149,10 @@ new Vue({
   },
 
   mounted() {
+    document.title = "STTylus | " + this.$version;
     EventBus.$on('checkConnection', this.checkConnection);
     this.$store.commit('initState');
     EventBus.$on("stateReady", this.next)
-
   },
   beforeDestroy() {
     EventBus.$off("stateReady")

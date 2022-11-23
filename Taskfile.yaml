@@ -104,7 +104,7 @@ tasks:
       - yarn run prebuild
   webapp:
     env:
-      STTYLUS_VERSION: 0.8.2
+      STTYLUS_VERSION: 1.0.2 
       STTYLUS_MODE: webapp
       VITE_STTYLUS_MODE: api
       VITE_STTYLUS_BACKEND: https://sttylus.se
@@ -113,6 +113,11 @@ tasks:
       - rm -rf ./dist/renderer/assets/*
     silent: true
   webapp:test:
+    env:
+      STTYLUS_VERSION: 1.0.1 
+      STTYLUS_MODE: webapp
+      VITE_STTYLUS_MODE: api
+      VITE_STTYLUS_BACKEND: https://sttylus.se
     cmds:
       - task: webapp
       - yarn run debug
@@ -144,6 +149,8 @@ tasks:
       - xdg-open http://localhost:8000/
       - (cd dist/renderer && python -m http.server)
   consumer:
+    env:
+      VITE_STTYLUS_COLLAB_SERVER: wss://sttylus.se/ws/
     cmds:
       - echo "Building consumer"
       - yarn run build:consumer

@@ -52,8 +52,23 @@ export default {
     return {
       loading: true,
       error: {},
-      latest: new Date("2022, 11, 16"),
+      latest: new Date("2022, 11, 23"),
       changelog: [
+        {
+          date: new Date("2022, 11, 23"),
+          changes: [ 
+            {
+              id: 0,
+              type: "update",
+              description: "Tolkanvändarvyn försöker hindrar skärmen från att gå i viloläge eller låsas."
+            },
+            {
+              id: 1,
+              type: "update",
+              description: "QR-kod finns som alternativ till länk.<br /> Tolkanvändarvyn kan visa QR-kod för aktuell tolkning.",
+            },
+          ]
+        },
         {
           date: new Date("2022, 11, 16"),
           changes: [ 
