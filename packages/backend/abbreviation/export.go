@@ -89,9 +89,9 @@ func (s *abbService) CreateProtypeExport(User, sID string, aIDs []string) error 
 		return fmt.Errorf("CreateProtypeExport|Couldn't create list.json\n%s", err)
 	}
 	cmd := exec.Command("./script/protype.py", tmp+"/list.json", "Standard")
-	_, err = cmd.Output()
+	output, err := cmd.Output()
 	if err != nil {
-		return fmt.Errorf("CreateProtypeExport|Couldn't run python script\n%s", err)
+		return fmt.Errorf("CreateProtypeExport|Couldn't run python script\n%s\n\n%s", output, err)
 	}
 	args = append(args, "Standard/wordlist.dat")
 	for _, addonID := range aIDs {

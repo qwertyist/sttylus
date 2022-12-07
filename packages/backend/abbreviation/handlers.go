@@ -17,6 +17,7 @@ type AbbHandler interface {
 	Abbreviate(w http.ResponseWriter, r *http.Request)
 	Lookup(w http.ResponseWriter, r *http.Request)
 	FilterAbbs(w http.ResponseWriter, r *http.Request)
+	GetAbbCache(w http.ResponseWriter, r *http.Request)
 
 	GetAbb(w http.ResponseWriter, r *http.Request)
 	GetAbbs(w http.ResponseWriter, r *http.Request)
@@ -75,7 +76,7 @@ func Endpoints(r *mux.Router, h AbbHandler) {
 	r.HandleFunc("/abbs/abbreviate/", h.Abbreviate).Methods("GET")
 	r.HandleFunc("/abbs/abbreviate/{abb}", h.Abbreviate).Methods("GET")
 	r.HandleFunc("/abbs/lookup/{phrase}", h.Lookup).Methods("GET")
-
+	r.HandleFunc("/abbs/cache", h.GetAbbCache).Methods("GET")
 	r.HandleFunc("/abbs/abbreviations/{listID}", h.GetAbbs).Methods("POST")
 	r.HandleFunc("/abbs/abbreviation/{listID}/{abb}", h.GetAbb).Methods("GET")
 	r.HandleFunc("/abbs/abbreviation/{list}", h.CreateAbb).Methods("POST")
@@ -446,6 +447,17 @@ func (h *abbHandler) DeleteList(w http.ResponseWriter, r *http.Request) {
 	_, _ = w.Write([]byte("List (" + list.Name + ") deleted"))
 }
 
+func (h *abbHandler) GetAbbCache(w http.ResponseWriter, r *http.Request) {
+	userID := r.Header.Get("X-Id-Token")
+	cache := h.abbService.GetAbbCache(userID)
+	json, err := json.Marshal(cache)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	w.Write(json)
+}
+
 func (h *abbHandler) Cache(w http.ResponseWriter, r *http.Request) {
 	userID := r.Header.Get("X-Id-Token")
 	var query query
@@ -483,24 +495,35 @@ func (h *abbHandler) Abbreviate(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	abb := vars["abb"]
 	if abb == "" {
-		log.Println("Empty abb request")
 		w.WriteHeader(http.StatusNoContent)
 		return
 	}
-	word, found := h.abbService.Abbreviate(userID, abb)
+	title := r.URL.Query().Get("t")
+	caps := r.URL.Query().Get("c")
 
-	response := response{
-		word,
-		word,
-		found,
+	if title == "1" {
+		abb = strings.Title(abb)
 	}
-	json, err := json.Marshal(response)
-	if err != nil {
-		log.Printf("handler|Abbreviate couldn't marshal response: %s\n", err.Error())
-		w.WriteHeader(http.StatusInternalServerError)
+	if caps == "1" {
+		abb = strings.ToUpper(abb)
+	}
+	word, found := h.abbService.Abbreviate(userID, abb)
+	if found {
+		w.WriteHeader(http.StatusAlreadyReported)
+		w.Write([]byte(word))
 		return
 	}
-	w.Write(json)
+
+	if abb != word {
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte(word))
+		return
+	}
+
+	if abb == word {
+		w.WriteHeader(http.StatusNoContent)
+		return
+	}
 }
 
 func (h *abbHandler) Lookup(w http.ResponseWriter, r *http.Request) {

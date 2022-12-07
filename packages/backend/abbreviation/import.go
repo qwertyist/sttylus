@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/google/uuid"
+	"github.com/jaevor/go-nanoid"
 )
 
 type textOnTopJSON struct {
@@ -42,8 +42,12 @@ func (s *abbService) ImportTextOnTop(userID string, dat []byte) (map[string][]*A
 	json.Unmarshal(dat, &totlist)
 
 	for abb, word := range totlist.Autocorrect.Default.List {
+		id, err := nanoid.CustomASCII("abcdef1234567890", 8)
+		if err != nil {
+			panic(err)
+		}
 		ac = append(ac, &Abbreviation{
-			ID:      uuid.New().String(),
+			ID:      id(),
 			Word:    word,
 			Abb:     abb,
 			Creator: userID,
@@ -56,7 +60,11 @@ func (s *abbService) ImportTextOnTop(userID string, dat []byte) (map[string][]*A
 			name = "# Förkortningslista (Standard)"
 		}
 		for abb, word := range list.Shortforms {
-			abb := Abbreviation{ID: uuid.New().String(), Word: word, Abb: abb, Creator: userID, Updated: time.Now()}
+			id, err := nanoid.CustomASCII("abcdef1234567890", 8)
+			if err != nil {
+				panic(err)
+			}
+			abb := Abbreviation{ID: id(), Word: word, Abb: abb, Creator: userID, Updated: time.Now()}
 			abbs = append(abbs, &abb)
 		}
 		imported[name] = abbs
@@ -77,7 +85,11 @@ func (s *abbService) ImportIllumiType(userID string, dat []byte) (map[string][]*
 		listNames[list.ID] = list.Name
 	}
 	for _, abb := range illumiList.Abbreviations {
-		a := Abbreviation{ID: uuid.New().String(), Word: abb.Word, Abb: abb.Abbreviation, Creator: userID, Updated: time.Now(), Remind: true}
+		id, err := nanoid.CustomASCII("abcdef1234567890", 8)
+		if err != nil {
+			panic(err)
+		}
+		a := Abbreviation{ID: id(), Word: abb.Word, Abb: abb.Abbreviation, Creator: userID, Updated: time.Now(), Remind: true}
 		imported[listNames[abb.ListID]] = append(imported[listNames[abb.ListID]], &a)
 	}
 	return imported, nil
@@ -95,7 +107,11 @@ func (s *abbService) ImportProtype(userID string, dat []byte) ([]*Abbreviation, 
 	//log.Printf("File length: %d\n", len(rs[2:])+1)
 	for i := range rs[2:] {
 		if i+1 == len(rs[2:]) {
-			abb := Abbreviation{ID: uuid.New().String(), Word: string(rawWord), Abb: string(rawAbb), Creator: userID, Updated: time.Now()}
+			id, err := nanoid.CustomASCII("abcdef1234567890", 8)
+			if err != nil {
+				panic(err)
+			}
+			abb := Abbreviation{ID: id(), Word: string(rawWord), Abb: string(rawAbb), Creator: userID, Updated: time.Now()}
 			abbs = append(abbs, &abb)
 			rawWord = nil
 			rawAbb = nil
@@ -113,7 +129,11 @@ func (s *abbService) ImportProtype(userID string, dat []byte) ([]*Abbreviation, 
 				first = false
 			} else if first == false {
 				first = true
-				abb := Abbreviation{ID: uuid.New().String(), Word: string(rawWord), Abb: string(rawAbb), Creator: userID, Updated: time.Now()}
+				id, err := nanoid.CustomASCII("abcdef1234567890", 8)
+				if err != nil {
+					panic(err)
+				}
+				abb := Abbreviation{ID: id(), Word: string(rawWord), Abb: string(rawAbb), Creator: userID, Updated: time.Now()}
 				abbs = append(abbs, &abb)
 				rawWord = nil
 				rawAbb = nil
@@ -154,7 +174,11 @@ func (s *abbService) Import(userID string, abbs []*Abbreviation) []*Abbreviation
 		a.Abb = strings.ToLower(a.Abb)
 		a.Creator = userID
 		a.Updated = time.Now()
-		a.ID = uuid.New().String()
+		id, err := nanoid.CustomASCII("abcdef1234567890", 8)
+		if err != nil {
+			panic(err)
+		}
+		a.ID = id()
 	}
 	return abbs
 }

@@ -9,7 +9,7 @@ import (
 
 	"github.com/botvid/webapp/abbreviation"
 	"github.com/botvid/webapp/document"
-	"github.com/google/uuid"
+	"github.com/jaevor/go-nanoid"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -87,7 +87,11 @@ func (s *userService) CreateUser(u *User) (*User, error) {
 		if u.ID != "" {
 			return s.GetUser(u.ID)
 		}
-		u.ID = uuid.New().String()
+		id, err := nanoid.CustomASCII("abcdef0123456789", 8)
+		if err != nil {
+			panic(err)
+		}
+		u.ID = id()
 		u.Created = time.Now()
 		u.Updated = time.Now()
 
@@ -96,7 +100,7 @@ func (s *userService) CreateUser(u *User) (*User, error) {
 		}
 
 		u.Settings = Defaults.Settings
-		err := s.repo.CreateUser(u)
+		err = s.repo.CreateUser(u)
 
 		return u, err
 	}
