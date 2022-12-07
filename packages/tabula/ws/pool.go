@@ -33,12 +33,14 @@ func (pool *Pool) Start() {
 			pool.Clients[client] = true
 			fmt.Println("Size of connection pool: ", len(pool.Clients))
 			for c := range pool.Clients {
+				client.mu.Lock()
 				if c == client {
 					continue
 				}
 				msg := Message{Type: JoinSession}
 				msg.Msg = "Client connected"
 				c.Conn.WriteJSON(msg)
+				client.mu.Unlock()
 			}
 			break
 		case client := <-pool.Unregister:
@@ -46,6 +48,7 @@ func (pool *Pool) Start() {
 			delete(pool.Clients, client)
 			fmt.Println("Size of connection pool:", len(pool.Clients))
 			for client := range pool.Clients {
+				client.mu.Lock()
 				msg := Message{Type: LeaveSession}
 				if interpreter {
 					msg.Msg = "interpreter"
@@ -53,14 +56,13 @@ func (pool *Pool) Start() {
 					msg.Msg = "user"
 				}
 				client.Conn.WriteJSON(msg)
+				client.mu.Unlock()
 			}
 			break
 		case broadcast := <-pool.Broadcast:
 			for client := range pool.Clients {
 				if broadcast.Conn != client.Conn {
-
 					client.mu.Lock()
-
 					if err := client.Conn.WriteJSON(broadcast.Message); err != nil {
 						fmt.Println(err)
 						client.mu.Unlock()

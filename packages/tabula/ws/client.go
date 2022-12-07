@@ -80,11 +80,15 @@ func (c *Client) messageHandler(msg Message) (*Message, bool) {
 			} else {
 				m.Msg = "waiting"
 			}
+			c.mu.Lock()
 			c.Conn.WriteJSON(m)
+			c.mu.Unlock()
 		} else {
 			log.Println("No session exists")
 			m := Message{Type: NoSession}
+			c.mu.Lock()
 			c.Conn.WriteJSON(m)
+			c.mu.Unlock()
 		}
 		return &msg, true
 	case LeaveSession:
@@ -178,7 +182,9 @@ func (c *Client) Read() {
 				broadcast := Broadcast{Conn: c.Conn, Message: handledMsg}
 				c.Pool.Broadcast <- broadcast
 			} else {
+				c.mu.Lock()
 				c.Conn.WriteJSON(handledMsg)
+				c.mu.Unlock()
 			}
 		} else {
 			continue
