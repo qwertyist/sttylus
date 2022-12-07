@@ -13,7 +13,10 @@
           <b-card-group v-for="d in changelog" v-bind:key="'updates_on_' + d.date">
             <b-card :header="d.date | formatChangeLogDate">
               <b-list-group v-for="c in d.changes" v-bind:key="'update_' + c.id">
-                <b-list-group-item>
+                <span v-if="c.type == 'version'">
+                  <h3>{{ c.description }}</h3>
+                </span>
+                <b-list-group-item v-else>
                   <span v-if="c.type == 'fix'">
                     <b>Buggfix: </b> 
                   </span>
@@ -52,15 +55,50 @@ export default {
     return {
       loading: true,
       error: {},
-      latest: new Date("2022, 11, 23"),
+      latest: new Date("2022, 11, 24"),
       changelog: [
+        {
+          date: new Date("2022, 12, 7"),
+          changes: [
+            {
+              id: 0,
+              type: "version",
+              description: "Version 1.1.0",
+            },
+            {
+              id: 1,
+              type: "update",
+              description: "Förkortningslistor cachas lokalt i webbläsaren för att skrivläget ska vara så responsivt som det bara går.",
+            },
+            {
+              id: 1,
+              type: "minor",
+              description: "Tillåt ej att scrolla horisontellt i skrivläget",
+            },
+          ],
+        },
+        {
+          date: new Date("2022, 11, 24"),
+          changes: [ 
+            {
+              id: 0,
+              type: "update",
+              description: "Egennamn följt av kolon i början av en rad triggar stor bokstav på nästa nedslag.",
+            },
+            {
+              id: 1,
+              type: "update",
+              description: "QR-kod finns som alternativ till länk.<br /> Tolkanvändarvyn kan visa QR-kod för aktuell tolkning.",
+            },
+          ]
+        },
         {
           date: new Date("2022, 11, 23"),
           changes: [ 
             {
               id: 0,
               type: "update",
-              description: "Tolkanvändarvyn försöker hindrar skärmen från att gå i viloläge eller låsas."
+              description: "Tolkanvändarvyn försöker hindra skärmen från att gå i viloläge eller låsas."
             },
             {
               id: 1,

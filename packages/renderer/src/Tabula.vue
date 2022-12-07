@@ -122,7 +122,7 @@ export default {
     cacheAbbs() {
       api
         .cacheAbbs()
-        .then(() => { })
+        .then(() => { EventBus.$emit("getAbbCache") })
         .catch((err) => {
           console.log("couldn't create cache", err);
         });
@@ -133,7 +133,6 @@ export default {
     //this.$bvModal.show("support");
     //ENDTEMP
     this.$store.commit("setModalOpen", false)
-    this.cacheAbbs();
     window.addEventListener("keydown", this.hotkeys);
     EventBus.$on("cacheAbbs", this.cacheAbbs);
     EventBus.$on("reloadEditor", this.reload);

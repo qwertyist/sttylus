@@ -1,9 +1,9 @@
 <template>
-  <div class="quillWrapper" :style="wrapper">
+  <div ref="quillWrapper" class="quillWrapper" :style="wrapper">
     <slot name="toolbar"></slot>
-    <div
+    <div 
       ref="quillContainer"
-      :class="{ 'ql-container': true }"
+      :class="{ 'ql-container': true, 'no-horizontal-scroll': true }"
       :style="settings.font"
       spellcheck="false"
     ></div>
@@ -30,6 +30,8 @@ export default {
     return {
       quill: null,
       websocket: null,
+      quillNode: null,
+      cache: false,
       presentation: false,
       child: null,
       name: "",
@@ -59,15 +61,16 @@ export default {
     wrapper() {
       return {
         backgroundColor: this.settings.font.backgroundColor,
-        padding: 20 + "px",
         height: (100 - (this.nav ? 5 : 0)) + "vh",
+        overflowX: "hidden"
       };
     },
   },
   mounted() {
     api
       .cacheAbbs()
-      .then((resp) => { })
+      .then(() => { 
+      })
       .catch((err) => {
         console.log("couldn't create cache", err);
       });
@@ -94,6 +97,9 @@ export default {
     Text.saveTextSettings(this.settings);
   },
   methods: {
+    scrollHandler(ev) {
+      console.log(ev.target.id);
+    },
     addEventListeners() {
       EventBus.$on("sharedAbb", this.sharedAbbs)
       EventBus.$on("addAbbreviation", this.openAddModal);
@@ -123,6 +129,7 @@ export default {
       EventBus.$on("websocketReconnecting", this.websocketReconnecting)
       EventBus.$on("clientConnected", this.clientConnected)
       EventBus.$on("clientDisconnected", this.clientDisconnected)
+      EventBus.$on("getAbbCache", this.updateCache)
     },
     removeEventListeners() {
       EventBus.$off("sharedAbb")
@@ -150,6 +157,7 @@ export default {
       EventBus.$off("stopPresentation")
       EventBus.$off("clientConnected")
       EventBus.$off("clientDisconnected")
+      EventBus.$off("getAbbCache")
     },
     createSession() {
       this.websocket.createsession();
@@ -297,15 +305,28 @@ export default {
     addAbb() {
 
     },
+    updateCache(abb) {
+      if(abb) {
+        console.log(abb)
+        this.quill.keyboard.cache.set(abb.abb, abb.word)
+      }
+      api.getAbbCache()
+      .then(resp => {
+        this.quill.keyboard.cache = new Map(Object.entries(resp.data))
+      })
+      .catch(err => {
+        console.error("couldn't get cached abbs", err)
+      })
+    },
     sharedAbbs(abb) {
       if (abb.me) {
         this.websocket.sendSharedAbb(abb)
       } else {
         console.log("RXAbb:", abb)
         let baseListId = this.$store.state.sharedList.base
-
         if (abb.create) {
           this.$toast.info('"' + abb.abb + '" → "' + abb.word + '" skapades')
+          this.quill.keyboard.cache.set(abb.abb, abb.word)
           if (baseListId) {
             api.createAbb(baseListId, abb).then(resp => {
               console.log("other user created abb");
@@ -316,14 +337,23 @@ export default {
         }
         if (abb.delete) {
           this.$toast.info('"' + abb.abb + '" togs bort')
-          api.deleteAbb(baseListId, abb).then(resp => {
+          api.deleteAbb(baseListId, abb)
+          .then(resp => {
             console.log("other user deleted abb");
+            api.abbreviate(abb.toLowerCase())
+            .then(resp => {
+              this.quill.keyboard.cache.set(abb.abb, resp.data)
+            })
+            .catch(err => {
+              console.error("couldn't override", err)
+            })
           }).catch(err => {
             console.error("other user couldnt delete abb", err)
           })
         }
         if (abb.override) {
           this.$toast.info('"' + abb.abb + '" skrevs över')
+          this.quill.keyboard.cache.set(abb.abb, abb.abb)
         }
         EventBus.$emit("sharedAbbEvent")
       }
@@ -346,6 +376,7 @@ export default {
       }, 25)
     },
     clear() {
+      console.log(this.quill)
       window.scrollTo(0, 0);
       if (this.websocket) {
         this.websocket.sendClear()
@@ -370,10 +401,10 @@ export default {
     setupEditor() {
       this.loadTextSettings();
       Text.initText()
-
       const editorConfig = {
         debug: false,
         theme: "snow",
+        scrollContainer:".quillWrapper",
         modules: {
           toolbar: null,
           keyboard: {
@@ -418,7 +449,7 @@ export default {
 </script>
 <style src="./tabula/quill.scss"></style>
 <style src="./tabula/quill.snow.css"></style>
-<style>
+<style scoped>
 /*.ql-editor {
   outline: 1px solid red !important
 }

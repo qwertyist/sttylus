@@ -1,23 +1,26 @@
 import axios from "axios";
 import { store } from "../store"
-import { setupCache } from "axios-cache-adapter"
+import { setup } from "axios-cache-adapter"
+import localforage from "localforage";
 
-const cache = setupCache({
-  maxAge: 28800,
-  key: req => {
-    return req.identifier
-  },
-  invalidate: async (cfg, request) => {
-    if (!cfg) {
-      if (request.createAbb) {
-        await cfg.store.removeItem(request.identifier);
-      }
-      if (request.clearCache) {
-        await cfg.store.clear();
-      }
-    }
-  }
+const foragestore = localforage.createInstance({
+  driver: [
+    localforage.INDEXEDDB,
+    localforage.LOCALSTORAGE,
+  ],
+  name: "abbCache",
 })
+
+const cache = {
+  maxAge: 28800,
+  store: foragestore,
+  exclude: {
+    query: false,
+    methods: ['post', 'patch', 'put', 'delete']
+  },
+  invalidate: async (config, request) => {
+  },
+}
 
 function createAxiosInstance() {
   if (import.meta.env.VITE_STTYLUS_MODE != "desktop") {
@@ -26,10 +29,10 @@ function createAxiosInstance() {
     if (import.meta.env.VITE_STTYLUS_DEBUG == "true"){
       api = "/"
     }
-    return axios.create({
+    return setup({
       baseURL: import.meta.env.VITE_STTYLUS_BACKEND + api,
+      adapter: cache.adapter,
       headers: {
-        'Cache-Control': 'no-cache',
         common: {
           "X-Id-Token": localStorage.getItem("user-token")
         }
@@ -37,10 +40,10 @@ function createAxiosInstance() {
     })
   } else {
  //   console.log("Axios instance points to local server:\n", import.meta.env.VITE_STTYLUS_LOCAL_BACKEND + "/api")
-    return axios.create({
+    return setup({
       baseURL: import.meta.env.VITE_STTYLUS_LOCAL_BACKEND + "/",
+      cache: cache,
       headers: {
-        'Cache-Control': 'no-cache',
         common: {
           "X-Id-Token": localStorage.getItem("user-token")
         }
@@ -81,13 +84,13 @@ export default {
     return HTTP.get("/abbs/list/" + id, { cache: { ignoreCache: true } })
   },
   getLists(listIDs) {
-    return HTTP.post("/abbs/lists", { list_ids: listIDs })
+    return HTTP.post("/abbs/lists", { data: { list_ids: listIDs }}, { cache: { ignoreCache: true }})
   },
   filterAbbs(ctx) {
-    return HTTP.post("/abbs/filter", ctx)
+    return HTTP.post("/abbs/filter", ctx, { cache: { ignoreCache: true }})
   },
   getUserLists() {
-    return HTTP.get("/abbs/lists", { cache: { ignoreCache: true, identifer: "user_lists" } })
+    return HTTP.get("/abbs/lists", { cache: { ignoreCache: true } })
   },
   getUserListsByID(id) {
     return HTTP.get("/abbs/lists", {
@@ -96,11 +99,11 @@ export default {
           "X-Id-Token": id
         }
       },
-      cache: { ignoreCache: true }
+      ignoreCache: true 
     })
   },
   getAbb(listID, abb) {
-    return HTTP.get("/abbs/abbreviation/" + listID + "/" + abb, { cache: { ignoreCache: true } })
+    return HTTP.get("/abbs/abbreviation/" + listID + "/" + abb, { cache: { ignoreCache: true }})
   },
   getAbbs(listID) {
     return HTTP.post("/abbs/abbreviations/" + listID)
@@ -119,7 +122,7 @@ export default {
       abb: abb.abb,
       word: abb.word,
       creator: store.state.user.id
-    }, { createAbb: true, identifier: abb.abb }
+    }, { cache:{ clearCacheEntry: true, identifier: abb.abb }}
     )
   },
   updateAbb(listID, abb) {
@@ -129,13 +132,18 @@ export default {
     return HTTP.delete("/abbs/abbreviation/" + listID + "/" + abb.abb)
   },
   cacheAbbs() {
-    return HTTP.post("/abbs/cache", { standard: store.state.settings.selectedLists.standard, addon: store.state.settings.selectedLists.addon }, { clearCache: true })
+    return HTTP.post("/abbs/cache", { standard: store.state.settings.selectedLists.standard, addon: store.state.settings.selectedLists.addon }, { cache: { clearCache: true }})
+  },
+  getAbbCache() {
+    return HTTP.get("/abbs/cache", { cache: { ignoreCache: true }})
   },
   abbreviate(abb) {
-    return HTTP.get("/abbs/abbreviate/" + encodeURIComponent(abb), { identifier: abb })
+    const caps = abb.toUpperCase() == abb ? "1" : "0"
+    const title = abb[0].toUpperCase() === abb[0] ? "1" : "0"
+    abb = abb.toLowerCase()
+    return HTTP.get("/abbs/abbreviate/" + encodeURIComponent(abb), { cache: { ignoreCache: true}, params: { c: caps, t: title}})
   },
   initSharedList(baseListId = "") {
-
     console.log("make post request", baseListId)
     if (baseListId) {
       return HTTP.post("/abbs/shared", { id: baseListId }, { cache: { ignoreCache: true } })
@@ -226,10 +234,16 @@ export default {
     if (settings == null) {
       settings = store.state.settings
     }
-    return HTTP.post("/settings/", settings)
+    try {
+      settings.font.lineHeight = parseFloat(settings.font.lineHeight)
+    } catch (err) {
+      console.error("lineheight stored as string", err)
+      settings.font.lineHeight = 1.25
+    }
+    return HTTP.post("/settings", settings)
   },
   getSettings() {
-    return HTTP.get("/settings/", { cache: { ignoreCache: true } })
+    return HTTP.get("/settings", { cache: { ignoreCache: true } })
   },
   getUsers() {
     return HTTP.get("/users", { cache: { ignoreCache: true } })

@@ -74,6 +74,8 @@ Vue.prototype.$version = __APP_VERSION__;
 Vue.prototype.$lastUpdate = import.meta.env.VITE_STTYLUS_BUILD_DATE
 Vue.config.productionTip = false;
 
+console.log("App mode:", import.meta.env.VITE_STTYLUS_MODE)
+
 if(import.meta.env.VITE_STTYLUS_MODE == undefined || import.meta.env.VITE_STTYLUS_MODE == "desktop") {
   Vue.prototype.$mode = "desktop"
   Vue.prototype.$backend = import.meta.env.VITE_STTYLUS_LOCAL_BACKEND;
@@ -135,7 +137,7 @@ new Vue({
           router.push('/login');
         }
       }
-    }
+    },
   },
   computed: {
     mode(): string {

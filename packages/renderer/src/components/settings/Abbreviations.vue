@@ -335,7 +335,7 @@ export default {
       this.$store.commit("setSelectedAddons", this.selectedAddons);
     }
 
-    window.addEventListener("scroll", this.onScrollAbbs);
+    //window.addEventListener("scroll", this.onScrollAbbs);
     EventBus.$on("changeStandardList", this.quickSelectStandard )
     EventBus.$on("createdAbb", (abb) => {
       if(abb.targetListId == this.viewedList.id) {
@@ -351,7 +351,7 @@ export default {
     EventBus.$on("setModalOpen", this.onShow);
   },
   beforeDestroy() {
-    window.removeEventListener("scroll", this.onScrollAbb);
+    //window.removeEventListener("scroll", this.onScrollAbb);
     EventBus.$off("changeStandardList");
     EventBus.$off("createdAbb");
     EventBus.$off("createdList");

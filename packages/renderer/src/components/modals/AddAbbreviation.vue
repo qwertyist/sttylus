@@ -195,6 +195,7 @@ export default {
         })
         .then((resp) => {
           EventBus.$emit("createdAbb", data);
+          EventBus.$emit("getAbbCache", data);
           this.$store.commit("setSelectedWord", "");
           this.$bvModal.hide("addAbb")
         })

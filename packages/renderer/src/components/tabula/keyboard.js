@@ -22,18 +22,20 @@ export default class keyboard extends Keyboard {
         }
     }
     constructor(quill, options) {
-        super(quill, options)
-        this.abbreviated = false;
-        this.querying = null;
-        this.capitalizeNext = 1;
-        this.scrollIntoView = false;
-        this.manuscriptEditor = options.manuscriptEditor
-        this.URL = false
-        this.addKeybindings()
-        this.scrollHandler(quill.root)
-        this.prompt = ""
-        this.lastKey = ""
-        this.cache = new Map();
+      super(quill, options)
+      this.instance = (Math.random() + 1).toString(36).substring(7);
+      this.abbreviated = false;
+      this.querying = null;
+      this.capitalizeNext = 1;
+      this.scrollIntoView = false;
+      this.manuscriptEditor = options.manuscriptEditor
+      this.URL = false
+      this.addKeybindings()
+      this.scrollHandler(quill.root)
+      this.prompt = ""
+      this.lastKey = ""
+      this.cache = null
+      this.getAbbCache()
     }
     listen() {
         this.quill.root.addEventListener("keydown", e => {
@@ -67,11 +69,16 @@ export default class keyboard extends Keyboard {
 
     }
 
-    cacheAbb(abb) {
-        if (abb.capitalize) {
-            abb.word = abb.word.slice(0, 1).toLowerCase() + abb.word.slice(1)
-        }
-        this.cache.set(abb.abb, abb.word)
+    getAbbCache() {
+      api.getAbbCache()
+      .then(resp => {
+        this.cache = new Map(Object.entries(resp.data))
+        console.log(this.instance, this.cache)
+      })
+      .catch(err => {
+        console.error("couldn't get cached abbs", err)
+      })
+
     }
 
     unloadAbb(abb) {
@@ -79,7 +86,7 @@ export default class keyboard extends Keyboard {
     }
 
     wordBeforeCursor(prefix) {
-        return prefix.split(/[\u200B\s-\/"'()]/).pop()
+      return prefix.split(/[\u200B\s-.,:;_\/"'()]/).pop()
     }
 
     capitalize(word) {
@@ -93,34 +100,70 @@ export default class keyboard extends Keyboard {
             quill.deleteText(index - abb.length, abb.length)
             this.prompt = abb
         } else {
+          const caps = abb.toUpperCase() == abb
+          const title = abb[0].toUpperCase() === abb[0] 
+          let match = this.cache.get(abb.toLowerCase())
+          console.log(abb, caps, title)
+          console.log(this.instance, match)
+          api.abbreviate(abb)
+          .then((resp) => {
+            if (resp.status == 208) {
+              let missed = resp.data
+              store.commit("incrementMissedAbb", { word: abb, abb: resp.data })
+            }
+          })
+          .catch(() => {})
+
+          if(match) {
+            let word = match
+            if (title) {
+              console.log("make titlecase")
+              word = match.charAt(0).toUpperCase() + match.slice(1)
+            }
+            if (caps) {
+              console.log("make caps")
+              word = match.toUpperCase()
+            }
+            console.log(word)
+            this.insertAbbreviation(index, abb, abbreviator, word, quill)
+            setTimeout(() => quill.setSelection(quill.getSelection().index, 0), 0)
+            return
+          }
+          quill.insertText(index, abbreviator)
+           /* 
             setTimeout(() => {
                 console.log("Querying");
                 this.querying = false
             }, 125)
             if (!this.querying) {
                 this.querying = true;
+                console.log(abb)
                 api.abbreviate(abb)
-                    .then(r => {
-                        let word = r.data.word;
-                        if (r.status == 204) {
-                            console.log("No content")
+                    .then(resp => {
+                        let word = ""
+                        if (resp.status == 208) {
+                            let missed = resp.data
+                            store.commit("incrementMissedAbb", { word: abb, abb: missed })
                             word = abb
                         }
-                        if (r.data.missed) {
-                            console.log("Missed abb!")
-                            store.commit("incrementMissedAbb", { word: abb, abb: word })
+                        if (resp.status == 204) {
                             word = abb
-
+                        }
+                        
+                        if (resp.status == 200) {
+                            word = resp.data
                         }
 
+                      console.log(resp.request, resp.status, resp.data) 
                         this.insertAbbreviation(index, abb, abbreviator, word, quill)
                         setTimeout(() => quill.setSelection(quill.getSelection().index, 0), 0)
                     }).catch(err => {
-                        this.insertAbbreviation(index, abb, abbreviator, abb, quill)
+                      console.error("abbreviate failed:", err)
+                      this.insertAbbreviation(index, abb, abbreviator, abb, quill)
                     })
             } else {
-                quill.insertText(index, abbreviator)
             }
+          */
         }
     }
 
@@ -385,18 +428,19 @@ export default class keyboard extends Keyboard {
             return true
           }
         })
+
         //Period
         this.addBinding({
             key: 190,
             handler: function (range, context) {
-                let abb = this.wordBeforeCursor(context.prefix)
-                if (!abb.trim()) {
-                    return true
-                }
-                this.capitalizeNext = true
-                this.abbreviated = true;
-                this.URL = true
-                this.abbreviate(range.index, abb, ".", this.quill)
+              let abb = this.wordBeforeCursor(context.prefix)
+              if (abb == ".." || !abb.trim()) {
+                  return true
+              }
+              this.capitalizeNext = true
+              this.abbreviated = true;
+              this.URL = true
+              this.abbreviate(range.index, abb, ".", this.quill)
             }
         })
         //Colon
@@ -404,10 +448,13 @@ export default class keyboard extends Keyboard {
             key: 190,
             shiftKey: true,
             handler: function (range, context) {
-                if (context.prefix.split(" ").length == 1) {
-                    this.capitalizeNext = true;
-                }
+                this.capitalizeNext = true;
+                context.prefix.split(" ").map(w => {
+                  if (w[0] === w[0].toLowerCase()) this.capitalizeNext = false;
+                })
+
                 let abb = this.wordBeforeCursor(context.prefix)
+                if (abb.length == 0) return true;
                 this.abbreviate(range.index, abb, ":", this.quill)
             }
         })
@@ -417,6 +464,7 @@ export default class keyboard extends Keyboard {
             key: 188,
             handler: function (range, context) {
                 let abb = this.wordBeforeCursor(context.prefix)
+                if (abb.length == 0) return true
                 this.abbreviate(range.index, abb, ",", this.quill)
             }
         })
@@ -426,6 +474,7 @@ export default class keyboard extends Keyboard {
             shiftKey: true,
             handler: function (range, context) {
                 let abb = this.wordBeforeCursor(context.prefix)
+                if (abb.length == 0) return true
                 this.abbreviate(range.index, abb, ";", this.quill)
             }
         })
@@ -434,6 +483,7 @@ export default class keyboard extends Keyboard {
             key: 189,
             handler: function (range, context) {
                 let abb = this.wordBeforeCursor(context.prefix)
+                if (abb.length == 0) return true
                 this.abbreviate(range.index, abb, "-", this.quill)
             }
         })
@@ -443,6 +493,7 @@ export default class keyboard extends Keyboard {
             shiftKey: true,
             handler: function (range, context) {
                 let abb = this.wordBeforeCursor(context.prefix)
+                if (abb.length == 0) return true
                 this.abbreviate(range.index, abb, "!", this.quill)
                 this.capitalizeNext = true
                 this.abbreviated = true;
@@ -454,6 +505,7 @@ export default class keyboard extends Keyboard {
             shiftKey: true,
             handler: function (range, context) {
                 let abb = this.wordBeforeCursor(context.prefix)
+                if (abb.length == 0) return true
                 this.abbreviate(range.index, abb, "?", this.quill)
                 this.capitalizeNext = true
                 this.abbreviated = true;
@@ -465,6 +517,7 @@ export default class keyboard extends Keyboard {
             shiftKey: true,
             handler: function (range, context) {
                 let abb = this.wordBeforeCursor(context.prefix)
+                if (abb.length == 0) return true
                 this.abbreviate(range.index, abb, "/", this.quill)
                 this.capitalizeNext = false;
                 this.abbreviated = true;
@@ -476,6 +529,7 @@ export default class keyboard extends Keyboard {
             shiftKey: true,
             handler: function (range, context) {
                 let abb = this.wordBeforeCursor(context.prefix)
+                if (abb.length == 0) return true
                 this.abbreviate(range.index, abb, "\"", this.quill)
                 this.capitalizeNext = false;
                 this.abbreviated = true;
@@ -487,6 +541,7 @@ export default class keyboard extends Keyboard {
             handler: function (range, context) {
                 console.log("\' quotation mark")
                 let abb = this.wordBeforeCursor(context.prefix)
+                if (abb.length == 0) return true
                 this.abbreviate(range.index, abb, "'", this.quill)
                 this.capitalizeNext = false;
                 this.abbreviated = true;

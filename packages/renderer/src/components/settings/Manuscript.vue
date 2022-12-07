@@ -148,9 +148,9 @@
       >
         <div class="manuscriptEditor">
           <ManuscriptEditor v-bind:id="id" />
+          <b-button @click="saveManuscript">Spara</b-button>
           <SaveManuscript v-bind:manuscript="manuscript" v-bind:id="id" v-bind:close="close" />
         </div>
-        <b-button @click="saveManuscript">Spara</b-button>
       </b-tab>
       <template v-if="id && id !== 'parsed' && id !== 'new'" v-slot:tabs-end>
         <b-nav-item
@@ -521,7 +521,8 @@ export default {
 
 <style scoped>
 .manuscriptEditor {
-  height: 85%;
+  max-height: 98% !important;
+  height: 98% !important;
 }
 p {
   max-width: 100% !important;

@@ -245,7 +245,7 @@ export default {
     this.addEventListeners();
     api
       .cacheAbbs()
-      .then((resp) => { })
+      .then((resp) => { EventBus.$emit("getAbbCache")})
       .catch((err) => {
         console.log("manuscript editor couldn't create abbs cache");
       });

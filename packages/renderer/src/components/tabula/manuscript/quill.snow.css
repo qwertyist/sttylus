@@ -5,10 +5,13 @@
  * Copyright (c) 2013, salesforce.com
  */
  .ql-container {
+    box-sizing: border-box;
+    font-family: Helvetica, Arial, sans-serif;
     height: 100%;
-    position: fixed;
+    max-height: 100% !important;
+    margin: 0px;
+    position: relative;
     width: 100%;
-    overflow-x: hidden !important;
   }
   .ql-container.ql-disabled .ql-tooltip {
     visibility: hidden;
@@ -27,24 +30,20 @@
     margin: 0;
     padding: 0;
   }
-
   .ql-editor {
     position: absolute;
-    height: 90%;
-    max-height: 90%;
+    left: 0px;
+    right: -15px;
+    padding-right: 20px;
+    height: 95%;
+    width: 100vw;
+    outline: none;
     overflow-y: scroll;
-
+    tab-size: 4;
+    -moz-tab-size: 4;
     text-align: left;
     white-space: pre-wrap;
     word-wrap: break-word;
-
-    overflow-x: hidden !important;
-    max-width: 100% !important;
-    width: 100% !important;
-    padding-right: 20px !important;
-
-    tab-size: 4;
-    -moz-tab-size: 4;
   }
   .ql-editor > * {
     cursor: text;
@@ -60,8 +59,8 @@
   .ql-editor h4,
   .ql-editor h5,
   .ql-editor h6 {
-    margin: 0px;
-    padding: 0px;
+    margin-right: 15px;
+    padding-right: 15px;
     counter-reset: list-1 list-2 list-3 list-4 list-5 list-6 list-7 list-8 list-9;
   }
   .ql-editor ol,

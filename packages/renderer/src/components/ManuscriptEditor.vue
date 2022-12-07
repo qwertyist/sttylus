@@ -58,8 +58,8 @@ export default {
     manuscriptStyle() {
       return {
         fontSize: 35 + "px",
-        maxWidth: 70 + "vw !important",
-        height: 100 + "% !important"
+        maxWidth: 100  + "% !important",
+        height: 68 + "vh !important"
       }
     },
     wrapper() {
@@ -222,8 +222,8 @@ export default {
   },
 };
 </script>
-<style src="./tabula/quill.scss" lang="scss"></style>
-<style src="./tabula/quill.snow.css"></style>
+<style src="./tabula/manuscript/quill.scss" lang="scss"></style>
+<style src="./tabula/manuscript/quill.snow.css"></style>
 <style scoped>
 .manuscriptEditor {
   max-height: 50% !important;
@@ -233,7 +233,7 @@ export default {
 }
 .ql-editor {
   outline: 1px solid red;
-  width: 65 vw !important;
+  width: 100% !important;
 }
 .ql-container {
   width: 55vw !important;
