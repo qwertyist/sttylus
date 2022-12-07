@@ -261,6 +261,7 @@ export default {
   },
   methods: {
     catchEscape() {
+      this.closeModal();
       this.$bvModal.hide("support");
     },
     showModal() {
@@ -288,6 +289,7 @@ export default {
     },
     closeModal() {
       this.lookupPhrase = ""
+      this.lookupResults = []
       this.$store.commit("setModalOpen", false)
       EventBus.$off("sharedAbbEvent")
       this.$bvModal.hide("addAbb");
@@ -501,15 +503,14 @@ export default {
       let selected = this.$store.state.settings.selectedLists
       if (selected) {
         console.log("Found selected lists")
-        api
-          .getLists([selected.standard].concat(selected.addon))
+        api.getLists([selected.standard].concat(selected.addon))
           .then((resp) => {
             this.selectedLists = resp.data.filter(l => {
               return l.type == 1;
             })
           })
           .catch((err) => {
-            console.log("couldnt get lists:", err)
+            console.error("support.getselectedLists failed:", err)
           });
       }
     },
