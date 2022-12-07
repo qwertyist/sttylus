@@ -55,7 +55,7 @@ export default {
     return {
       loading: true,
       error: {},
-      latest: new Date("2022, 11, 24"),
+      latest: new Date("2022, 122, 7"),
       changelog: [
         {
           date: new Date("2022, 12, 7"),
@@ -71,9 +71,19 @@ export default {
               description: "Förkortningslistor cachas lokalt i webbläsaren för att skrivläget ska vara så responsivt som det bara går.",
             },
             {
-              id: 1,
+              id: 2,
               type: "minor",
               description: "Tillåt ej att scrolla horisontellt i skrivläget",
+            },
+            {
+              id: 3,
+              type: "minor",
+              description: "Rensa/nollställ stödtolkningsrutan när den stängs",
+            },
+            {
+              id: 4,
+              type: "update",
+              description: "Åtgärdat en allvarlig bugg ('Concurrent write') som orsakat två krascher i distanstolkningsservern senaste veckorna."
             },
           ],
         },
