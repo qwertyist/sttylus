@@ -11,6 +11,7 @@ require (
 	github.com/google/uuid v1.1.2
 	github.com/gorilla/mux v1.8.0
 	github.com/gorilla/websocket v1.5.0 // indirect
+	github.com/jaevor/go-nanoid v1.3.0 // indirect
 	github.com/joho/godotenv v1.3.0
 	github.com/lithammer/fuzzysearch v1.1.5 // indirect
 	github.com/lu4p/cat v0.1.5

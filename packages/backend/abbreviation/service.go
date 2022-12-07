@@ -8,13 +8,14 @@ import (
 	"unicode"
 	"unicode/utf8"
 
-	"github.com/google/uuid"
+	"github.com/jaevor/go-nanoid"
 )
 
 //AbbService is
 type AbbService interface {
 	Abbreviate(userID, abbQuery string) (string, bool)
 	Lookup(userID, abb string) AbbsInList
+	GetAbbCache(userID string) map[string]string
 
 	CreateAbb(listID string, abb *Abbreviation) error
 	CreateManyAbbs(listID string, abbs []*Abbreviation) error
@@ -113,7 +114,7 @@ func capitalize(abb, word string) string {
 }
 
 func (s *abbService) Abbreviate(userID, abbQuery string) (string, bool) {
-	//log.Printf("service|Abbreviate got abb %s from user %s\n", q.Abb, q.UserID)
+	log.Printf("service|Abbreviate got abb %s from user %s\n", abbQuery, userID)
 	sharedListID := s.cache.UserSharedList[userID]
 	if sharedListID != "" {
 		w, f := s.cache.SharedAbbs[sharedListID][strings.ToLower(abbQuery)]
@@ -192,11 +193,15 @@ func (s *abbService) GetAbbs(listID string) ([]*Abbreviation, error) {
 }
 
 func (s *abbService) CreateAbb(listID string, abb *Abbreviation) error {
-	abb.ID = uuid.New().String()
+	id, err := nanoid.CustomASCII("abcdef1234567890", 8)
+	if err != nil {
+		panic(err)
+	}
+	abb.ID = id()
 	abb.Updated = time.Now()
 	abb.Remind = true
 	abb.Abb = strings.ToLower(abb.Abb)
-	err := s.repo.CreateAbb(listID, abb)
+	err = s.repo.CreateAbb(listID, abb)
 
 	err = s.TouchList(listID)
 	if err != nil {
@@ -279,7 +284,11 @@ func (s *abbService) CopyStandardList(userID string) (string, error) {
 
 func (s *abbService) CreateList(list *List) (string, error) {
 	if list.ID == "" {
-		list.ID = uuid.New().String()
+		id, err := nanoid.CustomASCII("abcdef1234567890", 8)
+		if err != nil {
+			panic(err)
+		}
+		list.ID = id()
 	}
 	list.Created = time.Now()
 	list.Updated = time.Now()

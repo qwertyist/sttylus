@@ -4,7 +4,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/google/uuid"
+	"github.com/jaevor/go-nanoid"
 )
 
 type DocService interface {
@@ -39,10 +39,14 @@ func (s *docService) GetDocs(userID string) ([]*Document, error) {
 }
 
 func (s *docService) CreateDoc(doc *Document) (*Document, error) {
-	doc.ID = uuid.New().String()
+	id, err := nanoid.CustomASCII("abcdef0123456789", 8)
+	if err != nil {
+		panic(err)
+	}
+	doc.ID = id()
 	doc.Created = time.Now()
 	doc.Updated = time.Now()
-	err := s.repo.CreateDoc(doc)
+	err = s.repo.CreateDoc(doc)
 	return doc, err
 }
 

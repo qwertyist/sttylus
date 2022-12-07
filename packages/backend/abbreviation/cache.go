@@ -36,6 +36,15 @@ func (s *abbService) InitCache(userIDs []string) {
 	s.cache.PublicLists = make(map[string]*List)
 }
 
+func (s *abbService) GetAbbCache(userID string) map[string]string {
+	cache := make(map[string]string)
+	tmp := s.cache.UserAbbs[userID]
+	for abb, word := range tmp {
+		cache[abb] = word.Word
+	}
+	return cache
+}
+
 func (s *abbService) Cache(q query) error {
 	if s.cache.UserSuggestions[q.UserID] == nil {
 		s.cache.UserSuggestions[q.UserID] = make(map[string]int)
