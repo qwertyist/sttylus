@@ -62,7 +62,8 @@
           v-html="example"
         ></div>
       </b-form>
-        <div v-show="isMobile" class="d-flex justify-content-between align-items-center">
+        <template v-if="isMobile">
+        <div class="d-flex justify-content-between align-items-center">
             <b-button size="md" @click="decreaseTextSize">
               <b-icon icon="dash-square-fill" aria-hidden="true"></b-icon>
               Mindre
@@ -73,8 +74,9 @@
             </b-button>
             <b-button size="md" @click="changeColor">Byt färger</b-button>
         </div>
-      <br />
-      <b-button @click="toggleQRCode()" size="md" class="float-right" variant="info">QR-kod</b-button>
+        <br />
+        <b-button @click="toggleQRCode()" size="md" class="float-right" variant="info">QR-kod</b-button>
+      </template>
     </b-modal>
   </div>
 </template>

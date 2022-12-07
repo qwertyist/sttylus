@@ -26,7 +26,7 @@ export default {
     data() {
         return {
             qr: {
-              show: true,
+              show: false,
               url: "",
             },
             clicks: 0,
@@ -35,7 +35,7 @@ export default {
         }
     },
     mounted() {
-
+      console.log("mobile:", this.$mobile);
       EventBus.$on("toggleQRCode", this.toggleQRCode)
       EventBus.$on("setQRCodeURL", this.setQRCode)
       this.getScreenLock();
