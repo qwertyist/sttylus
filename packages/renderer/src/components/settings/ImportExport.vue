@@ -476,6 +476,15 @@ export default {
     },
     importSTTylus(short_id) {
       this.$toast.info("Försöker hämta lista med kort-ID:" + this.form.id)
+      if(this.$mode =="desktop") {
+        axios.get("https://sttylus.se/api2/abbs/public/" + this.form.id)
+        .then(resp => {
+          this.$toast.info("Hämtar listan...")
+          this.confirm = true;
+          this.populateAbbs(resp.data.abbs);
+        })
+        return
+      }
       api.importSTTylus(this.form.id)
       .then(resp => {
         this.$toast.info("Hämtar listan...")

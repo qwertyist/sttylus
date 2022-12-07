@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>STTylus 1.0.0 - Lokalisera inställningsfil</title>
+  <link rel="stylesheet" href="style.css">
+  <script>
+    const messages = {
+      locateDatabase: "Kunde inte hitta dina inställningar. Lokalisera filen sttylus.db i den tidigare installationsmappen",
+      tryAgain: "Tryck [OK] för att bekräfta att du vill avbryta. STTylus kommer då att skapa en ny användare utifrån den gemensamma standardlistan."
+    }
+    function confirmAbort() {
+      const resp = confirm(messages.tryAgain)
+      if (resp) {
+        global.dbFile = null
+        nw.Window.get().close()
+        return
+      } else {
+        nw.Window.get().reload()
+      }
+    }
+    async function getFile() {
+      const [fileHandle] = await window.showOpenFilePicker({
+        types: [
+          {
+            accept: {
+              "sttylus/database": ".db"
+            }
+
+          }
+        ],
+        excludeAcceptAllOption: true,
+        startIn: "desktop",
+      })
+    
+          const fileData = await fileHandle.getFile();
+       return fileData
+      /*
+         
+        });
+        */
+    }
+    window.onload = () => {
+
+      const fileSelector = document.getElementById("fileSelector")
+
+      window.alert(messages.locateDatabase)
+      fileSelector.addEventListener('click', async (e) => {
+        e.preventDefault();
+        // Destructure the one-element array.
+
+        getFile().then(f => {
+          console.log("got file", f)
+          global.dbFile = f
+          nw.Window.get().close()
+
+        })
+        .catch(err => {
+          console.error("aborted", err)
+          confirmAbort()
+        })
+        // Do something with the file handle.
+      })
+    }  
+  </script>
+</head>
+
+<body>
+  <input type="file" accept="*.db" id="fileSelector" onclick="null" />
+</body>
+
+</html>

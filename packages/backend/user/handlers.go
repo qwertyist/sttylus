@@ -52,8 +52,8 @@ func Endpoints(r *mux.Router, h UserHandler) {
 	r.HandleFunc("/user/{id}", h.UpdateUser).Methods("PUT")
 	r.HandleFunc("/user/{id}", h.DeleteUser).Methods("DELETE")
 
-	r.HandleFunc("/settings/", h.UpdateSettings).Methods("POST")
-	r.HandleFunc("/settings/", h.GetSettings).Methods("GET")
+	r.HandleFunc("/settings", h.UpdateSettings).Methods("POST")
+	r.HandleFunc("/settings", h.GetSettings).Methods("GET")
 
 	r.HandleFunc("/auth", h.Auth).Methods("POST")
 	r.HandleFunc("/login", h.Login).Methods("POST")

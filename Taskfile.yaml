@@ -33,8 +33,7 @@ tasks:
       - echo "Building $STTYLUS_BUILD ..."
       - cp packages/loader/manifest.json dist/renderer/package.json
       - cp packages/loader/index.js dist/renderer/index.js
-      - task: prebuild
-      - task: local
+      - task: local:win
       - task: consumer
       - cp -r dist/renderer/* /tmp/latest/
     silent: false

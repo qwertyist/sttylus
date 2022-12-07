@@ -1,7 +1,7 @@
 { 
   "name": "STTylus",
   "main": "index.js",
-  "version": "0.0.0",
+  "version": "1.1.0",
   "chromium-args":"--enable-logging=stderr",
   "width": 1200,
   "height": 700

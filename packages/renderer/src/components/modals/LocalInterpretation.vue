@@ -46,11 +46,9 @@
         </b-card>
         <b-card
             header="Tolkning på projektorduk eller extern skärm"
-            sub-title="Visa texten utan distraktioner på en annan skärm"
+            sub-title="Öpnnar en ruta som visar texten utan distraktioner, som kan visas på en annan skärm"
         >
             <b-card-text>
-                <div v-if="screens.length == 1">Du har bara en skärm ansluten</div>
-                <div v-else>Du har en extern skärm eller projektor ansluten.</div>
                 <div v-if="!presentation">
                     <b-button @click="startPresentation">Utvidga</b-button>
                 </div>
@@ -109,7 +107,6 @@ export default {
             this.local = status
         },
         updateConnectedScreens() {
-
         this.screens = nw.Screen.screens
         },
         displayBoundsChanged(screen) {

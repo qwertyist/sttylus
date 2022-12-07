@@ -149,7 +149,6 @@ new Vue({
       return mode;
     },
   },
-
   mounted() {
     document.title = "STTylus | " + this.$version;
     EventBus.$on('checkConnection', this.checkConnection);

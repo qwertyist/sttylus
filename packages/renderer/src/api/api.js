@@ -26,9 +26,6 @@ function createAxiosInstance() {
   if (import.meta.env.VITE_STTYLUS_MODE != "desktop") {
 //    console.log("Axios instance points to production server:\n", import.meta.env.VITE_STTYLUS_BACKEND + "/api2")
     let api = "/api2"
-    if (import.meta.env.VITE_STTYLUS_DEBUG == "true"){
-      api = "/"
-    }
     return setup({
       baseURL: import.meta.env.VITE_STTYLUS_BACKEND + api,
       adapter: cache.adapter,
@@ -52,6 +49,7 @@ function createAxiosInstance() {
   }
 }
 const HTTP = createAxiosInstance();
+console.log(HTTP)
 
 export default {
   checkForToken() {
