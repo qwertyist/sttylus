@@ -82,7 +82,7 @@ export default {
     return HTTP.get("/abbs/list/" + id, { cache: { ignoreCache: true } })
   },
   getLists(listIDs) {
-    return HTTP.post("/abbs/lists", { data: { list_ids: listIDs }}, { cache: { ignoreCache: true }})
+    return HTTP.post("/abbs/lists", { list_ids: listIDs },  { icache: { ignoreCache: true }})
   },
   filterAbbs(ctx) {
     return HTTP.post("/abbs/filter", ctx, { cache: { ignoreCache: true }})
