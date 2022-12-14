@@ -80,6 +80,16 @@ export default {
               type: "update",
               description: "Ta bort föregående ord i manuskript med pil vänster",
             },
+            {
+              id: 4,
+              type: "minor",
+              description: "<i>Påminn inte</i> i stödtolkningsrutan döljer förkortningen direkt.",
+            },
+            {
+              id: 4,
+              type: "update",
+              description: "Knapp för att nollställa missade förkortningar.",
+            },
           ],
         },
         {
