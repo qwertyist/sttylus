@@ -86,9 +86,14 @@ export default {
               description: "<i>Påminn inte</i> i stödtolkningsrutan döljer förkortningen direkt.",
             },
             {
-              id: 4,
+              id: 5,
               type: "update",
               description: "Knapp för att nollställa missade förkortningar.",
+            },
+            {
+              id: 6,
+              type: "update",
+              description: "Export av ämneslistor i STTylus fungerar",
             },
           ],
         },

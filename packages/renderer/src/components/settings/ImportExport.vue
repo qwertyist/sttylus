@@ -100,7 +100,7 @@
               </b-col>
               <b-col>
                 <small>{{ addon.counter }} förkortningar</small>
-                <b-button class="float-right" size="sm" @click="exportSTTylus(standard.value)">Exportera</b-button>
+                <b-button class="float-right" size="sm" @click="exportSTTylus(addon.value)">Exportera</b-button>
 
               </b-col>
               </b-row>
