@@ -176,6 +176,8 @@
           </b-row>
         </b-list-group-item>
       </b-list-group>
+            <br />
+            <b-button class="float-right" size="sm" @click="resetMissedAbbs()">Nollställ</b-button>
     </div>
     <div v-else>
       <b-badge>...</b-badge>
@@ -621,8 +623,13 @@ export default {
     addAbb(word) {
       this.$emit("addAbb", word);
     },
+    resetMissedAbbs() {
+      this.$store.commit("createMissedAbbsMap")
+      this.filterMissedAbbs()
+    },
     hideMissed(abb) {
       this.$store.commit("forgetMissedAbb", abb)
+      this.filterMissedAbbs()
     },
     dontRemindMissed(abb) {
       api.dontRemind(abb).then((resp) => {
