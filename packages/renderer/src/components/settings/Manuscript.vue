@@ -341,6 +341,7 @@ export default {
       this.selectedManuscripts = [];
       this.i = 1;
       this.freeIndexes = [];
+      this.updateStore();
     },
     abbFormatter(value) {
       let index = this.selectedManuscripts

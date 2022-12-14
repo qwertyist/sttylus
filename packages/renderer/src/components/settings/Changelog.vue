@@ -55,8 +55,33 @@ export default {
     return {
       loading: true,
       error: {},
-      latest: new Date("2022, 122, 7"),
+      latest: new Date("2022, 12, 14"),
       changelog: [
+        {
+          date: new Date("2022, 12, 14"),
+          changes: [
+            {
+              id: 0,
+              type: "version",
+              description: "Version 1.1.1",
+            },
+            {
+              id: 1,
+              type: "update",
+              description: "Lös ut förkortningar med bortvänd parentes )",
+            },
+            {
+              id: 2,
+              type: "update",
+              description: "Inaktiverar förhandsgranskning av manuskript då den inte beter sig korreket",
+            },
+            {
+              id: 3,
+              type: "update",
+              description: "Ta bort föregående ord i manuskript med pil vänster",
+            },
+          ],
+        },
         {
           date: new Date("2022, 12, 7"),
           changes: [

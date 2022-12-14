@@ -10,7 +10,11 @@ let default_manuscript = {
     lookahead: false,
     empty: false,
     text: [],
-    preview: true
+    preview: true,
+    revert: {
+      word:0,
+      op:0
+    },
 }
 
 let manuscript = { ...default_manuscript }
@@ -24,6 +28,7 @@ const no_attrs = {
 var fontColor = "#000000"
 
 export function loadManuscripts(docs) {
+    console.log("load manuscripts:",docs)
     manuscripts = new Map();
     docs.map(d => {
         manuscripts.set(d.abb, d.id)
@@ -33,6 +38,7 @@ export function loadManuscripts(docs) {
 export function queryManuscript(abb) {
     manuscript.deltas = []
     if (manuscript.prompt) { return false }
+    console.log("query with abb:", abb)
     let id = manuscripts.get(abb.toLowerCase())
     if (id) {
         return api.getManuscript(id).then(resp => {
@@ -60,6 +66,7 @@ export function queryManuscript(abb) {
 }
 
 function renderPreview(index, q, action = "paragraph") {
+  return
     let text = []
     switch (action) {
         case "paragraph":
@@ -153,6 +160,7 @@ export function promptManuscript(index, q, action = "insertWord", context) {
         console.log("insert:",insert)
         console.log("words:", insert.split(" "))
         */
+
     switch (action) {
         case "insertEdgeCase":
             q.deleteText(index, 1)
@@ -198,7 +206,9 @@ export function promptManuscript(index, q, action = "insertWord", context) {
                     manuscript.word = 0;
                     return offset + promptManuscript(index + offset - 1, q, action)
                 } else {
-                    console.log("go to next line")
+                    console.log("go to next line", manuscript)
+                    manuscript.revert.word = manuscript.word
+                    manuscript.revert.op = manuscript.op
                     manuscript.line++
                     manuscript.word = 0
                     manuscript.op = 0
@@ -267,27 +277,43 @@ export function promptManuscript(index, q, action = "insertWord", context) {
                 manuscript.line++
                 manuscript.preview = true
             }
-
             break
         case "removeWord":
-            console.log("### ACTION - REMOVE WORD")
-            break
-            let last_word = context.prefix.split(" ").splice(-2, 1)[0]
+            let last_word = ""
+            if(!manuscript.preview && manuscript.op == 0 && manuscript.word == 0) return index
+            if(manuscript.preview) {
+              console.log("### ACTION - REMOVE WORD (on last line)")
+              manuscript.word = manuscript.revert.word 
+              manuscript.op = manuscript.revert.op 
+              manuscript.word++
+              manuscript.line--;
+              manuscript.preview = false
+              last_word = context.prefix.split(" ").splice(-1, 1)[0]
+            } else {
+              console.log("### ACTION - REMOVE WORD")
+              last_word = context.prefix.split(" ").splice(-2, 1)[0]
+            }
+            console.log("line:", manuscript.line, "op:", manuscript.op, "word:", manuscript.word)
             console.log("prefix:", context.prefix.split(" "))
             console.log("last word in context:", last_word)
             const length = q.getLength()
             q.deleteText(index - last_word.length - 1, last_word.length + 1)
-            q.removeFormat(index - last_word.length - 1, length)
+            q.removeFormat(index - last_word.length, length)
             offset = index - last_word.length - 1
-            renderPreview(offset, q, "paragraph")
-            manuscript.word--
-            if (manuscript.word < 0) {
-                if (manuscript.op > 0) {
-                    manuscript.op--
-                    let curr_op = curr_line.ops[manuscript.op] || null
-                    manuscript.word == curr_op.insert.split(" ").length - 1
-                }
+            if(context.prefix.split(" ").length == 2) {
+              
+            } else { 
+              renderPreview(offset, q, "paragraph")
             }
+              manuscript.word--
+              if (manuscript.word < 0) {
+                  if (manuscript.op > 0) {
+                      manuscript.op--
+                      let curr_op = curr_line.ops[manuscript.op] || null
+                      manuscript.word == curr_op.insert.split(" ").length - 1
+                    }
+              }
+            console.log("line:", manuscript.line, "op:", manuscript.op, "word:", manuscript.word)
             return offset
 
     }

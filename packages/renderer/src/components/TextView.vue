@@ -455,8 +455,8 @@ export default {
 }
 */
 
-.preRender {
-  opacity: 0.6;
+::v-deep .preRender {
+  opacity: 0.5;
 }
 .navMargin {
   position: fixed;

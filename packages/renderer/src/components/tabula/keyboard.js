@@ -96,6 +96,7 @@ export default class keyboard extends Keyboard {
 
     abbreviate(index, abb, abbreviator, quill) {
         //     console.log("abbreviate at index:", index, "with abb:", abb, "and sep:", abbreviator)
+        console.log(this.manuscriptEditor)
         if (!this.manuscriptEditor && queryManuscript(abb)) {
             quill.deleteText(index - abb.length, abb.length)
             this.prompt = abb
@@ -508,6 +509,17 @@ export default class keyboard extends Keyboard {
                 if (abb.length == 0) return true
                 this.abbreviate(range.index, abb, "?", this.quill)
                 this.capitalizeNext = true
+                this.abbreviated = true;
+            }
+        })
+        this.addBinding({
+            key: 57,
+            shiftKey: true,
+            handler: function (range, context) {
+                let abb = this.wordBeforeCursor(context.prefix)
+                if (abb.length == 0) return true
+                this.abbreviate(range.index, abb, ")", this.quill)
+                this.capitalizeNext = false;
                 this.abbreviated = true;
             }
         })
