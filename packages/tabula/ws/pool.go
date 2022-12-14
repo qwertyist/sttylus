@@ -33,10 +33,10 @@ func (pool *Pool) Start() {
 			pool.Clients[client] = true
 			fmt.Println("Size of connection pool: ", len(pool.Clients))
 			for c := range pool.Clients {
-				client.mu.Lock()
 				if c == client {
 					continue
 				}
+				client.mu.Lock()
 				msg := Message{Type: JoinSession}
 				msg.Msg = "Client connected"
 				c.Conn.WriteJSON(msg)
