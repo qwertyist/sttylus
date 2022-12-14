@@ -345,8 +345,7 @@ export const store = new Vuex.Store({
       EventBus.$emit("client_disconnected", who);
     },
     storeSettings(state) {
-      const data = JSON.stringify(state.settings);
-      api.saveSettings(data)
+      api.saveSettings(state.settings)
         .then(resp => {
           console.log("saved settings:", resp.data)
         }).catch(err => {
