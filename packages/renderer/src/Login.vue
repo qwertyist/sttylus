@@ -5,11 +5,11 @@
       <b-jumbotron>
         <div v-if="desktop && users">
           <h1>Välj användare</h1>
-          <b-list-group v-for="user in users" v-bind:key="user['id']"><b-list-group-item @dblclick="loginAs(user)">{{ user["name"] }}</b-list-group-item></b-list-group>
+          <b-list-group v-for="user in users" v-bind:key="user['id']"><b-list-group-item href="#" @dblclick="loginAs(user)">{{ user["name"] }}</b-list-group-item></b-list-group>
         </div>
         <hr />
-        <div v-if="desktop"><h1>Logga in och ladda ner användare lokalt</h1></div>
-        <h1 v-else>Logga in</h1>
+        <div v-if="!desktop">
+        <h1>Logga in</h1>
         <div v-if="step == 0">
           <b-form @submit.prevent="next">
             <b-form-group label="E-post">
@@ -81,6 +81,7 @@
             </ValidationObserver>
           </div>
         </div>
+      </div>
       </b-jumbotron>
       <template #overlay>
         <div class="text-center">
