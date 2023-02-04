@@ -101,7 +101,6 @@ func (c *Client) messageHandler(msg Message) (*Message, bool) {
 	case Info:
 		log.Println("Info:", msg)
 		return &msg, true
-		break
 	case TXDelta:
 		//		log.Printf("TXDelta: (version %d) %v", msg.Body.Version, msg.Body.Delta)
 		if c.Pool.Tabula != nil {
@@ -125,24 +124,18 @@ func (c *Client) messageHandler(msg Message) (*Message, bool) {
 		c.Pool.Tabula.ClearHandler()
 		msg.Type = RXClear
 		return &msg, true
-		break
 	case RXDelta:
 		return nil, false
-		break
 	case TXAbb:
 		msg.Type = RXAbb
 		return &msg, true
-		break
 	case RetrieveDoc:
 		return nil, false
-		break
 	case Ping:
 		msg = Message{Type: Pong}
 		return &msg, false
-		break
 	case Pong:
 		return nil, false
-		break
 	}
 	return &msg, true
 }
