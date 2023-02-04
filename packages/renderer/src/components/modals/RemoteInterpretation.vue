@@ -177,7 +177,7 @@
             </div>
           </b-card-text>
         </b-card>
-        <!--<b-card v-show="inSession == true" title="Lösenordsskydda distanstolkningen">
+        <b-card v-show="inSession == true" title="Lösenordsskydda distanstolkningen">
           <b-card-text>
             <b-form inline class="float-right" @submit.prevent="setSessionPassword">
               <b-form-input placeholder="Välj ett lösenord..." v-model="session.password" />
@@ -206,7 +206,6 @@
 
             <br />
             <br />
-            <!--
             <b-form v-if="breakout" inline class="float-right" @submit.prevent="bindAPIToken">
               <b-form-input
                 :disabled="true"
@@ -222,7 +221,6 @@
             </div>
           </b-card-text>
         </b-card>
-        -->
       </b-tab>
     </b-tabs>
   </b-overlay>
