@@ -37,7 +37,7 @@ func AddHandlers(r *mux.Router, h SessionHandler) {
 	r.HandleFunc("/sessions", h.getSessions).Methods("GET")
 	r.HandleFunc("/sessions/{id}", h.getSessions).Methods("GET")
 	r.HandleFunc("/session/{id:[0-9]+}", h.getSession).Methods("GET")
-	r.HandleFunc("/session/{id:[0-9]+}", h.updateSession).Methods("PUT")
+	r.HandleFunc("/session/{id:[0-9]+}/{action}", h.updateSession).Methods("PUT")
 	r.HandleFunc("/session/{id:[0-9]+}", h.deleteSession).Methods("DELETE")
 }
 
@@ -111,7 +111,33 @@ func (h *sessionHandler) getSession(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *sessionHandler) updateSession(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, ("updateSession"))
+	params := mux.Vars(r)
+	id := params["id"]
+	action := params["action"]
+	var s Session
+	err := json.NewDecoder(r.Body).Decode(&s)
+
+	if err != nil {
+		log.Println("decoder:", err)
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	if id != s.ID {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	if action == "bind" {
+
+	}
+	sess, err := h.Service.UpdateSession(s)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusNoContent)
+		return
+	}
+	respondWithJSON(w, sess)
+
 }
 
 func (h *sessionHandler) deleteSession(w http.ResponseWriter, r *http.Request) {

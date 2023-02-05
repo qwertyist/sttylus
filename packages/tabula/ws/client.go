@@ -27,6 +27,7 @@ type Message struct {
 		Delta   delta.Delta `json:"delta,omitempty"`
 		Index   int         `json:"index"`
 	} `json:"body,omitempty"`
+	Zoom collab.ZoomCC `json:"zoom,omitempty"`
 }
 
 type Broadcast struct {
@@ -41,7 +42,8 @@ const (
 	CreateSession             = 1
 	JoinSession               = 2
 	LeaveSession              = 3
-	Info                      = 4
+	GetInfo                   = 4
+	SetInfo                   = 5
 	NoSession                 = 404
 	TXDelta                   = 20
 	RXDelta                   = 21
@@ -94,8 +96,15 @@ func (c *Client) messageHandler(msg Message) (*Message, bool) {
 	case LeaveSession:
 		log.Println("LeaveSession:", msg)
 		return &msg, true
-	case Info:
+	case GetInfo:
 		log.Println("Info:", msg)
+		return &msg, true
+	case SetInfo:
+		log.Println("SetInfo:", msg.Zoom)
+		err := c.Pool.Tabula.SetZoomData(msg.Zoom)
+		if err != nil {
+			log.Println(err)
+		}
 		return &msg, true
 	case TXDelta:
 		//		log.Printf("TXDelta: (version %d) %v", msg.Body.Version, msg.Body.Delta)
@@ -112,7 +121,9 @@ func (c *Client) messageHandler(msg Message) (*Message, bool) {
 			msg.Body.Version = u.Version
 			msg.Body.Index = u.Index
 			msg.Type = RXDelta
-
+			if c.Pool.Tabula.Zoom.Token != "" {
+				c.Pool.Tabula.SendZoomCC()
+			}
 			//c.Pool.Tabula.ToText()
 			return &msg, true
 		} else {

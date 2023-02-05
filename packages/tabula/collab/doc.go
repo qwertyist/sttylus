@@ -1,10 +1,10 @@
 package collab
 
-import "log"
+import "fmt"
 
-func (t *Tabula) ToText() error {
+func (t *Tabula) ToText() string {
 	if t.Doc.Ops != nil {
-		log.Printf("%+v\n", string(t.Doc.Ops[0].Insert))
+		return fmt.Sprintf("%+v", string(t.Doc.Ops[0].Insert))
 	}
-	return nil
+	return ""
 }

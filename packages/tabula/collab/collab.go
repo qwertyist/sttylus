@@ -10,6 +10,7 @@ type Tabula struct {
 	Version int
 	Doc     *delta.Delta
 	Ops     map[int]delta.Op
+	Zoom    ZoomCC
 }
 
 type Delta struct {

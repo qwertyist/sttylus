@@ -96,8 +96,8 @@ if (import.meta.env.VITE_STTYLUS_MODE == "api") {
     console.log("Running in development")
     Vue.prototype.$backend =
       import.meta.env.VITE_STTYLUS_LOCAL_BACKEND;
-  Vue.prototype.$collabServer = "wss://sttylus.se/ws/"
-  Vue.prototype.$collabAPI= "https://sttylus.se/ws/"
+  Vue.prototype.$collabServer = "ws://localhost:8888/"
+  Vue.prototype.$collabAPI= "http://localhost:8888/"
     Vue.prototype.$localCollab = import.meta.env.VITE_STTYLUS_LOCAL_COLLAB;
   }
 } 

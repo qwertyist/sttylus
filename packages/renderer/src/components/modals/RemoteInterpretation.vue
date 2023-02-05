@@ -297,13 +297,14 @@ export default {
       }
     },
     getSessions() {
-      axios.get("https://sttylus.se/ws/" + "sessions/" + this.$store.state.userData.id).then((resp) => {
+      axios.get(this.$collabAPI + "sessions/" + this.$store.state.userData.id).then((resp) => {
         this.sessions = resp.data;
       }).catch(err => {
         this.$toast.warning("Fick inte kontakt med servern", err)
       });
     },
     showModal() {
+      console.log(this.$collabAPI)
       if (this.desktop && this.$store.state.local.connected) {
           console.log("Already connected to local session")
           this.localsession = true
@@ -331,7 +332,7 @@ export default {
       switch (this.broadcast) {
         case "remote":
           console.log("Skapa distanstolkning...")
-          axios.post("https://sttylus.se/ws/session",
+          axios.post(this.$collabAPI + "session",
             { ref: this.$store.state.userData.id }
           )
             .then(resp => {
@@ -386,7 +387,7 @@ export default {
       }
       if (this.session.id) {
         axios
-          .get("https://sttylus.se/ws/" + "session/" + this.session.id)
+          .get(this.$collabAPI + "session/" + this.session.id)
           .then((resp) => {
             if (resp.status == 204) {
               this.$toast.warning("Ingen distanstolkning med det ID-numret");
@@ -438,88 +439,18 @@ export default {
       EventBus.$emit("leaveRemoteSession");
     },
     setSessionPassword() {
-      axios
-        .put("https://sttylus.se/ws/" + "session", {
-          id: this.session.id,
-          password: this.session.password,
-          breakout: this.session.breakout,
-          token: this.session.token,
-        })
-        .then((resp) => {
-          this.session.password = resp.data.password;
-          this.$store.commit("setSessionPassword", resp.data.password);
-          this.$toast.success("Lösenordet uppdaterades");
-        })
-        .catch((err) => {
-          this.session.password=""
-          console.log(err);
-        });
     },
     bindAPIToken() {
-      axios
-        .put("https://sttylus.se/ws/session",{
-          id: this.session.id,
-          token: this.session.token,
-          breakout: "",
-          password: this.session.password,
-        })
-        .then((resp) => {
-          console.log("Zoom resp:", resp);
-          this.connected3rdparty = true;
-          this.breakout = true;
-          EventBus.$emit("sendSessionData", this.session)
-          EventBus.$emit("join3rdParty", this.session.id);
-        })
-        .catch((err) => {
-          this.thirdPartyError = "Kunde inte ansluta";
-          this.APIToken = "";
-        });
+      EventBus.$emit("sendSessionData", { token: this.session.token });
     },
     bindBreakoutRoom() {
-      axios
-        .post(this.$collabAPI + "/bind", {
-          id: this.session.id,
-          token: this.session.token,
-          breakout: this.session.breakout,
-        })
-        .then((resp) => {
-          console.log("Zoom resp:", resp);
-          this.connectedBreakout = true;
-        })
-        .catch((err) => {
-          this.thirdPartyError = "Kunde inte ansluta";
-          this.breakoutAPIToken = "";
-        });
     },
     leaveBreakoutRoom() {
-      axios
-        .post(this.$collabAPI + "/bind", { id: this.session.id, token: this.session.token, password: this.session.password, breakout: "" })
-        .then((resp) => {
-          console.log("Zoom resp: ", resp);
-          this.session.token = "";
-          this.connectedBreakout = false;
-        });
     },
     updateSessionInfo() {
       EventBus.$emit("checkConnection");
       if (this.session.id) {
         console.log("session id:", this.session.id)
-        axios
-          .post(this.$collabAPI + "/info", { id: this.session.id })
-          .then((resp) => {
-            if (resp.data.ZoomAPIToken !== "") {
-              this.connected3rdparty = true;
-              this.breakout = true;
-
-              this.session.token = resp.data.ZoomAPIToken;
-              this.session.breakout = resp.data.ZoomBreakoutAPIToken;
-              EventBus.$emit("join3rdParty", this.session.id);
-            }
-            this.session.password = resp.data.password;
-          })
-          .catch((err) => {
-            console.log("/info failed:", err);
-          });
       }
     },
   },
