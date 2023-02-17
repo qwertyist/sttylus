@@ -2,12 +2,19 @@
   <div>
     <Navigation :view="'login'" />
     <b-overlay :show="loading">
-      <b-jumbotron>
+      <b-jumbotron 
+        header="Välj användare"
+      >
+      <template #lead>
+        Möjligheten att logga in med användarkontot från webappen (<code>sttylus.se/app/</code>) dröjer tills den är vattentät i alla riktningar. 
+        Tills dess loggar du in som "Skrivtolk" och du kan fortfarande importera dina förkortningslistor från webappen.<br />
+      </template>
         <div v-if="desktop && users">
-          <h1>Välj användare</h1>
-          <b-list-group v-for="user in users" v-bind:key="user['id']"><b-list-group-item href="#" @dblclick="loginAs(user)">{{ user["name"] }}</b-list-group-item></b-list-group>
+          <b-list-group v-for="user in users" v-bind:key="user['id']"><b-list-group-item href="#" @dblclick="loginAs(user)"><b-button variant="primary" @dblclick="loginAs(user)">Logga in</b-button> {{ user["name"] }}</b-list-group-item></b-list-group>
+          <hr />
+
         </div>
-        <hr />
+
         <div v-if="!desktop">
         <h1>Logga in</h1>
         <div v-if="step == 0">

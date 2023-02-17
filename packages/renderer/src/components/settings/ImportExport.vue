@@ -170,6 +170,13 @@
 
         <div v-if="from == 'protype'">
           <h3>Importera från ProType</h3>
+          <b-jumbotron>
+          <template #lead>
+         <p>För import av listor och användare från ProType rekommenderas <a href="https://sttylus.se/utx/">UTX-programmets Förkortningsverktyg</a>.<br />
+         Där kan du konvertera från flera filtyper till textfilsformat.</p>
+          </template>
+          Annars hittar du din användare under <code>Users/</code> där du har ProType installerat. För varje förkortningslista finns ytterligare en katalog och när du hittat din lista det filen som heter antingen <code>wordlist</code> eller <code>wordlist.dat</code> du ska välja för uppladdning i formuläret nedan.
+          </b-jumbotron>
           <div v-if="online">
             <b-form @submit.prevent="uploadProType">
               <b-form-file v-model="form.file" accept=".dat" />
@@ -387,7 +394,7 @@ export default {
         { value: "textfile", text: "till textfil", disabled: false },
       ],
       from: "dontImport",
-      to: "textfile",
+      to: "dontExport",
       importList: true,
       exportList: false,
       online: true,
@@ -874,13 +881,11 @@ export default {
     },
   },
   mounted() {
-    setTimeout(() => { this.to = "dontExport"}, 125);
     this.$nextTick(() => {
       setTimeout(() => { this.from = "dontImport"}, 500);
     })
     this.$nextTick(() => {
-      setTimeout(() => { this.to = "textfile"}, 300);
-      this.exportList = true
+      setTimeout(() => { this.to = "dontExport"}, 300);
     })
     this.addEventListeners();
     this.getSharedAbbs(true);
