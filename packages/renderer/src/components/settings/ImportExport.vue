@@ -68,46 +68,59 @@
 
     <b-col>
       <div v-if="exportList">
-        <div v-if="to == 'textfile'">
-          <h3>Exportera till textfil</h3>
-        </div>
         <div v-if="to == 'textontop'">
           <h3>Exportera till TextOnTop</h3>
         </div>
-        <div v-if="to == 'sttylus'">
-          <h3>Exportera till STTylus</h3>
+        <div v-if="to == 'sttylus' || to == 'textfile'">
+              <h3>Exportera till STTylus eller textfil</h3>
             <b-list-group>
               <b-list-group-item v-for="standard in standardLists" v-bind:key="standard.value">
                 <b-row>
-                  <b-col cols="4">
+                  <b-col cols=4>
                     <b>{{ standard.text }}</b>
                   </b-col>
                   <b-col>
-                      <span  style="font-size: 1.2em;"><b-badge size="md">{{ standard.value.split("-")[0] }}</b-badge></span>
-                    </b-col>
+                    <small>{{ standard.counter }} förkortningar</small> 
+                  </b-col>
                   <b-col>
-                <small>{{ standard.counter }} förkortningar</small> <b-button class="float-right" size="sm" @click="exportSTTylus(standard.value)">Exportera</b-button>
-              </b-col>
-            </b-row>
-          </b-list-group-item>
-          <b-list-group-item v-for="addon in addonLists" v-bind:key="addon.value">
+                    <span style="font-size: 1.2em;"><b-badge size="md">{{ standard.value.split("-")[0] }}</b-badge></span>
+                    <b-button class="float-right" size="sm" @click="exportSTTylus(standard.value)">Exportera</b-button>
+                  </b-col>
+                  <b-col>
+                    <b-button 
+                      size="sm" 
+                      variant="primary" 
+                      @click="getTextfile(standard)"
+                    >
+                      <b-icon icon="download" />
+                      Hämta textfil
+                    </b-button>
+                  </b-col>
+                </b-row>
+              </b-list-group-item>
+            <b-list-group-item v-for="addon in addonLists" v-bind:key="addon.value">
             <b-row>
-              <b-col cols="4">
+              <b-col cols=4>
                 {{ addon.text }} 
               </b-col>
               <b-col>
-                <span  style="font-size: 1.2em;"><b-badge size="md">{{ addon.value.split("-")[0] }}</b-badge></span>
+                <small>{{ addon.counter }} förkortningar</small>
               </b-col>
               <b-col>
-                <small>{{ addon.counter }} förkortningar</small>
+                <span style="font-size: 1.2em;"><b-badge size="md">{{ addon.value.split("-")[0] }}</b-badge></span>
                 <b-button class="float-right" size="sm" @click="exportSTTylus(addon.value)">Exportera</b-button>
-
               </b-col>
-              </b-row>
+              <b-col>
+                <b-button size="sm" variant="primary" @click="getTextfile(addon)">
+                  <b-icon icon="download" />
+                  Hämta textfil
+                </b-button>
+              </b-col>
+            </b-row>
             </b-list-group-item>
           </b-list-group>
         </div>
-        <div v-if="to != 'sttylus'">
+        <div v-if="to != 'sttylus' && to != 'textfile'">
         <b-form @change="listenToEvent" @submit.prevent="submitExport">
           <b-form-radio-group v-model="exportForm.standard" :required="to == 'protype'">
             <b-list-group>
@@ -147,7 +160,7 @@
             Ange listans ID:
             <b-row>
               <b-col cols="4">
-                <b-form-input v-model="form.id" />
+                <b-form-input :formatter="sttylusIdFormatter" v-model="form.id" />
               </b-col>
             </b-row>
             <br />
@@ -371,10 +384,10 @@ export default {
         { value: "sttylus", text: "till STTylus", disable: false },
         { value: "textontop", text: "till TextOnTop", disabled: false },
         { value: "protype", text: "till Protype", disabled: false },
-        { value: "textfile", text: "till textfil", disabled: true },
+        { value: "textfile", text: "till textfil", disabled: false },
       ],
       from: "dontImport",
-      to: "dontExport",
+      to: "textfile",
       importList: true,
       exportList: false,
       online: true,
@@ -474,6 +487,9 @@ export default {
   methods: {
     listenToEvent(value) {
     },
+    sttylusIdFormatter(value) {
+      return value.trim().toLowerCase();
+    },
     importSTTylus(short_id) {
       this.$toast.info("Försöker hämta lista med kort-ID:" + this.form.id)
       if(this.$mode =="desktop") {
@@ -493,12 +509,11 @@ export default {
       })
     },
     exportSTTylus(list) {
-      this.$toast.info("List:"+ list)
       api.getList(list)
       .then(resp => {
         api.exportSTTylus(resp.data)
         .then(resp => {
-          this.$toast.success("Listan går att importera online/offline med ID-numret\n" + list.id)
+          this.$toast.success("Listan går att importera online/offline med ID-numret till vänster")
         })
         .catch(err => {
           this.$toast.warning("Listan kunde inte exporteras:" + err, { duration: 5000})
@@ -508,9 +523,36 @@ export default {
         this.$toast.error("Något gick fel:" + err, { duration: 5000})
       })
     },
+    getTextfile(list) {
+      this.$toast.default("get textfiles..."+ list.text) 
+      api.getAbbs(list.value)
+      .then(resp => {
+        this.$toast.success("textfile abbs" + resp.data.length) 
+        const text = resp.data.map(abb => [abb.abb+"="+abb.word]).join("\n")
+
+        const a = document.createElement("a");
+        a.style.display = "none";
+        document.body.appendChild(a);
+        a.href = window.URL.createObjectURL(
+          new Blob([text], { type: "text/plain" })
+        );
+        a.setAttribute("download", list.text+".txt")
+        a.click();
+        window.URL.revokeObjectURL(a.href);
+        document.body.removeChild(a);
+      })
+      .catch(err => {
+        console.error("failed converting to textfile", err)
+        this.$toast.warning("textfile failed", err) 
+      })
+    },
     submitExport() {
       if (this.exportForm.standard == "" && this.exportForm.addons.length == 0) {
         this.$toast.warning("Du måste välja minst en lista att exportera")
+        return
+      }
+      if(this.to == "textfile") {
+        this.$toast.warning("handskas med textfil...")
         return
       }
       api.exportLists(this.to, this.exportForm).then(resp => {
@@ -598,6 +640,9 @@ export default {
           if (this.exportForm.standard == "") {
             this.exportForm.standard = this.standardLists[0].value;
           }
+          break;
+        case "shortform":
+          this.exportForm.standard = ""
           break;
         default:
           break;
@@ -829,11 +874,13 @@ export default {
     },
   },
   mounted() {
+    setTimeout(() => { this.to = "dontExport"}, 125);
     this.$nextTick(() => {
       setTimeout(() => { this.from = "dontImport"}, 500);
     })
     this.$nextTick(() => {
-      setTimeout(() => { this.to = "dontExport"}, 125);
+      setTimeout(() => { this.to = "textfile"}, 300);
+      this.exportList = true
     })
     this.addEventListeners();
     this.getSharedAbbs(true);
