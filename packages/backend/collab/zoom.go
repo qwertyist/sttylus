@@ -8,7 +8,6 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
-	"unicode"
 )
 
 type ZoomCC struct {
@@ -16,6 +15,7 @@ type ZoomCC struct {
 	Breakout     string
 	MainStep     int
 	BreakoutStep int
+	LastKeycode  byte
 }
 
 func getZoomStep(token string) int {
@@ -27,19 +27,16 @@ func getZoomStep(token string) int {
 	log.Println(seq)
 	resp, err := http.Get(seq)
 	if err != nil {
-		log.Fatalln(err)
 		return -1
 	}
 	//We Read the response body on the line below.
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		log.Fatalln(err)
 		return -1
 	}
 	//Convert the body to type string
 	step, err := strconv.Atoi(string(body))
 	if err != nil {
-		log.Fatalln(err)
 		return -1
 	}
 
@@ -60,39 +57,34 @@ func (t *Tabula) SetZoomData(data ZoomCC) error {
 	return nil
 }
 
-func (t *Tabula) SendZoomCC() {
+func (t *Tabula) GetLastAppend() string {
+	text := t.ToText()
+	last_index := strings.LastIndex(strings.TrimRight(text, " \n"), " ")
+	return text[last_index+1:]
+}
+
+func (t *Tabula) SendZoomCC(text string) error {
 	step := strconv.Itoa(t.Zoom.MainStep)
 	target := t.Zoom.Token + "&lang=sv-SE" + "&seq=" + step
-	text := t.ToText()
-	if text == "" {
-		return
+	msg := bytes.NewBuffer([]byte(text))
+	resp, err := http.Post(target, "text/plain", msg)
+	if err != nil {
+		return err
 	}
-	if len(text) < 3 {
-		return
-	}
-	if len(text) > 35 {
-		lines := strings.Split(text, "\n")
-		log.Println("Number of lines:", len(lines))
-		if len(lines) > 3 {
-			text = strings.Join(lines[len(lines)-2:], "\n")
-			log.Println("Last two lines?\n#############\n", text)
+	log.Printf("step: %d\ttarget: %s\n", t.Zoom.MainStep, target)
+	if resp.StatusCode != 200 {
+		err = fmt.Errorf("POST failed with status '%s'", resp.Status)
+		fmt.Printf("error: %s\n", err.Error())
+		if resp.StatusCode == 403 {
+			t.Zoom.MainStep++
 		}
+		return err
 	}
-	last := string(text[len(text)-1])
-	log.Println("last:", last)
-	if last == " " || unicode.IsPunct([]rune(last)[0]) {
-		msg := bytes.NewBuffer([]byte(text))
-		resp, err := http.Post(target, "text/plain", msg)
-		if err != nil {
-			log.Fatal(err)
-		}
-		body, err := ioutil.ReadAll(resp.Body)
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		t.Zoom.MainStep++
-		log.Println(string(body))
+	body, err := ioutil.ReadAll(resp.Body)
+	fmt.Printf("%s\n", string(body))
+	if err != nil {
+		return err
 	}
-
+	t.Zoom.MainStep++
+	return nil
 }

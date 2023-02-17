@@ -339,10 +339,13 @@ func (h *userHandler) ResetPassword(w http.ResponseWriter, r *http.Request) {
 
 	err = h.userService.ResetPassword(credentials.Email, credentials.Password)
 	if err != nil {
-		log.Fatal(err)
+		log.Panicf("BUG: Couldn't reset password for user: %s\n%s", credentials.Email, err.Error())
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte("Couldn't reset password"))
 	}
+
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("User got new password"))
+	w.Write([]byte("User's password reset"))
 }
 
 func (h *userHandler) GetSettings(w http.ResponseWriter, r *http.Request) {

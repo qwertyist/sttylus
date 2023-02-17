@@ -182,7 +182,7 @@ func (h *sessionHandler) getUser(w http.ResponseWriter, r *http.Request) {
 	if u != nil {
 		response, err := json.Marshal(u)
 		if err != nil {
-			log.Fatal(err)
+			log.Panic("getUser marshal response", err)
 		}
 		w.Write(response)
 		return

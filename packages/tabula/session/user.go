@@ -8,13 +8,14 @@ func (s *sessionService) GetUser(request User) *User {
 	if request.ID != "" {
 		u, err := s.repo.GetUser(request.ID)
 		if err != nil {
-			log.Fatal(err)
+			log.Panicf("session.GetUser (1) failed: %s\n", err)
 		}
 		return u
 	}
 	uu, err := s.repo.GetUsers()
 	if err != nil {
-		log.Fatalf("session.GetUser failed: %s\n", err)
+		log.Panicf("session.GetUser (many) failed: %s\n", err)
+		return nil
 	}
 	for _, u := range uu {
 		if u.Email != "" {

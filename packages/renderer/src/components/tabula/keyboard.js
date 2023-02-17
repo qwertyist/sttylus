@@ -26,7 +26,7 @@ export default class keyboard extends Keyboard {
       this.instance = (Math.random() + 1).toString(36).substring(7);
       this.abbreviated = false;
       this.querying = null;
-      this.capitalizeNext = 1;
+      this.capitalizeNext = true;
       this.scrollIntoView = false;
       this.manuscriptEditor = options.manuscriptEditor
       this.URL = false
@@ -37,6 +37,7 @@ export default class keyboard extends Keyboard {
       this.cache = null
       this.getAbbCache()
     }
+
     listen() {
         this.quill.root.addEventListener("keydown", e => {
             if (this.URL) {
@@ -96,7 +97,6 @@ export default class keyboard extends Keyboard {
 
     abbreviate(index, abb, abbreviator, quill) {
         //     console.log("abbreviate at index:", index, "with abb:", abb, "and sep:", abbreviator)
-        console.log(this.manuscriptEditor)
         if (!this.manuscriptEditor && queryManuscript(abb)) {
             quill.deleteText(index - abb.length, abb.length)
             this.prompt = abb
@@ -125,46 +125,14 @@ export default class keyboard extends Keyboard {
               console.log("make caps")
               word = match.toUpperCase()
             }
-            console.log(word)
+            EventBus.$emit("sendCC", word+abbreviator)
             this.insertAbbreviation(index, abb, abbreviator, word, quill)
-            setTimeout(() => quill.setSelection(quill.getSelection().index, 0), 0)
+            setTimeout(() => quill.setSelection(quill.getSelection().index, 0), 20)
             return
           }
-          quill.insertText(index, abbreviator)
-           /* 
-            setTimeout(() => {
-                console.log("Querying");
-                this.querying = false
-            }, 125)
-            if (!this.querying) {
-                this.querying = true;
-                console.log(abb)
-                api.abbreviate(abb)
-                    .then(resp => {
-                        let word = ""
-                        if (resp.status == 208) {
-                            let missed = resp.data
-                            store.commit("incrementMissedAbb", { word: abb, abb: missed })
-                            word = abb
-                        }
-                        if (resp.status == 204) {
-                            word = abb
-                        }
-                        
-                        if (resp.status == 200) {
-                            word = resp.data
-                        }
 
-                      console.log(resp.request, resp.status, resp.data) 
-                        this.insertAbbreviation(index, abb, abbreviator, word, quill)
-                        setTimeout(() => quill.setSelection(quill.getSelection().index, 0), 0)
-                    }).catch(err => {
-                      console.error("abbreviate failed:", err)
-                      this.insertAbbreviation(index, abb, abbreviator, abb, quill)
-                    })
-            } else {
-            }
-          */
+          EventBus.$emit("sendCC", abb+abbreviator)
+          quill.insertText(index, abbreviator)
         }
     }
 

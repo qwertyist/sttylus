@@ -31,9 +31,6 @@ func wordwrap(s string, limit int) string {
 		if len(strSlice) < limit {
 			limit = len(strSlice)
 		}
-
 	}
-
 	return result
-
 }

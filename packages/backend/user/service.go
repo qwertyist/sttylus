@@ -119,7 +119,7 @@ func (s *userService) GetUser(id string) (*User, error) {
 func (s *userService) GetUserByEmail(email string) (*User, error) {
 	user, err := s.repo.GetUserByEmail(email)
 	if err != nil {
-		log.Fatal(err)
+		log.Panic("user.GetUserByEmail (local):", err)
 		return nil, err
 	}
 	log.Println(s.mode)
@@ -134,7 +134,7 @@ func (s *userService) GetUserByEmail(email string) (*User, error) {
 
 			body, err := ioutil.ReadAll(resp.Body)
 			if err != nil {
-				log.Fatal(err)
+				log.Panic("user.GetUserByEmail (remote):", err)
 			}
 			log.Println(string(body))
 			if string(body) == "login" {

@@ -13,7 +13,7 @@ type DemoText struct {
 func LoadAuto() {
 	file, err := os.Open("auto.json")
 	if err != nil {
-		log.Fatal(err)
+		log.Panic("LoadAuto bug:", err)
 	}
 	defer file.Close()
 

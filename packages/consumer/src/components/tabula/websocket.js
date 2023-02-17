@@ -245,7 +245,13 @@ export default class wsConnection {
     }
     createsession() {
         console.log("version:", this.quill.version)
-        let createMessage = JSON.stringify({ type: this.mt.CreateSession, body: { version: this.quill.version, delta: this.quill.getContents() } })
+        let createMessage = JSON.stringify({ 
+            type: this.mt.CreateSession, 
+            body: { 
+              version: this.quill.version, 
+              delta: this.quill.getContents() 
+            } 
+        })
         waitForConnection(self.websocket, function () { self.websocket.send(createMessage) })
     }
     joinsession() {

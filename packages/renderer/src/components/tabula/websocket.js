@@ -19,6 +19,7 @@ const mt = {
     RXManuscript: 27,
     ReadySignal:  28,
     RetrieveDoc: 30,
+    ZoomCC: 200111,
     Loss: 500,
     Ping: 200,
     Pong: 300
@@ -113,6 +114,7 @@ export default class wsConnection {
         self.websocket = null;
     }
     onOpen(e) {
+        EventBus.$on("sendCC",this.sendCC)
         EventBus.$emit("websocketConnected")
         self.websocket.send("interpreter")
         this.joinsession()
@@ -122,6 +124,7 @@ export default class wsConnection {
     }
 
     onClose(e) {
+        EventBus.$off("sendCC",this.sendCC)
         store.commit("setLocalSession", {connected: false})
         console.log("onClose connection status:", this.status)
         if (self.websocket) {
@@ -179,11 +182,12 @@ export default class wsConnection {
                     break
                 case this.mt.SessionData:
                     console.log("SessionData message:", rx)
-                    if(rx.zoom.MainStep = -1) {
+                    if(rx.zoom.MainStep == -1) {
                       EventBus.$emit("zoomConnected", false)
                       return
                     }
                     EventBus.$emit("zoomConnected", false)
+                    break
                 case this.mt.RXDelta:
                     //console.log("RXDelta (version: ", rx.body.version, "):", rx.body.delta, rx.body.index)
                     //console.log("local version:", this.quill.version)
@@ -253,6 +257,14 @@ export default class wsConnection {
         })
         self.websocket.send(sessionDataMessage)
     }   
+    sendCC(data) {
+      let ccMessage = JSON.stringify({
+        type: 200111,
+        msg: data
+        })
+      console.log("sendCC")
+      self.websocket.send(ccMessage)
+    }
     sendReadySignal() {
       let readySignalMessage = JSON.stringify({
             type: this.mt.ReadySignal,
@@ -262,7 +274,15 @@ export default class wsConnection {
 
     createsession() {
         console.log("version:", this.quill.version)
-        let createMessage = JSON.stringify({ type: this.mt.CreateSession, body: { version: this.quill.version, delta: this.quill.getContents() } })
+        const started = this.quill.getLength() > 0 ? "started" : "waiting"
+        let createMessage = JSON.stringify({ 
+            type: this.mt.CreateSession, 
+            msg: started, 
+            body: { 
+              version: this.quill.version, 
+              delta: this.quill.getContents() 
+            } 
+        })
         waitForConnection(self.websocket, function () { self.websocket.send(createMessage) })
     }
     joinsession() {

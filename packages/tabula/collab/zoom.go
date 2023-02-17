@@ -15,6 +15,7 @@ type ZoomCC struct {
 	Breakout     string
 	MainStep     int
 	BreakoutStep int
+	LastKeycode  byte
 }
 
 func getZoomStep(token string) int {
@@ -56,40 +57,34 @@ func (t *Tabula) SetZoomData(data ZoomCC) error {
 	return nil
 }
 
-func (t *Tabula) SendZoomCC() error {
+func (t *Tabula) GetLastAppend() string {
+	text := t.ToText()
+	last_index := strings.LastIndex(strings.TrimRight(text, " \n"), " ")
+	return text[last_index+1:]
+}
+
+func (t *Tabula) SendZoomCC(text string) error {
 	step := strconv.Itoa(t.Zoom.MainStep)
 	target := t.Zoom.Token + "&lang=sv-SE" + "&seq=" + step
-	text := t.ToText()
-	log.Println(text)
-	if text == "" {
-		log.Println("Nothing to send")
-		return nil
+	msg := bytes.NewBuffer([]byte(text))
+	resp, err := http.Post(target, "text/plain", msg)
+	if err != nil {
+		return err
 	}
-	if len(text) < 3 {
-		log.Println("Not sending less than 3 characters")
-		return nil
-	}
-	last := text[len(text)-1]
-	// . 46
-	// ! 33
-	// ? 63
-	// , 44
-	// \n 10
-	if last == 32 || last == 46 || last == 33 || last == 63 || last == 44 {
-		log.Println("should send something after punctuation or whitespace")
-		msg := bytes.NewBuffer([]byte(text))
-		resp, err := http.Post(target, "text/plain", msg)
-		if err != nil {
-			return err
+	log.Printf("step: %d\ttarget: %s\n", t.Zoom.MainStep, target)
+	if resp.StatusCode != 200 {
+		err = fmt.Errorf("POST failed with status '%s'", resp.Status)
+		fmt.Printf("error: %s\n", err.Error())
+		if resp.StatusCode == 403 {
+			t.Zoom.MainStep++
 		}
-		body, err := ioutil.ReadAll(resp.Body)
-		if err != nil {
-			return err
-		}
-
-		t.Zoom.MainStep++
-		log.Println(string(body))
+		return err
 	}
+	body, err := ioutil.ReadAll(resp.Body)
+	fmt.Printf("%s\n", string(body))
+	if err != nil {
+		return err
+	}
+	t.Zoom.MainStep++
 	return nil
-
 }

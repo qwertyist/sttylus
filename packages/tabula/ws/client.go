@@ -55,6 +55,7 @@ const (
 	RXManuscript              = 27
 	ReadySignal               = 38
 	RetrieveDoc               = 30
+	ZoomCC                    = 200111
 	Ping                      = 200
 	Pong                      = 300
 	Loss                      = 500
@@ -64,8 +65,10 @@ func (c *Client) messageHandler(msg Message) (*Message, bool) {
 	//log.Println("Message type:", msg.Type)
 	switch msg.Type {
 	case CreateSession:
-		log.Println("CreateSession")
 		c.Pool.Tabula = collab.NewTabula(collab.Delta{Version: msg.Body.Version, Delta: &msg.Body.Delta})
+		if msg.Msg == "started" {
+			c.Pool.Started = true
+		}
 		return nil, false
 	case JoinSession:
 		log.Println("JoinSession:", msg)
@@ -124,9 +127,6 @@ func (c *Client) messageHandler(msg Message) (*Message, bool) {
 			msg.Body.Version = u.Version
 			msg.Body.Index = u.Index
 			msg.Type = RXDelta
-			if c.Pool.Tabula.Zoom.Token != "" {
-				c.Pool.Tabula.SendZoomCC()
-			}
 			//c.Pool.Tabula.ToText()
 			return &msg, true
 		} else {
@@ -144,6 +144,11 @@ func (c *Client) messageHandler(msg Message) (*Message, bool) {
 	case ReadySignal:
 		return &msg, true
 	case RetrieveDoc:
+		return nil, false
+	case ZoomCC:
+		if c.Pool.Tabula.Zoom.Token != "" {
+			c.Pool.Tabula.SendZoomCC(msg.Msg)
+		}
 		return nil, false
 	case Ping:
 		msg = Message{Type: Pong}

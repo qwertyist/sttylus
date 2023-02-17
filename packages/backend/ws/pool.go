@@ -45,14 +45,14 @@ func (pool *Pool) Start() {
 		case client := <-pool.Unregister:
 			delete(pool.Clients, client)
 			fmt.Println("Size of connection pool:", len(pool.Clients))
-			for c, _ := range pool.Clients {
+			for c := range pool.Clients {
 				msg := Message{Type: LeaveSession}
 				msg.Msg = client.ID
 				c.Conn.WriteJSON(msg)
 			}
 			break
 		case broadcast := <-pool.Broadcast:
-			for client, _ := range pool.Clients {
+			for client := range pool.Clients {
 				if broadcast.Conn != client.Conn {
 
 					client.mu.Lock()

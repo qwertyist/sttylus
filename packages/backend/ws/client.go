@@ -56,7 +56,7 @@ const (
 	RetrieveDoc                = 30
 	Ping                       = 200
 	Pong                       = 300
-	Loss                       = 500
+	Error                      = 500
 )
 
 func (c *Client) messageHandler(msg Message) (*Message, bool) {
@@ -94,7 +94,8 @@ func (c *Client) messageHandler(msg Message) (*Message, bool) {
 		if msg.Zoom != nil {
 			err := c.Pool.Tabula.SetZoomData(*msg.Zoom)
 			if err != nil {
-				log.Fatal(err)
+				msg.Type = Error
+				msg.Msg = err.Error()
 			}
 		}
 		return &msg, true
@@ -112,12 +113,13 @@ func (c *Client) messageHandler(msg Message) (*Message, bool) {
 			msg.Body.Version = u.Version
 			msg.Body.Index = u.Index
 			msg.Type = RXDelta
-			log.Println(c.Pool.Tabula.Zoom.Token)
-			if c.Pool.Tabula.Zoom.Token != "" {
-				log.Println("send zoom message")
-				c.Pool.Tabula.SendZoomCC()
-			}
-			//c.Pool.Tabula.ToText()
+			/*
+				log.Println(c.Pool.Tabula.Zoom.Token)
+				if c.Pool.Tabula.Zoom.Token != "" {
+					log.Println("send zoom message")
+					c.Pool.Tabula.SendZoomCC()
+				}
+			*/
 			return &msg, true
 		} else {
 			return nil, false

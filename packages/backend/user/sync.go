@@ -18,7 +18,7 @@ import (
 func authedRequest(method, endpoint, id string, body io.Reader) *http.Request {
 	req, err := http.NewRequest(method, "https://sttylus.se/api/"+endpoint, body)
 	if err != nil {
-		log.Fatal("couldn't create authed request:", err)
+		log.Panicln("couldn't create authed request:", err)
 		return nil
 	}
 	req.Header.Add("X-Id-Token", id)
@@ -78,7 +78,7 @@ func (s *userService) Offline() bool {
 func (s *userService) LocalLogin(l loginRequest) (*User, error) {
 	user, err := s.repo.Login(l.Email, "")
 	if err != nil {
-		log.Fatal(err)
+		return nil, fmt.Errorf("couldnt get user from local repo %s", err.Error())
 	}
 	if user != nil {
 		log.Println("User already stored locally:", user)
@@ -91,18 +91,18 @@ func (s *userService) LocalLogin(l loginRequest) (*User, error) {
 	data := bytes.NewBuffer(credentials)
 	resp, err := http.Post("https://sttylus.se/api/login", "application/json", data)
 	if err != nil {
-		log.Fatal(err)
+		return nil, fmt.Errorf("remote login post request failed %s", err.Error())
 	}
 	defer resp.Body.Close()
 
 	decoder := json.NewDecoder(resp.Body)
 	err = decoder.Decode(&user)
 	if err != nil {
-		log.Fatal(err)
+		return nil, fmt.Errorf("couldn't decode remote login confirmation %s", err.Error())
 	}
 	err = s.repo.CreateUser(user)
 	if err != nil {
-		log.Fatal(err)
+		return nil, fmt.Errorf("couldn't store user %s", err)
 	}
 	return user, nil
 }
@@ -123,12 +123,12 @@ func (s *userService) SyncUser(login loginRequest) (*User, error) {
 		log.Println("No user found, look for user online")
 		credentials, err := json.Marshal(login)
 		if err != nil {
-			log.Fatal("Couldn't marshall login request", err)
+			return nil, fmt.Errorf("Couldn't marshall login request %s", err.Error())
 		}
 		data := bytes.NewBuffer(credentials)
 		resp, err := http.Post("https://sttylus.se/api/login", "application/json", data)
 		if err != nil {
-			log.Fatal("login post request failed:", err)
+			return nil, fmt.Errorf("login POST request failed: %s", err.Error())
 		}
 		defer resp.Body.Close()
 
@@ -139,7 +139,7 @@ func (s *userService) SyncUser(login loginRequest) (*User, error) {
 		}
 		err = s.repo.CreateUser(user)
 		if err != nil {
-			log.Fatal(err)
+			return nil, fmt.Errorf("couldn't store user %s", err)
 		}
 		err = bcrypt.CompareHashAndPassword(user.PasswordHash, []byte(login.Password))
 		if err != nil {
