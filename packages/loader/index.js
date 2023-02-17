@@ -1,9 +1,9 @@
-chrome.developerPrivate.openDevTools({
+/*chrome.developerPrivate.openDevTools({
     renderViewId: -1,
     renderProcessId: -1,
     extensionId: chrome.runtime.id
 })
-
+*/
 const version = require("./package.json").version
 const axios = require("axios");
 const request = require("request");
@@ -50,6 +50,9 @@ var initial = 0;
 let pid = -1;
 var spawn = require("child_process").spawn;
 var path = "./latest/backend.exe"
+if (process.platform != "win32") {
+    path = "./backend" 
+}
 var dbFile = {}
 global.dbFile = (f) => {
     dbFile = f
@@ -64,23 +67,6 @@ function createUser() {
     })
 }
 
-function restoreUser() {
-    const dir = await
-}
-
-function locate() {
-    nw.Window.open("./latest/locate.html", locateWindowOptions, (locateDialog) => {
-        locateDialog.on("close", () => {
-            locateDialog.close(true)
-            console.log(dbFile)
-            if (dbFile == null) {
-                createUser();
-                return
-            }
-        })
-    })
-}
-
 /*
 function terminate() {
     let promises = [execution, timeout]
@@ -91,7 +77,9 @@ function terminate() {
 }
 */
 if (!fs.existsSync(appData + "\\sttylus.db")) {
-    locate()
+    createUser()
+    pid = loadBackend() 
+    main();
 } else {
     pid = loadBackend() 
     main();
@@ -158,7 +146,7 @@ window.isFullScreen = false;
 console.log("Backend loaded with pid:", pid)
 
 function main() {
-    nw.Window.open("latest/index.html", mainWindowOptions, function (win) {
+    nw.Window.open("index.html", mainWindowOptions, function (win) {
         win.on("close", () => {
             console.log("Close backend first?")
             win.hide()

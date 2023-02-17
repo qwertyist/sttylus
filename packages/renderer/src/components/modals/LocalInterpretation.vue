@@ -159,7 +159,8 @@ export default {
             EventBus.$emit("disconnectLocal")
         },
         startPresentation() {
-            nw.Window.open(window.location.href + "presentation", {}, (child) => {
+            const url = window.location.href.replace(/\#$/, '');
+            nw.Window.open(url + "presentation", {}, (child) => {
                 child.on("close", () => {
                     console.log("Do something on closing child window...")
                     EventBus.$emit("stopPresentation")
@@ -167,9 +168,10 @@ export default {
                     child.hide()
                     child.close(true)
                 })
-                child.on("loaded", () => {
+                child.on("loaded", (loaded) => {
                     this.presentation = true
                     console.log("child loaded...")
+                    console.log(loaded)
                     EventBus.$emit("startPresentation")
                     this.child = child
                 })
