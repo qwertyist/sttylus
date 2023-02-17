@@ -177,6 +177,13 @@ export default class wsConnection {
                     console.log("LeaveSession message", rx)
                     EventBus.$emit("clientDisconnected", rx)
                     break
+                case this.mt.SessionData:
+                    console.log("SessionData message:", rx)
+                    if(rx.zoom.MainStep = -1) {
+                      EventBus.$emit("zoomConnected", false)
+                      return
+                    }
+                    EventBus.$emit("zoomConnected", false)
                 case this.mt.RXDelta:
                     //console.log("RXDelta (version: ", rx.body.version, "):", rx.body.delta, rx.body.index)
                     //console.log("local version:", this.quill.version)

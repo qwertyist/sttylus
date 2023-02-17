@@ -103,7 +103,10 @@ func (c *Client) messageHandler(msg Message) (*Message, bool) {
 		log.Println("SetInfo:", msg.Zoom)
 		err := c.Pool.Tabula.SetZoomData(msg.Zoom)
 		if err != nil {
-			log.Println(err)
+			msg.Msg = err.Error()
+			msg.Zoom.MainStep = -1
+			c.Conn.WriteJSON(msg)
+			return nil, false
 		}
 		return &msg, true
 	case TXDelta:

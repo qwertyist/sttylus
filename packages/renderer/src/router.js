@@ -28,10 +28,12 @@ function createRouter() {
 
     if (import.meta.env.VITE_STTYLUS_MODE == "api") {
     console.log("Create webapp router")
-    console.log("router base: \/app\/")
+    console.log("staging:", import.meta.env.VITE_STTYLUS_STAGING)
+    const base = import.meta.env.VITE_STTYLUS_STAGING == "true" ? "/test/" : "/app/";
+    console.log("router base:", base)
     return new VueRouter({
       mode: 'history',
-      base: '/app/',
+      base: base,
       routes: [
         { path: '/', component: Tabula, beforeEnter: ifNotAuthenticated },
         {

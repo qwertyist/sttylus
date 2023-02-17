@@ -441,6 +441,10 @@ export default {
     setSessionPassword() {
     },
     bindAPIToken() {
+      if(this.session.token.length < 35) {
+        this.$toast.warning("Inte en giltig API-token")
+        return
+      }
       EventBus.$emit("sendSessionData", { token: this.session.token });
     },
     bindBreakoutRoom() {
@@ -473,6 +477,15 @@ export default {
   mounted() {
     EventBus.$on("networkStatusUpdate", (status) => {
       this.connected = status;
+    });
+    EventBus.$on("zoomConnected", (success) => {
+      if(success) {
+        this.$toast.success("Anslöt till Zoom")
+        this.connected3rdparty = true
+      } else {
+        this.$toast.warning("Kunde inte ansluta till Zoom. Kontrollera API-token.")
+        this.connected3rdparty = false
+      }
     });
     this.connected3rdparty=false
     if (import.meta.env.VUE_APP_STTYLUS_MODE == "webapp") {

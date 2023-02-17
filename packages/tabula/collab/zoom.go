@@ -26,19 +26,16 @@ func getZoomStep(token string) int {
 	log.Println(seq)
 	resp, err := http.Get(seq)
 	if err != nil {
-		log.Fatalln(err)
 		return -1
 	}
 	//We Read the response body on the line below.
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		log.Fatalln(err)
 		return -1
 	}
 	//Convert the body to type string
 	step, err := strconv.Atoi(string(body))
 	if err != nil {
-		log.Fatalln(err)
 		return -1
 	}
 
@@ -59,21 +56,20 @@ func (t *Tabula) SetZoomData(data ZoomCC) error {
 	return nil
 }
 
-func (t *Tabula) SendZoomCC() {
+func (t *Tabula) SendZoomCC() error {
 	step := strconv.Itoa(t.Zoom.MainStep)
 	target := t.Zoom.Token + "&lang=sv-SE" + "&seq=" + step
 	text := t.ToText()
 	log.Println(text)
 	if text == "" {
 		log.Println("Nothing to send")
-		return
+		return nil
 	}
 	if len(text) < 3 {
 		log.Println("Not sending less than 3 characters")
-		return
+		return nil
 	}
 	last := text[len(text)-1]
-	log.Println(last)
 	// . 46
 	// ! 33
 	// ? 63
@@ -84,15 +80,16 @@ func (t *Tabula) SendZoomCC() {
 		msg := bytes.NewBuffer([]byte(text))
 		resp, err := http.Post(target, "text/plain", msg)
 		if err != nil {
-			log.Fatal(err)
+			return err
 		}
 		body, err := ioutil.ReadAll(resp.Body)
 		if err != nil {
-			log.Fatal(err)
+			return err
 		}
 
 		t.Zoom.MainStep++
 		log.Println(string(body))
 	}
+	return nil
 
 }

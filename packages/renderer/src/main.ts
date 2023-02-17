@@ -86,12 +86,12 @@ if(import.meta.env.VITE_STTYLUS_MODE == undefined || import.meta.env.VITE_STTYLU
 
 if (import.meta.env.VITE_STTYLUS_MODE == "api") {
   Vue.prototype.$mode = "webapp"
+  Vue.prototype.$staging = import.meta.env.VITE_STTYLUS_STAGING
   if (import.meta.env.PROD) {
     console.log("Running in production")
     Vue.prototype.$backend = import.meta.env.VITE_STTYLUS_BACKEND
     Vue.prototype.$collabServer = "wss://sttylus.se/ws/"
     Vue.prototype.$collabAPI= "https://sttylus.se/ws/"
-    Vue.prototype.$collabAPI = import.meta.env.VITE_STTYLUS_COLLAB_API;
   } else {
     console.log("Running in development")
     Vue.prototype.$backend =

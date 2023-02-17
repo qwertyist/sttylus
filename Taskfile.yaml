@@ -44,7 +44,6 @@ tasks:
       - echo "Debug $STTYLUS_BUILD ..."
       - yarn run prebuild
       - cp packages/loader/index.js dist/renderer/index.js
-      - ../nw/nw ./dist/renderer/ 
     silent: false
   nw:run:
     env:
@@ -53,9 +52,10 @@ tasks:
       VITE_STTYLUS_BACKEND: http://localhost
     cmds:
       - echo "Running build $STTYLUS_BUILD ..."
+      - yarn run prebuild
       - cp packages/loader/index.js dist/renderer/index.js
       - cp packages/loader/update.html dist/renderer/update.html
-      - ../nw/nw ./dist/renderer/ 
+      - (cd ./dist/renderer/ && ../../../nw/nw .)
     silent: false
   debug:
     env:
@@ -144,11 +144,23 @@ tasks:
   deploy:webapp:
     env: 
       STTYLUS_MODE: webapp
+      VITE_STTYLUS_STAGING: false
       VITE_STTYLUS_MODE: api
       VITE_STTYLUS_BACKEND: https://sttylus.se
     cmds:
       - task: webapp:build
       - sh ./deploy_webapp.sh
+  deploy:staging:
+    env: 
+      STTYLUS_MODE: webapp
+      VITE_STTYLUS_STAGING: true
+      VITE_STTYLUS_MODE: api
+      VITE_STTYLUS_BACKEND: https://sttylus.se/api2/
+    cmds:
+      - task: webapp
+      - yarn run prebuild
+      - sh ./deploy_webapp.sh
+    silent: true
   deploy:consumer:
     cmds:
       - task: consumer
