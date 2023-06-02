@@ -114,7 +114,7 @@ func capitalize(abb, word string) string {
 }
 
 func (s *abbService) Abbreviate(userID, abbQuery string) (string, bool) {
-	log.Printf("service|Abbreviate got abb %s from user %s\n", abbQuery, userID)
+	// log.Printf("service|Abbreviate got abb %s from user %s\n", abbQuery, userID)
 	sharedListID := s.cache.UserSharedList[userID]
 	if sharedListID != "" {
 		w, f := s.cache.SharedAbbs[sharedListID][strings.ToLower(abbQuery)]

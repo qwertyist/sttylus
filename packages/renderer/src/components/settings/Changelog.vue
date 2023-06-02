@@ -55,8 +55,49 @@ export default {
     return {
       loading: true,
       error: {},
-      latest: new Date("2022, 12, 14"),
+      latest: new Date("2023, 02, 17"),
       changelog: [
+        {
+          date: new Date("2023, 02, 17"),
+          changes: [
+            {
+              id: 0,
+              type: "version",
+              description: "TESTVERSION 1.2.1",
+            },
+            {
+              id: 1,
+              type: "update",
+              description: "Distanstolkningar går koppla till closed captions i Zoom, men har irriterande och konstiga beteenden för sig fortfarande."
+            },
+            {
+              id: 2,
+              type: "update",
+              description: "Förkortningslistor kan exporteras som textfil",
+            },
+            {
+              id: 3,
+              type: "minor",
+              description: "Info/hjälptexter om:<br/><ul><li>import från ProType</li><li>inloggning i lokala versionen</li></ul>",
+            },
+            {
+              id: 4,
+              type: "minor",
+              description: "Fler och tydligare felmeddelanden och popups",
+            },
+            {
+              id: 5,
+              type: "fix",
+              description: "Åtgärdat en bugg där funktionen 'Tolkning på projektorduk eller extern skärm' inte ville hoppa igång om man klickat runt för mycket i menyer innan."
+            },
+            {
+              id: 6,
+              type: "fix",
+              description: "Åtgärdat en bugg där distanstolkningar skickar en bokstav per rad till tolkanvändaren och tills en tolk rensat skärmen med <kbd>F4</kbd>.",
+              action: "Svår uppmaning, men testkör gärna i dåliga webbläsare"
+            },
+          ],
+        },
         {
           date: new Date("2022, 12, 14"),
           changes: [

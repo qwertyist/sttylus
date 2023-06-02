@@ -35,8 +35,8 @@ tasks:
       - cp packages/loader/index.js dist/renderer/index.js
       - task: local:win
       - task: consumer
-      - cp -r dist/renderer/* /tmp/latest/
-    silent: false
+      - zip -r sttylus_$STTYLUS_VERSION.zip dist/renderer/* 
+    silent: true
   nw:debug:
     env:
       VITE_STTYLUS_MODE: desktop

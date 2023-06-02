@@ -5,6 +5,7 @@ stats.html
 
 *.db
 *.dat
+*.zip
 
 packages/frontpage/
 packages/backend/public/

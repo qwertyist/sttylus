@@ -39,6 +39,9 @@ export default class keyboard extends Keyboard {
     }
 
     listen() {
+      this.quill.root.addEventListener("paste", e => {
+        console.log("paste hände", e)
+      })
         this.quill.root.addEventListener("keydown", e => {
             if (this.URL) {
                 if (e.key != "." && separators.indexOf(e.key) !== -1) {
@@ -51,9 +54,10 @@ export default class keyboard extends Keyboard {
                 }
             }
             if (e.key.length == 1) {
+              console.log("vanlig knapptryckning")
                 if (this.capitalizeNext) {
                     if (!e.ctrlKey && !e.altKey) {
-                        let match = e.key.match(/\p{Letter}+/gu)
+                        let match = e.key.match(/\p{Letter}|\p{Number}+/gu)
                         if (match) {
                             let letter = match[0].toUpperCase()
                             e.preventDefault()
@@ -63,6 +67,11 @@ export default class keyboard extends Keyboard {
                         }
                     }
                 } else if (e.shiftKey) { this.capitalizeNext = false }
+              if(e.key == "v" && e.ctrlKey) { 
+                document.execCommand("paste")
+                return
+              }
+              return
             }
 
         })
@@ -94,9 +103,7 @@ export default class keyboard extends Keyboard {
         return word.charAt(0).toUpperCase() + word.slice(1);
     }
 
-
     abbreviate(index, abb, abbreviator, quill) {
-        //     console.log("abbreviate at index:", index, "with abb:", abb, "and sep:", abbreviator)
         if (!this.manuscriptEditor && queryManuscript(abb)) {
             quill.deleteText(index - abb.length, abb.length)
             this.prompt = abb
@@ -104,8 +111,6 @@ export default class keyboard extends Keyboard {
           const caps = abb.toUpperCase() == abb
           const title = abb[0].toUpperCase() === abb[0] 
           let match = this.cache.get(abb.toLowerCase())
-          console.log(abb, caps, title)
-          console.log(this.instance, match)
           api.abbreviate(abb)
           .then((resp) => {
             if (resp.status == 208) {
@@ -114,15 +119,12 @@ export default class keyboard extends Keyboard {
             }
           })
           .catch(() => {})
-
           if(match) {
             let word = match
             if (title) {
-              console.log("make titlecase")
               word = match.charAt(0).toUpperCase() + match.slice(1)
             }
-            if (caps) {
-              console.log("make caps")
+            if (caps && abb.length > 1) {
               word = match.toUpperCase()
             }
             EventBus.$emit("sendCC", word+abbreviator)
@@ -224,10 +226,10 @@ export default class keyboard extends Keyboard {
             key: 115,
             handler: function (range, context) {
                 removePreviews(range.index, this.quill)
-                console.log("F4")
-                this.url = false;
-                this.quill.setText("");
+                this.URL = false;
+                this.quill.setText(" ");
                 this.capitalizeNext = true
+                this.abbreviated = false
                 EventBus.$emit("clear")
                 this.prompt = ""
             }

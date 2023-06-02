@@ -376,8 +376,8 @@ export default {
       }, 25)
     },
     clear() {
-      console.log(this.quill)
       window.scrollTo(0, 0);
+      this.quill.focus();
       if (this.websocket) {
         this.websocket.sendClear()
         this.quill.version = 0
@@ -406,7 +406,6 @@ export default {
         theme: "snow",
         scrollContainer:".quillWrapper",
         modules: {
-          toolbar: null,
           keyboard: {
             capitalizeOnNewLine: this.settings.behaviour.capitalizeOnNewLine,
             manuscriptEditor: false,
@@ -430,7 +429,9 @@ export default {
           this.websocket.sendDelta(delta);
         }
       });
+      console.log(this.quill.clipboard)
       this.quill.clipboard.addMatcher(Node.ELEMENT_NODE, (node, delta) => {
+        console.log("addmatcher säger hej")
         delta.ops = delta.ops.map(op => {
           if (typeof op.insert !== "string") { return { insert: "" } }
           return {

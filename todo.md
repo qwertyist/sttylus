@@ -1,10 +1,15 @@
 TODO <===
-- [X] function to signal role switch in production
-- [X] fix connect/disconnect messages
-- [ ] edit abb
-- [ ] print addon list stack order
-- [ ] instruction
-- [ ] fel- och informationsmeddelanden
-- [ ] manuskript:
-  - [ ] QOL:
-    - [ ] Skippa många meningar
+- [X] enbokstavsförkortningar:
+  - kontrollera att förkortningen är längre än ett tecken
+- [X] anti-versal efter siffra:
+  - känn igen nummer som knapptryckning i "capitalizeNext"-logiken
+- [X] vettig stor bokstav efter F4:
+  - this.url skulle ha varit this.URL
+- [ ] klistra in oformaterad text:
+  - fånga "paste"-eventet och ersätt innehållet till "text/plain"
+- [ ] spara delad lista
+- [ ] sortera ämneslistor
+- [ ] marginalinställningar
+- [ ] stödtolkning:
+  -  [ ] ordet vid markören
+  -  [ ] lägg till i egen lista (bugg)
