@@ -128,7 +128,7 @@ tasks:
     env: 
       STTYLUS_MODE: webapp
       VITE_STTYLUS_MODE: api
-      VITE_STTYLUS_BACKEND: https://sttylus.se
+      VITE_STTYLUS_BACKEND: https://sttylus.se/api2/
     cmds:
       - task: webapp
       - yarn run prebuild
@@ -146,7 +146,7 @@ tasks:
       STTYLUS_MODE: webapp
       VITE_STTYLUS_STAGING: false
       VITE_STTYLUS_MODE: api
-      VITE_STTYLUS_BACKEND: https://sttylus.se
+      VITE_STTYLUS_BACKEND: https://sttylus.se/api2/
     cmds:
       - task: webapp:build
       - sh ./deploy_webapp.sh

@@ -55,8 +55,33 @@ export default {
     return {
       loading: true,
       error: {},
-      latest: new Date("2023, 02, 17"),
+      latest: new Date("2023, 07, 06"),
       changelog: [
+        { 
+          date:new Date("2023, 07, 06"),
+          changes: [ 
+            {
+              id: 0,
+              type: "version",
+              description: "TESTVERSION 1.3.0",
+            },
+            {
+              id: 1, 
+              type:"minor",
+              description: "Tillåt att klistra in text i skrivläget med <kbd>CTRL+SHIFT+V</kbd>.<br />Märk att kortkommandot är annorlunda. Detta för att förhindra infogandet av felaktigt formaterad text."
+            }
+          ]
+        },
+        { 
+          date:new Date("2023, 06, 02"),
+          changes: [ 
+            {
+              id: 1, 
+              type:"fix",
+              description: "Åtgärdat buggar kopplade till stor- och liten bokstav.<br /><ul><li>Kontrollerar att förkortningen är längre än en bokstav.</li><li>Känner igen siffror som nedslag i stor bokstav-logiken.</li><li>Stor bokstav hamnar på rätt ord efter F4.</li></ul>" 
+            }
+          ]
+        },
         {
           date: new Date("2023, 02, 17"),
           changes: [

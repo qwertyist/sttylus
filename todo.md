@@ -5,7 +5,7 @@ TODO <===
   - känn igen nummer som knapptryckning i "capitalizeNext"-logiken
 - [X] vettig stor bokstav efter F4:
   - this.url skulle ha varit this.URL
-- [ ] klistra in oformaterad text:
+- [-] klistra in oformaterad text:
   - fånga "paste"-eventet och ersätt innehållet till "text/plain"
 - [ ] spara delad lista
 - [ ] sortera ämneslistor

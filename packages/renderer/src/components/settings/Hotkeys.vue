@@ -70,6 +70,10 @@ export default {
         {
           whichKey: "PIL VÄNSTER ←",
           command: "Ta bort senaste ordet ur aktiverat manuskript",
+        },
+        {
+          whichKey: "CTRL+SHIFT+V",
+          command: "Klistra in (oformaterad) text i textvyn.",
         }
         /*{
           whichKey: "CTRL+HÖGER PIL",

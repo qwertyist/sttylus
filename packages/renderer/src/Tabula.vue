@@ -176,6 +176,9 @@ html {
   overflow: hidden;
 }
 #app {
+  zoom: 1; 
+  -moz-transform: scale(1); 
+  -moz-transform-origin: 0 0;
   font-family: "Avenir", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

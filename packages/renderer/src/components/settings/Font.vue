@@ -82,7 +82,7 @@
                 </b-form-radio>
               </b-form-radio-group>
             </b-form-group>
-            <!--Marginaler
+            Marginaler
             <div class="float-right">
               <b-form-checkbox v-model="form.margins.linked" @change="onMarginLinkedChange">Länka</b-form-checkbox>
             </div>
@@ -107,7 +107,7 @@
               min="0"
               max="200"
               v-model.number="form.margins.right"
-            />Botten/colorI
+            />Botten
             <b-form-input
               @change="onMarginChange"
               type="number"
@@ -115,8 +115,6 @@
               max="200"
               v-model.number="form.margins.bottom"
             />
-
-            -->
             <!-- <b-button type="submit" variant="primary">Spara</b-button> -->
           </b-form>
         </div>
