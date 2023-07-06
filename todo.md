@@ -7,7 +7,7 @@ TODO <===
   - this.url skulle ha varit this.URL
 - [-] klistra in oformaterad text:
   - fånga "paste"-eventet och ersätt innehållet till "text/plain"
-- [ ] spara delad lista
+- [X] spara delad lista
 - [ ] sortera ämneslistor
 - [ ] marginalinställningar
 - [-] stödtolkning:

@@ -674,8 +674,9 @@ export default {
     },
     getSharedAbbs(focus) {
       if (this.$store.state.sharedAbbs.length > 0) {
-        let i = this.modes.findIndex((m) => m.value == "shared");
-        this.modes[i].disabled = false;
+        let i = this.sources.findIndex((m) => m.value == "shared");
+        this.sources[i].disabled = false;
+        this.from = "shared";
 
         if (focus) {
           let abbs = this.$store.state.sharedAbbs.filter((a) => {
@@ -881,12 +882,6 @@ export default {
     },
   },
   mounted() {
-    this.$nextTick(() => {
-      setTimeout(() => { this.from = "dontImport"}, 500);
-    })
-    this.$nextTick(() => {
-      setTimeout(() => { this.to = "dontExport"}, 300);
-    })
     this.addEventListeners();
     this.getSharedAbbs(true);
     api.getUserLists().then((resp) => {
