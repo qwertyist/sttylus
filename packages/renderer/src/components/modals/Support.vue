@@ -472,6 +472,7 @@ export default {
               }
               api.createAbb(obj.base, obj).then(resp => {
                 console.log("shared abb also created user abb:", resp.data)
+                api.cacheAbbs().then(()=>{});
               }).catch(err => {
                 console.error("shared abb couldnt create user abb", err)
               })

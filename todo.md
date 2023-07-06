@@ -10,6 +10,6 @@ TODO <===
 - [ ] spara delad lista
 - [ ] sortera ämneslistor
 - [ ] marginalinställningar
-- [ ] stödtolkning:
+- [-] stödtolkning:
   -  [ ] ordet vid markören
-  -  [ ] lägg till i egen lista (bugg)
+  -  [X] lägg till i egen lista (bugg)

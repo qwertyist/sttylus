@@ -321,19 +321,18 @@ export default {
     sharedAbbs(abb) {
       if (abb.me) {
         this.websocket.sendSharedAbb(abb)
-      } else {
-        console.log("RXAbb:", abb)
         let baseListId = this.$store.state.sharedList.base
-        if (abb.create) {
-          this.$toast.info('"' + abb.abb + '" → "' + abb.word + '" skapades')
           this.quill.keyboard.cache.set(abb.abb, abb.word)
           if (baseListId) {
-            api.createAbb(baseListId, abb).then(resp => {
-              console.log("other user created abb");
+            api.createAbb(baseListId, abb).then(() => {
             }).catch(err => {
               console.error("other user couldnt create abb", err)
             })
           }
+      } else {
+        console.log("RXAbb:", abb)
+        if (abb.create) {
+          this.$toast.info('"' + abb.abb + '" → "' + abb.word + '" skapades')
         }
         if (abb.delete) {
           this.$toast.info('"' + abb.abb + '" togs bort')

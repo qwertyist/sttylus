@@ -69,6 +69,18 @@ export default {
               id: 1, 
               type:"minor",
               description: "Tillåt att klistra in text i skrivläget med <kbd>CTRL+SHIFT+V</kbd>.<br />Märk att kortkommandot är annorlunda. Detta för att förhindra infogandet av felaktigt formaterad text."
+            },
+            {
+              id: 2, 
+              type:"fix",
+              description: "Distanstolkningar går att ta bort."
+            },
+            {
+              id: 3,
+              type:"fix",
+              description: "När en förkortning skapas till delad lista läggs den till även till den egna."
+            },
+            {
             }
           ]
         },
