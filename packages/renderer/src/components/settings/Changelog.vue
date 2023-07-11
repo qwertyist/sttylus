@@ -63,7 +63,7 @@ export default {
             {
               id: 0,
               type: "version",
-              description: "TESTVERSION 1.3.0",
+              description: "VERSION 1.3.0",
             },
             {
               id: 1, 
@@ -81,6 +81,9 @@ export default {
               description: "När en förkortning skapas till delad lista läggs den till även till den egna."
             },
             {
+              id: 4,
+              type:"fix",
+              description: "Delade förkortningslistor kan sparas/importeras.",
             }
           ]
         },
