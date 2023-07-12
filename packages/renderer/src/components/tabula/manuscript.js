@@ -38,7 +38,6 @@ export function loadManuscripts(docs) {
 export function queryManuscript(abb) {
     manuscript.deltas = []
     if (manuscript.prompt) { return false }
-    console.log("query with abb:", abb)
     let id = manuscripts.get(abb.toLowerCase())
     if (id) {
         return api.getManuscript(id).then(resp => {

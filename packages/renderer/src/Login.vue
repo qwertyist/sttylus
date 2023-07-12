@@ -5,7 +5,7 @@
       <b-jumbotron 
         header="Välj användare"
       >
-      <template #lead>
+      <template #lead v-if="desktop">
         Möjligheten att logga in med användarkontot från webappen (<code>sttylus.se/app/</code>) dröjer tills den är vattentät i alla riktningar. 
         Tills dess loggar du in som "Skrivtolk" och du kan fortfarande importera dina förkortningslistor från webappen.<br />
       </template>

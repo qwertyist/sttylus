@@ -7,9 +7,6 @@ import { promptManuscript, queryManuscript, removePreviews } from "./manuscript"
 var Keyboard = Quill.import('modules/keyboard');
 
 
-let capitalizeNext = true;
-let abbreviated = false;
-let functionKeys = ["F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F12"]
 
 let separators = [" ", ".", "!", "?", ":", ";", "-", "(", ")", "[", "]", "{", "}", "Enter"]
 
@@ -39,9 +36,6 @@ export default class keyboard extends Keyboard {
     }
 
     listen() {
-      this.quill.root.addEventListener("paste", e => {
-        console.log("paste hände", e)
-      })
         this.quill.root.addEventListener("keydown", e => {
             if (this.URL) {
                 if (e.key != "." && separators.indexOf(e.key) !== -1) {
@@ -54,7 +48,6 @@ export default class keyboard extends Keyboard {
                 }
             }
             if (e.key.length == 1) {
-              console.log("vanlig knapptryckning")
                 if (this.capitalizeNext) {
                     if (!e.ctrlKey && !e.altKey) {
                         let match = e.key.match(/\p{Letter}|\p{Number}+/gu)
@@ -68,8 +61,7 @@ export default class keyboard extends Keyboard {
                     }
                 } else if (e.shiftKey) { this.capitalizeNext = false }
               if(e.key == "v" && e.ctrlKey) { 
-                document.execCommand("paste")
-                return
+                console.log("paste!")
               }
               return
             }
@@ -91,9 +83,9 @@ export default class keyboard extends Keyboard {
 
     }
 
-    unloadAbb(abb) {
+    /*unloadAbb(abb) {
 
-    }
+    }*/
 
     wordBeforeCursor(prefix) {
       return prefix.split(/[\u200B\s-.,:;_\/"'()]/).pop()
@@ -114,7 +106,6 @@ export default class keyboard extends Keyboard {
           api.abbreviate(abb)
           .then((resp) => {
             if (resp.status == 208) {
-              let missed = resp.data
               store.commit("incrementMissedAbb", { word: abb, abb: resp.data })
             }
           })
@@ -160,12 +151,36 @@ export default class keyboard extends Keyboard {
             })
         }
     }
+    paste() {
+    const text = e.clipboardData
+        ? (e.originalEvent || e).clipboardData.getData('text/plain')
+        : // For IE
+        window.clipboardData
+        ? window.clipboardData.getData('Text')
+        : '';
 
+    if (document.queryCommandSupported('insertText')) { // eslint-disable-line 
+        document.execCommand('insertText', false, text);
+    } else {
+        // Insert text at the current position of caret
+        const range = document.getSelection().getRangeAt(0);
+        range.deleteContents();
+
+        const textNode = document.createTextNode(text);
+        range.insertNode(textNode);
+        range.selectNodeContents(textNode);
+        range.collapse(false);
+
+        const selection = window.getSelection();
+        selection.removeAllRanges();
+        selection.addRange(range);
+    }
+    }
     addKeybindings() {
         // TAB
         this.bindings[9].unshift({
             key: 9,
-            handler: function (range, context) {
+            handler: function (range) {
                 console.log("TAB");
                 this.quill.insertText(range.index, "\u200B")
             }
@@ -173,10 +188,7 @@ export default class keyboard extends Keyboard {
         //ESCAPE
         this.addBinding({
             key: 27,
-            handler: function (range, context) {
-                if (store.getters.getModalOpen) {
-                  console.log("MODAL open - dont catch")
-                }
+            handler: function (range, _context) { 
                 let end = this.quill.getText().length - 1
                 if (this.lastKey == "Escape") {
                     this.prompt = ""
@@ -224,7 +236,7 @@ export default class keyboard extends Keyboard {
         //F4
         this.addBinding({
             key: 115,
-            handler: function (range, context) {
+            handler: function (range, _context) {
                 removePreviews(range.index, this.quill)
                 this.URL = false;
                 this.quill.setText(" ");
@@ -394,7 +406,7 @@ export default class keyboard extends Keyboard {
         this.addBinding({
           key: 8,
           ctrlKey: true,
-          handler: function (range, context) {
+          handler: function () {
             this.capitalizeNext = false
             return true
           }
@@ -533,7 +545,7 @@ export default class keyboard extends Keyboard {
         this.bindings[8].unshift({
             key: 8,
             ctrlKey: true,
-            handler: function (range, context) {
+            handler: function (_range, context) {
                 console.log("prefix:", context.prefix, "length.", context.prefix.length)
                 if (context.prefix.trim().split(" ").length == 1) {
                     this.capitalizeNext = true
@@ -544,7 +556,7 @@ export default class keyboard extends Keyboard {
         // Right →
         this.bindings[39].unshift({
             key: 39,
-            handler: function (range, context) {
+            handler: function () {
                 if (this.prompt != "") {
                     let index = this.quill.getText().length - 1
                     let offset = promptManuscript(index, this.quill, "insertWord")
@@ -563,7 +575,7 @@ export default class keyboard extends Keyboard {
         this.bindings[39].unshift({
             key: 39,
             ctrlKey: true,
-            handler: function (range, context) {
+            handler: function (range, _context) {
               if (range.index == this.quill.getText().length-1) return false
               return true
             }
@@ -573,7 +585,7 @@ export default class keyboard extends Keyboard {
         this.bindings[39].unshift({
             key: 39,
             altKey: true,
-            handler: function (range, context) {
+            handler: function () {
                 if (this.prompt != "") {
                     let index = this.quill.getText().length - 1
                     let offset = promptManuscript(index, this.quill, "skipWord")
@@ -592,7 +604,7 @@ export default class keyboard extends Keyboard {
         // Down ↓
         this.addBinding({
             key: 40,
-            handler: function (range, context) {
+            handler: function () {
                 if (this.prompt != "") {
                     let index = this.quill.getText().length - 1
                     let offset = promptManuscript(index, this.quill, "insertClause")
@@ -611,7 +623,7 @@ export default class keyboard extends Keyboard {
         this.addBinding({
             key: 40,
             altKey: true,
-            handler: function (range, context) {
+            handler: function () {
                 if (this.prompt != "") {
                     let index = this.quill.getText().length - 1
                     let offset = promptManuscript(index, this.quill, "skipClause")
@@ -629,7 +641,7 @@ export default class keyboard extends Keyboard {
         //Left
         this.bindings[37].unshift({
             key: 37,
-            handler: function (range, context) {
+            handler: function (_range, context) {
                 if (this.prompt != "") {
                     let index = this.quill.getText().length - 1
                     let offset = promptManuscript(index, this.quill, "removeWord", context)
@@ -642,7 +654,7 @@ export default class keyboard extends Keyboard {
         this.addBinding({
             key: 86,
             ctrlKey: true,
-            handler: function (range, context) {
+            handler: function () {
                 return this.manuscriptEditor ? true : false;
             }
         })
@@ -651,7 +663,7 @@ export default class keyboard extends Keyboard {
       this.addBinding({
         key: 49,
         ctrlKey: true,
-        handler: function (range, context) {
+        handler: function () {
           if(store.getters.getModalOpen == false) {
             EventBus.$emit("changeStandardList", 1)
             return false
@@ -663,7 +675,7 @@ export default class keyboard extends Keyboard {
       this.addBinding({
         key: 50,
         ctrlKey: true,
-        handler: function (range, context) {
+        handler: function () {
           if(store.getters.getModalOpen == false) {
             EventBus.$emit("changeStandardList",  2)
             return false
@@ -675,7 +687,7 @@ export default class keyboard extends Keyboard {
       this.addBinding({
         key: 51,
         ctrlKey: true,
-        handler: function (range, context) {
+        handler: function () {
           if(store.getters.getModalOpen == false) {
             EventBus.$emit("changeStandardList",  3)
             return false
@@ -687,7 +699,7 @@ export default class keyboard extends Keyboard {
       this.addBinding({
         key: 52,
         ctrlKey: true,
-        handler: function (range, context) {
+        handler: function () {
           if(store.getters.getModalOpen == false) {
             EventBus.$emit("changeStandardList",  4)
             return false
@@ -699,7 +711,7 @@ export default class keyboard extends Keyboard {
       this.addBinding({
         key: 53,
         ctrlKey: true,
-        handler: function (range, context) {
+        handler: function () {
           if(!store.getters.getModalOpen) {
             EventBus.$emit("changeStandardList",  5)
             return false
