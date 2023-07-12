@@ -5,13 +5,27 @@ module.exports = {
         'plugin:vue/base',
         'plugin:vue/strongly-recommended',
         'plugin:vue/recommended',
-        'prettier'
+        'prettier',
+        'plugin:@typescript-eslint/recommended',
     ],
     parser: 'vue-eslint-parser',
+    parserOptions: {
+        ecmaVersion: 'latest',
+    },
     rules: {
         'vue/no-unused-vars': 'error',
+        'no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+        '@typescript-eslint/no-unused-vars': [
+            'error',
+            { argsIgnorePattern: '^_' },
+        ],
+        indent: ['error', 4],
+        semi: ['error', 'never'],
     },
     env: {
         node: true,
     },
-};
+    globals: {
+        __APP_VERSION__: true,
+    },
+}
