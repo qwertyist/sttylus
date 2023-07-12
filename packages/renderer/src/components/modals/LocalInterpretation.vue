@@ -14,62 +14,72 @@
     >
         <h3>Lokal tolkning</h3>
         <b-overlay :show="remotesession" rounded="sm">
-        <template #overlay>
-            <div class="text-center">
-                <b-icon icon="exclamation-circle-fill" font-scale="3" animation="cylon"></b-icon>
-                <p class="lead">Du är redan ansluten till en distanstolkning.</p>
-            </div>
-        </template>
-        <b-card
-            header="Tolkning på lokalt nätverk"
-            sub-title="Låt andra enheter ansluta till STTylus och ta del av texten"
-        >
-            <b-card-text v-if="ip">
-                <div v-if="local">
-                    Andra enheter på nätverket ansluter till:
-                    <br />
-                    <br />
-                    <h4>http://{{ ip }}/</h4>
-                    <br />
-                    <b-button variant="danger" @click="stopLocal">Avsluta</b-button>
+            <template #overlay>
+                <div class="text-center">
+                    <b-icon
+                        icon="exclamation-circle-fill"
+                        font-scale="3"
+                        animation="cylon"
+                    ></b-icon>
+                    <p class="lead">
+                        Du är redan ansluten till en distanstolkning.
+                    </p>
                 </div>
-                <div v-else>
-                    <b-button @click="startLocal">Starta</b-button>
-                </div>
-            </b-card-text>
+            </template>
+            <b-card
+                header="Tolkning på lokalt nätverk"
+                sub-title="Låt andra enheter ansluta till STTylus och ta del av texten"
+            >
+                <b-card-text v-if="ip">
+                    <div v-if="local">
+                        Andra enheter på nätverket ansluter till:
+                        <br />
+                        <br />
+                        <h4>http://{{ ip }}/</h4>
+                        <br />
+                        <b-button variant="danger" @click="stopLocal"
+                            >Avsluta</b-button
+                        >
+                    </div>
+                    <div v-else>
+                        <b-button @click="startLocal">Starta</b-button>
+                    </div>
+                </b-card-text>
 
-            <b-card-text v-else>
-                <b>Du är inte ansluten till ett lokalt nätverk.</b>
-                <br />
-                <b-button @click="checkConnection" variant="info">Uppdatera</b-button>
-            </b-card-text>
-        </b-card>
-        <b-card
-            header="Tolkning på projektorduk eller extern skärm"
-            sub-title="Öpnnar en ruta som visar texten utan distraktioner, som kan visas på en annan skärm"
-        >
-            <b-card-text>
-                <div v-if="!presentation">
-                    <b-button @click="startPresentation">Utvidga</b-button>
-                </div>
-                <div v-else>
-                    {{ window }}
-                    <b-button @click="stopPresentation">Stäng</b-button>
-                </div>
-            </b-card-text>
-        </b-card>
+                <b-card-text v-else>
+                    <b>Du är inte ansluten till ett lokalt nätverk.</b>
+                    <br />
+                    <b-button @click="checkConnection" variant="info"
+                        >Uppdatera</b-button
+                    >
+                </b-card-text>
+            </b-card>
+            <b-card
+                header="Tolkning på projektorduk eller extern skärm"
+                sub-title="Öpnnar en ruta som visar texten utan distraktioner, som kan visas på en annan skärm"
+            >
+                <b-card-text>
+                    <div v-if="!presentation">
+                        <b-button @click="startPresentation">Utvidga</b-button>
+                    </div>
+                    <div v-else>
+                        {{ window }}
+                        <b-button @click="stopPresentation">Stäng</b-button>
+                    </div>
+                </b-card-text>
+            </b-card>
         </b-overlay>
     </b-modal>
 </template>
 <script>
-import EventBus from "../../eventbus.js"
-import api from "../../api/api.js";
+import EventBus from '../../eventbus.js'
+import api from '../../api/api.js'
 export default {
     data() {
         return {
             connected: false,
             local: false,
-            ip: "",
+            ip: '',
             presentation: false,
             screens: [],
             remotesession: null,
@@ -77,8 +87,8 @@ export default {
         }
     },
     mounted() {
-        if(!this.$mode == "desktop") {
-          return
+        if (!this.$mode == 'desktop') {
+            return
         }
 
         nw.Screen.Init()
@@ -92,98 +102,96 @@ export default {
     },
     methods: {
         addEventListeners() {
-            EventBus.$on("localConnection", this.setLocalConnection)
+            EventBus.$on('localConnection', this.setLocalConnection)
 
-            console.log("Listen to screen changes")
-            nw.Screen.on("displayBoundsChanged", this.displayBoundsChanged)
-            nw.Screen.on("displayAdded", this.displayAdded)
-            nw.Screen.on("displayRemoved", this.displayRemoved)
+            console.log('Listen to screen changes')
+            nw.Screen.on('displayBoundsChanged', this.displayBoundsChanged)
+            nw.Screen.on('displayAdded', this.displayAdded)
+            nw.Screen.on('displayRemoved', this.displayRemoved)
         },
         removeEventListeners() {
-            EventBus.$off("localConnection")
+            EventBus.$off('localConnection')
         },
         setLocalConnection(status) {
-            console.log("Update local...")
+            console.log('Update local...')
             this.local = status
         },
         updateConnectedScreens() {
-        this.screens = nw.Screen.screens
+            this.screens = nw.Screen.screens
         },
         displayBoundsChanged(screen) {
-            console.log("display bounds changed:", screen)
+            console.log('display bounds changed:', screen)
         },
         displayAdded(screen) {
-            this.$toast.warning("Extern skärm eller projektor anlöts")
-        this.screens = nw.Screen.screens
-            console.log("display added:", screen)
+            this.$toast.warning('Extern skärm eller projektor anlöts')
+            this.screens = nw.Screen.screens
+            console.log('display added:', screen)
         },
         displayRemoved(screen) {
-            console.log("display removed:", screen)
-            this.$toast.warning("Extern skärm eller projektor kopplades ur")
+            console.log('display removed:', screen)
+            this.$toast.warning('Extern skärm eller projektor kopplades ur')
             this.presentation = false
         },
         openModal() {
             if (this.$store.state.session.connected) {
-                console.log("Already connected to remote session")
+                console.log('Already connected to remote session')
                 this.remotesession = true
             } else {
-                console.log("Not connected to remote session")
+                console.log('Not connected to remote session')
                 this.remotesession = false
             }
 
-            this.$store.commit("setModalOpen", true)
+            this.$store.commit('setModalOpen', true)
 
-            EventBus.$emit("modalOpened");
+            EventBus.$emit('modalOpened')
         },
         closeModal() {
-            this.$store.commit("setModalOpen", false)
-            EventBus.$emit("modalClosed");
+            this.$store.commit('setModalOpen', false)
+            EventBus.$emit('modalClosed')
         },
         checkConnection() {
-
-            api.getLocalIP().then(resp => {
-                this.ip = resp.data.ip
-                this.connected = true
-            })
-                .catch(err => {
+            api.getLocalIP()
+                .then((resp) => {
+                    this.ip = resp.data.ip
+                    this.connected = true
+                })
+                .catch((err) => {
                     console.error("Couldn't get local ip", err)
                     this.connected = false
                 })
         },
         startLocal() {
             this.local = true
-            EventBus.$emit("connectLocal")
+            EventBus.$emit('connectLocal')
         },
         stopLocal() {
             this.local = false
-            EventBus.$emit("disconnectLocal")
+            EventBus.$emit('disconnectLocal')
         },
         startPresentation() {
-            const url = window.location.href.replace(/\#$/, '');
-            nw.Window.open(url + "presentation", {}, (child) => {
-                child.on("close", () => {
-                    console.log("Do something on closing child window...")
-                    EventBus.$emit("stopPresentation")
+            const url = window.location.href.replace(/\#$/, '')
+            nw.Window.open(url + 'presentation', {}, (child) => {
+                child.on('close', () => {
+                    console.log('Do something on closing child window...')
+                    EventBus.$emit('stopPresentation')
                     this.presentation = false
                     child.hide()
                     child.close(true)
                 })
-                child.on("loaded", (loaded) => {
+                child.on('loaded', (loaded) => {
                     this.presentation = true
-                    console.log("child loaded...")
+                    console.log('child loaded...')
                     console.log(loaded)
-                    EventBus.$emit("startPresentation")
+                    EventBus.$emit('startPresentation')
                     this.child = child
                 })
             })
-
         },
         stopPresentation() {
             this.child.close()
 
-            EventBus.$emit("stopPresentation")
-        }
-    }
+            EventBus.$emit('stopPresentation')
+        },
+    },
 }
-
 </script>

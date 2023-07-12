@@ -1,14 +1,27 @@
-import Quill from "quill"
-import Delta from "quill-delta"
-import api from "../../api/api";
-import { store } from "../../store"
-import EventBus from "../../eventbus"
-import { promptManuscript, queryManuscript, removePreviews } from "./manuscript";
-var Keyboard = Quill.import('modules/keyboard');
+import Quill from 'quill'
+import Delta from 'quill-delta'
+import api from '../../api/api'
+import { store } from '../../store'
+import EventBus from '../../eventbus'
+import { promptManuscript, queryManuscript, removePreviews } from './manuscript'
+var Keyboard = Quill.import('modules/keyboard')
 
-
-
-let separators = [" ", ".", "!", "?", ":", ";", "-", "(", ")", "[", "]", "{", "}", "Enter"]
+let separators = [
+    ' ',
+    '.',
+    '!',
+    '?',
+    ':',
+    ';',
+    '-',
+    '(',
+    ')',
+    '[',
+    ']',
+    '{',
+    '}',
+    'Enter',
+]
 
 export default class keyboard extends Keyboard {
     static DEFAULTS = {
@@ -16,29 +29,29 @@ export default class keyboard extends Keyboard {
         bindings: {
             ...Keyboard.DEFAULTS.bindings,
             ['list autofill']: undefined,
-        }
+        },
     }
     constructor(quill, options) {
-      super(quill, options)
-      this.instance = (Math.random() + 1).toString(36).substring(7);
-      this.abbreviated = false;
-      this.querying = null;
-      this.capitalizeNext = true;
-      this.scrollIntoView = false;
-      this.manuscriptEditor = options.manuscriptEditor
-      this.URL = false
-      this.addKeybindings()
-      this.scrollHandler(quill.root)
-      this.prompt = ""
-      this.lastKey = ""
-      this.cache = null
-      this.getAbbCache()
+        super(quill, options)
+        this.instance = (Math.random() + 1).toString(36).substring(7)
+        this.abbreviated = false
+        this.querying = null
+        this.capitalizeNext = true
+        this.scrollIntoView = false
+        this.manuscriptEditor = options.manuscriptEditor
+        this.URL = false
+        this.addKeybindings()
+        this.scrollHandler(quill.root)
+        this.prompt = ''
+        this.lastKey = ''
+        this.cache = null
+        this.getAbbCache()
     }
 
     listen() {
-        this.quill.root.addEventListener("keydown", e => {
+        this.quill.root.addEventListener('keydown', (e) => {
             if (this.URL) {
-                if (e.key != "." && separators.indexOf(e.key) !== -1) {
+                if (e.key != '.' && separators.indexOf(e.key) !== -1) {
                     this.capitalizeNext = true
                     this.URL = false
                     return
@@ -59,28 +72,27 @@ export default class keyboard extends Keyboard {
                             this.capitalizeNext = false
                         }
                     }
-                } else if (e.shiftKey) { this.capitalizeNext = false }
-              if(e.key == "v" && e.ctrlKey) { 
-                console.log("paste!")
-              }
-              return
+                } else if (e.shiftKey) {
+                    this.capitalizeNext = false
+                }
+                if (e.key == 'v' && e.ctrlKey) {
+                    console.log('paste!')
+                }
+                return
             }
-
         })
         super.listen()
-
     }
 
     getAbbCache() {
-      api.getAbbCache()
-      .then(resp => {
-        this.cache = new Map(Object.entries(resp.data))
-        console.log(this.instance, this.cache)
-      })
-      .catch(err => {
-        console.error("couldn't get cached abbs", err)
-      })
-
+        api.getAbbCache()
+            .then((resp) => {
+                this.cache = new Map(Object.entries(resp.data))
+                console.log(this.instance, this.cache)
+            })
+            .catch((err) => {
+                console.error("couldn't get cached abbs", err)
+            })
     }
 
     /*unloadAbb(abb) {
@@ -88,11 +100,11 @@ export default class keyboard extends Keyboard {
     }*/
 
     wordBeforeCursor(prefix) {
-      return prefix.split(/[\u200B\s-.,:;_\/"'()]/).pop()
+        return prefix.split(/[\u200B\s-.,:;_\/"'()]/).pop()
     }
 
     capitalize(word) {
-        return word.charAt(0).toUpperCase() + word.slice(1);
+        return word.charAt(0).toUpperCase() + word.slice(1)
     }
 
     abbreviate(index, abb, abbreviator, quill) {
@@ -100,32 +112,38 @@ export default class keyboard extends Keyboard {
             quill.deleteText(index - abb.length, abb.length)
             this.prompt = abb
         } else {
-          const caps = abb.toUpperCase() == abb
-          const title = abb[0].toUpperCase() === abb[0] 
-          let match = this.cache.get(abb.toLowerCase())
-          api.abbreviate(abb)
-          .then((resp) => {
-            if (resp.status == 208) {
-              store.commit("incrementMissedAbb", { word: abb, abb: resp.data })
+            const caps = abb.toUpperCase() == abb
+            const title = abb[0].toUpperCase() === abb[0]
+            let match = this.cache.get(abb.toLowerCase())
+            api.abbreviate(abb)
+                .then((resp) => {
+                    if (resp.status == 208) {
+                        store.commit('incrementMissedAbb', {
+                            word: abb,
+                            abb: resp.data,
+                        })
+                    }
+                })
+                .catch(() => {})
+            if (match) {
+                let word = match
+                if (title) {
+                    word = match.charAt(0).toUpperCase() + match.slice(1)
+                }
+                if (caps && abb.length > 1) {
+                    word = match.toUpperCase()
+                }
+                EventBus.$emit('sendCC', word + abbreviator)
+                this.insertAbbreviation(index, abb, abbreviator, word, quill)
+                setTimeout(
+                    () => quill.setSelection(quill.getSelection().index, 0),
+                    20
+                )
+                return
             }
-          })
-          .catch(() => {})
-          if(match) {
-            let word = match
-            if (title) {
-              word = match.charAt(0).toUpperCase() + match.slice(1)
-            }
-            if (caps && abb.length > 1) {
-              word = match.toUpperCase()
-            }
-            EventBus.$emit("sendCC", word+abbreviator)
-            this.insertAbbreviation(index, abb, abbreviator, word, quill)
-            setTimeout(() => quill.setSelection(quill.getSelection().index, 0), 20)
-            return
-          }
 
-          EventBus.$emit("sendCC", abb+abbreviator)
-          quill.insertText(index, abbreviator)
+            EventBus.$emit('sendCC', abb + abbreviator)
+            quill.insertText(index, abbreviator)
         }
     }
 
@@ -135,180 +153,186 @@ export default class keyboard extends Keyboard {
             quill.insertText(index, abbreviator, format)
             return
         }
-        let delta = new Delta().retain(index - abb.length).delete(abb.length).insert(word + abbreviator, format)
+        let delta = new Delta()
+            .retain(index - abb.length)
+            .delete(abb.length)
+            .insert(word + abbreviator, format)
         quill.updateContents(delta)
-
     }
 
     scrollHandler(node) {
         if (!this.manuscriptEditor) {
-            node.addEventListener("keyup", ({ key: key, target: { lastChild } }) => {
-                this.lastKey = key
-                if (this.scrollIntoView) {
-                    lastChild.scrollIntoView()
-                    this.scrollIntoView = false
+            node.addEventListener(
+                'keyup',
+                ({ key: key, target: { lastChild } }) => {
+                    this.lastKey = key
+                    if (this.scrollIntoView) {
+                        lastChild.scrollIntoView()
+                        this.scrollIntoView = false
+                    }
                 }
-            })
+            )
         }
     }
     paste() {
-    const text = e.clipboardData
-        ? (e.originalEvent || e).clipboardData.getData('text/plain')
-        : // For IE
-        window.clipboardData
-        ? window.clipboardData.getData('Text')
-        : '';
+        const text = e.clipboardData
+            ? (e.originalEvent || e).clipboardData.getData('text/plain')
+            : // For IE
+            window.clipboardData
+            ? window.clipboardData.getData('Text')
+            : ''
 
-    if (document.queryCommandSupported('insertText')) { // eslint-disable-line 
-        document.execCommand('insertText', false, text);
-    } else {
-        // Insert text at the current position of caret
-        const range = document.getSelection().getRangeAt(0);
-        range.deleteContents();
+        if (document.queryCommandSupported('insertText')) {
+            // eslint-disable-line
+            document.execCommand('insertText', false, text)
+        } else {
+            // Insert text at the current position of caret
+            const range = document.getSelection().getRangeAt(0)
+            range.deleteContents()
 
-        const textNode = document.createTextNode(text);
-        range.insertNode(textNode);
-        range.selectNodeContents(textNode);
-        range.collapse(false);
+            const textNode = document.createTextNode(text)
+            range.insertNode(textNode)
+            range.selectNodeContents(textNode)
+            range.collapse(false)
 
-        const selection = window.getSelection();
-        selection.removeAllRanges();
-        selection.addRange(range);
-    }
+            const selection = window.getSelection()
+            selection.removeAllRanges()
+            selection.addRange(range)
+        }
     }
     addKeybindings() {
         // TAB
         this.bindings[9].unshift({
             key: 9,
             handler: function (range) {
-                console.log("TAB");
-                this.quill.insertText(range.index, "\u200B")
-            }
+                console.log('TAB')
+                this.quill.insertText(range.index, '\u200B')
+            },
         })
         //ESCAPE
         this.addBinding({
             key: 27,
-            handler: function (range, _context) { 
+            handler: function (range, _context) {
                 let end = this.quill.getText().length - 1
-                if (this.lastKey == "Escape") {
-                    this.prompt = ""
+                if (this.lastKey == 'Escape') {
+                    this.prompt = ''
                     removePreviews(range.index, this.quill)
                 }
                 this.quill.setSelection(end)
                 return true
-            }
+            },
         })
         //F2
         this.addBinding({
             key: 113,
             shiftKey: false,
             handler: function (range, context) {
-                let phrase = ""
+                let phrase = ''
                 if (range.length > 0) {
                     phrase = this.quill.getText(range.index, range.length)
                 } else {
-                    phrase = context.prefix.split(" ").pop()
+                    phrase = context.prefix.split(' ').pop()
                 }
-                EventBus.$emit("addAbbreviation", phrase)
-            }
+                EventBus.$emit('addAbbreviation', phrase)
+            },
         })
         //Shift+F2
         this.addBinding({
             key: 113,
             shiftKey: true,
             handler: function (range, context) {
-                let phrase = ""
+                let phrase = ''
                 if (range.length > 0) {
                     phrase = this.quill.getText(range.index, range.length)
                 } else {
-                    phrase = context.prefix.split(" ").pop()
+                    phrase = context.prefix.split(' ').pop()
                 }
-                EventBus.$emit("addAbbreviation", phrase.toLowerCase())
-            }
+                EventBus.$emit('addAbbreviation', phrase.toLowerCase())
+            },
         })
         //F3
         this.addBinding({
             key: 114,
             handler: function () {
-              EventBus.$emit("sendReadySignal")
-            }
+                EventBus.$emit('sendReadySignal')
+            },
         })
         //F4
         this.addBinding({
             key: 115,
             handler: function (range, _context) {
                 removePreviews(range.index, this.quill)
-                this.URL = false;
-                this.quill.setText(" ");
+                this.URL = false
+                this.quill.setText(' ')
                 this.capitalizeNext = true
                 this.abbreviated = false
-                EventBus.$emit("clear")
-                this.prompt = ""
-            }
+                EventBus.$emit('clear')
+                this.prompt = ''
+            },
         })
         //F6 sizeDown
         this.addBinding({
             key: 117,
             ctrlKey: false,
             handler: function () {
-                EventBus.$emit("sizeChange", { inc: false, send: false})
-            }
+                EventBus.$emit('sizeChange', { inc: false, send: false })
+            },
         })
         //ctrl+F6 send sizeDown
         this.addBinding({
             key: 117,
             ctrlKey: true,
             handler: function () {
-                EventBus.$emit("sizeChange", { inc: false, send: true})
-            }
+                EventBus.$emit('sizeChange', { inc: false, send: true })
+            },
         })
         //F7 sizeUp
         this.addBinding({
             key: 118,
             ctrlKey: false,
             handler: function () {
-                EventBus.$emit("sizeChange", { inc: true, send: false})
-            }
+                EventBus.$emit('sizeChange', { inc: true, send: false })
+            },
         })
         //CTRL+F7 send sizeUp
         this.addBinding({
             key: 118,
             ctrlKey: true,
             handler: function () {
-                console.log("keybinding ctrl+f7")
-                EventBus.$emit("sizeChange", { inc: true, send: true })
-            }
+                console.log('keybinding ctrl+f7')
+                EventBus.$emit('sizeChange', { inc: true, send: true })
+            },
         })
         //F8 colorChange
         this.addBinding({
             key: 119,
             ctrlKey: false,
             handler: function () {
-                EventBus.$emit("colorChange", false)
-            }
+                EventBus.$emit('colorChange', false)
+            },
         })
         //ctrl+F8 send colorChange
         this.addBinding({
             key: 119,
             ctrlKey: true,
             handler: function () {
-                EventBus.$emit("colorChange", true)
-            }
+                EventBus.$emit('colorChange', true)
+            },
         })
-        //F9 (Create) 
+        //F9 (Create)
         this.addBinding({
             key: 120,
             handler: function () {
-                console.log("keybinding F9")
-                EventBus.$emit("createSession", true)
-            }
+                console.log('keybinding F9')
+                EventBus.$emit('createSession', true)
+            },
         })
         //F10 (Join)
         this.addBinding({
             key: 121,
             handler: function () {
-                EventBus.$emit("joinSession")
-            }
+                EventBus.$emit('joinSession')
+            },
         })
 
         //Space
@@ -317,19 +341,19 @@ export default class keyboard extends Keyboard {
             shiftKey: null,
             handler: function (range, context) {
                 if (this.abbreviated) {
-                    this.abbreviated = false;
+                    this.abbreviated = false
                     return true
                 }
                 let abb = this.wordBeforeCursor(context.prefix)
                 //console.log(abb.length)
                 //console.log("word before cursor:", abb)
                 if (!abb) {
-                    this.abbreviated = false;
+                    this.abbreviated = false
                     return true
                 }
-                //abb = this.capitalize(abb) 
-                this.abbreviate(range.index, abb, " ", this.quill)
-            }
+                //abb = this.capitalize(abb)
+                this.abbreviate(range.index, abb, ' ', this.quill)
+            },
         })
         //Ctrl+Space
         this.addBinding({
@@ -341,24 +365,23 @@ export default class keyboard extends Keyboard {
                 //console.log("word before cursor:", abb)
                 this.abbreviated = false
                 this.capitalize = false
-                this.abbreviate(range.index, abb, "\u200B", this.quill)
-            }
+                this.abbreviate(range.index, abb, '\u200B', this.quill)
+            },
         })
         //Enter
         this.bindings[13].unshift({
             key: 13,
             handler: function (range, context) {
-
-                if (this.prompt != "") {
+                if (this.prompt != '') {
                     return
                 }
                 this.url = false
                 let scroll = range.index == this.quill.getLength() - 1
                 let abb = this.wordBeforeCursor(context.prefix)
-                if (abb != "") {
-                    this.abbreviate(range.index, abb, "\n", this.quill)
+                if (abb != '') {
+                    this.abbreviate(range.index, abb, '\n', this.quill)
                 } else {
-                    this.quill.insertText(range.index, "\n")
+                    this.quill.insertText(range.index, '\n')
                 }
                 if (this.options.capitalizeOnNewLine) {
                     this.capitalizeNext = true
@@ -367,9 +390,8 @@ export default class keyboard extends Keyboard {
                 }
                 this.abbreviated = false
                 this.scrollIntoView = scroll
-                EventBus.$emit("newLine", scroll)
-            }
-
+                EventBus.$emit('newLine', scroll)
+            },
         })
 
         //Shift+Enter
@@ -380,10 +402,10 @@ export default class keyboard extends Keyboard {
                 let abb = this.wordBeforeCursor(context.prefix)
                 this.url = false
                 if (abb) {
-                    this.abbreviate(range.index, abb, "\n", this.quill)
+                    this.abbreviate(range.index, abb, '\n', this.quill)
                     this.capitalizeNext = true
                 } else {
-                    this.quill.insertText(range.index, "\n")
+                    this.quill.insertText(range.index, '\n')
                 }
                 if (this.options.capitalizeOnNewLine) {
                     this.capitalizeNext = false
@@ -391,55 +413,55 @@ export default class keyboard extends Keyboard {
                     this.capitalizeNext = true
                 }
                 this.scrollIntoView = true
-            }
+            },
         })
-      
+
         //Backspace
         this.addBinding({
-          key: 8,
-          handler: function () {
-            this.capitalizeNext = false
-            return true
-          }
+            key: 8,
+            handler: function () {
+                this.capitalizeNext = false
+                return true
+            },
         })
 
         this.addBinding({
-          key: 8,
-          ctrlKey: true,
-          handler: function () {
-            this.capitalizeNext = false
-            return true
-          }
+            key: 8,
+            ctrlKey: true,
+            handler: function () {
+                this.capitalizeNext = false
+                return true
+            },
         })
 
         //Period
         this.addBinding({
             key: 190,
             handler: function (range, context) {
-              let abb = this.wordBeforeCursor(context.prefix)
-              if (abb == ".." || !abb.trim()) {
-                  return true
-              }
-              this.capitalizeNext = true
-              this.abbreviated = true;
-              this.URL = true
-              this.abbreviate(range.index, abb, ".", this.quill)
-            }
+                let abb = this.wordBeforeCursor(context.prefix)
+                if (abb == '..' || !abb.trim()) {
+                    return true
+                }
+                this.capitalizeNext = true
+                this.abbreviated = true
+                this.URL = true
+                this.abbreviate(range.index, abb, '.', this.quill)
+            },
         })
         //Colon
         this.addBinding({
             key: 190,
             shiftKey: true,
             handler: function (range, context) {
-                this.capitalizeNext = true;
-                context.prefix.split(" ").map(w => {
-                  if (w[0] === w[0].toLowerCase()) this.capitalizeNext = false;
+                this.capitalizeNext = true
+                context.prefix.split(' ').map((w) => {
+                    if (w[0] === w[0].toLowerCase()) this.capitalizeNext = false
                 })
 
                 let abb = this.wordBeforeCursor(context.prefix)
-                if (abb.length == 0) return true;
-                this.abbreviate(range.index, abb, ":", this.quill)
-            }
+                if (abb.length == 0) return true
+                this.abbreviate(range.index, abb, ':', this.quill)
+            },
         })
 
         //Comma
@@ -448,8 +470,8 @@ export default class keyboard extends Keyboard {
             handler: function (range, context) {
                 let abb = this.wordBeforeCursor(context.prefix)
                 if (abb.length == 0) return true
-                this.abbreviate(range.index, abb, ",", this.quill)
-            }
+                this.abbreviate(range.index, abb, ',', this.quill)
+            },
         })
         //Semicolon
         this.addBinding({
@@ -458,8 +480,8 @@ export default class keyboard extends Keyboard {
             handler: function (range, context) {
                 let abb = this.wordBeforeCursor(context.prefix)
                 if (abb.length == 0) return true
-                this.abbreviate(range.index, abb, ";", this.quill)
-            }
+                this.abbreviate(range.index, abb, ';', this.quill)
+            },
         })
         //Dash
         this.addBinding({
@@ -467,8 +489,8 @@ export default class keyboard extends Keyboard {
             handler: function (range, context) {
                 let abb = this.wordBeforeCursor(context.prefix)
                 if (abb.length == 0) return true
-                this.abbreviate(range.index, abb, "-", this.quill)
-            }
+                this.abbreviate(range.index, abb, '-', this.quill)
+            },
         })
         //Exclamation
         this.addBinding({
@@ -477,10 +499,10 @@ export default class keyboard extends Keyboard {
             handler: function (range, context) {
                 let abb = this.wordBeforeCursor(context.prefix)
                 if (abb.length == 0) return true
-                this.abbreviate(range.index, abb, "!", this.quill)
+                this.abbreviate(range.index, abb, '!', this.quill)
                 this.capitalizeNext = true
-                this.abbreviated = true;
-            }
+                this.abbreviated = true
+            },
         })
         //Question mark
         this.addBinding({
@@ -489,10 +511,10 @@ export default class keyboard extends Keyboard {
             handler: function (range, context) {
                 let abb = this.wordBeforeCursor(context.prefix)
                 if (abb.length == 0) return true
-                this.abbreviate(range.index, abb, "?", this.quill)
+                this.abbreviate(range.index, abb, '?', this.quill)
                 this.capitalizeNext = true
-                this.abbreviated = true;
-            }
+                this.abbreviated = true
+            },
         })
         this.addBinding({
             key: 57,
@@ -500,10 +522,10 @@ export default class keyboard extends Keyboard {
             handler: function (range, context) {
                 let abb = this.wordBeforeCursor(context.prefix)
                 if (abb.length == 0) return true
-                this.abbreviate(range.index, abb, ")", this.quill)
-                this.capitalizeNext = false;
-                this.abbreviated = true;
-            }
+                this.abbreviate(range.index, abb, ')', this.quill)
+                this.capitalizeNext = false
+                this.abbreviated = true
+            },
         })
         // Forwardslash
         this.addBinding({
@@ -512,54 +534,63 @@ export default class keyboard extends Keyboard {
             handler: function (range, context) {
                 let abb = this.wordBeforeCursor(context.prefix)
                 if (abb.length == 0) return true
-                this.abbreviate(range.index, abb, "/", this.quill)
-                this.capitalizeNext = false;
-                this.abbreviated = true;
-            }
+                this.abbreviate(range.index, abb, '/', this.quill)
+                this.capitalizeNext = false
+                this.abbreviated = true
+            },
         })
-        // Double quotation mark " 
+        // Double quotation mark "
         this.addBinding({
             key: 50,
             shiftKey: true,
             handler: function (range, context) {
                 let abb = this.wordBeforeCursor(context.prefix)
                 if (abb.length == 0) return true
-                this.abbreviate(range.index, abb, "\"", this.quill)
-                this.capitalizeNext = false;
-                this.abbreviated = true;
-            }
+                this.abbreviate(range.index, abb, '"', this.quill)
+                this.capitalizeNext = false
+                this.abbreviated = true
+            },
         })
-        // Quotation mark ' 
+        // Quotation mark '
         this.addBinding({
             key: 191,
             handler: function (range, context) {
-                console.log("\' quotation mark")
+                console.log("' quotation mark")
                 let abb = this.wordBeforeCursor(context.prefix)
                 if (abb.length == 0) return true
                 this.abbreviate(range.index, abb, "'", this.quill)
-                this.capitalizeNext = false;
-                this.abbreviated = true;
-            }
+                this.capitalizeNext = false
+                this.abbreviated = true
+            },
         })
         //Ctrl+Backspace
         this.bindings[8].unshift({
             key: 8,
             ctrlKey: true,
             handler: function (_range, context) {
-                console.log("prefix:", context.prefix, "length.", context.prefix.length)
-                if (context.prefix.trim().split(" ").length == 1) {
+                console.log(
+                    'prefix:',
+                    context.prefix,
+                    'length.',
+                    context.prefix.length
+                )
+                if (context.prefix.trim().split(' ').length == 1) {
                     this.capitalizeNext = true
                 }
                 return true
-            }
+            },
         })
         // Right →
         this.bindings[39].unshift({
             key: 39,
             handler: function () {
-                if (this.prompt != "") {
+                if (this.prompt != '') {
                     let index = this.quill.getText().length - 1
-                    let offset = promptManuscript(index, this.quill, "insertWord")
+                    let offset = promptManuscript(
+                        index,
+                        this.quill,
+                        'insertWord'
+                    )
 
                     if (offset == -1) {
                         this.prompt = false
@@ -569,16 +600,16 @@ export default class keyboard extends Keyboard {
                     return false
                 }
                 return true
-            }
+            },
         })
         // Ctrl+Right →
         this.bindings[39].unshift({
             key: 39,
             ctrlKey: true,
             handler: function (range, _context) {
-              if (range.index == this.quill.getText().length-1) return false
-              return true
-            }
+                if (range.index == this.quill.getText().length - 1) return false
+                return true
+            },
         })
         // ALT+Right →
 
@@ -586,9 +617,9 @@ export default class keyboard extends Keyboard {
             key: 39,
             altKey: true,
             handler: function () {
-                if (this.prompt != "") {
+                if (this.prompt != '') {
                     let index = this.quill.getText().length - 1
-                    let offset = promptManuscript(index, this.quill, "skipWord")
+                    let offset = promptManuscript(index, this.quill, 'skipWord')
 
                     if (offset == -1) {
                         this.prompt = false
@@ -598,16 +629,20 @@ export default class keyboard extends Keyboard {
                     return false
                 }
                 return true
-            }
+            },
         })
 
         // Down ↓
         this.addBinding({
             key: 40,
             handler: function () {
-                if (this.prompt != "") {
+                if (this.prompt != '') {
                     let index = this.quill.getText().length - 1
-                    let offset = promptManuscript(index, this.quill, "insertClause")
+                    let offset = promptManuscript(
+                        index,
+                        this.quill,
+                        'insertClause'
+                    )
 
                     if (offset == -1) {
                         this.prompt = false
@@ -617,16 +652,20 @@ export default class keyboard extends Keyboard {
                     return false
                 }
                 return true
-            }
+            },
         })
         // ALT+Down ↓
         this.addBinding({
             key: 40,
             altKey: true,
             handler: function () {
-                if (this.prompt != "") {
+                if (this.prompt != '') {
                     let index = this.quill.getText().length - 1
-                    let offset = promptManuscript(index, this.quill, "skipClause")
+                    let offset = promptManuscript(
+                        index,
+                        this.quill,
+                        'skipClause'
+                    )
 
                     if (offset == -1) {
                         this.prompt = false
@@ -636,87 +675,92 @@ export default class keyboard extends Keyboard {
                     return false
                 }
                 return true
-            }
+            },
         })
         //Left
         this.bindings[37].unshift({
             key: 37,
             handler: function (_range, context) {
-                if (this.prompt != "") {
+                if (this.prompt != '') {
                     let index = this.quill.getText().length - 1
-                    let offset = promptManuscript(index, this.quill, "removeWord", context)
+                    let offset = promptManuscript(
+                        index,
+                        this.quill,
+                        'removeWord',
+                        context
+                    )
                     this.quill.setSelection(offset)
                     return false
                 }
                 return true
-            }
+            },
         })
         this.addBinding({
             key: 86,
             ctrlKey: true,
             handler: function () {
-                return this.manuscriptEditor ? true : false;
-            }
+                return this.manuscriptEditor ? true : false
+            },
         })
-      //
-      //CTRL+1
-      this.addBinding({
-        key: 49,
-        ctrlKey: true,
-        handler: function () {
-          if(store.getters.getModalOpen == false) {
-            EventBus.$emit("changeStandardList", 1)
-            return false
-          }
-        }
-      })
+        //
+        //CTRL+1
+        this.addBinding({
+            key: 49,
+            ctrlKey: true,
+            handler: function () {
+                if (store.getters.getModalOpen == false) {
+                    EventBus.$emit('changeStandardList', 1)
+                    return false
+                }
+            },
+        })
 
-      //CTRL+2
-      this.addBinding({
-        key: 50,
-        ctrlKey: true,
-        handler: function () {
-          if(store.getters.getModalOpen == false) {
-            EventBus.$emit("changeStandardList",  2)
-            return false
-          }
-        }
-      })
+        //CTRL+2
+        this.addBinding({
+            key: 50,
+            ctrlKey: true,
+            handler: function () {
+                if (store.getters.getModalOpen == false) {
+                    EventBus.$emit('changeStandardList', 2)
+                    return false
+                }
+            },
+        })
 
-      //CTRL+3
-      this.addBinding({
-        key: 51,
-        ctrlKey: true,
-        handler: function () {
-          if(store.getters.getModalOpen == false) {
-            EventBus.$emit("changeStandardList",  3)
-            return false
-          }
-        }
-      })
+        //CTRL+3
+        this.addBinding({
+            key: 51,
+            ctrlKey: true,
+            handler: function () {
+                if (store.getters.getModalOpen == false) {
+                    EventBus.$emit('changeStandardList', 3)
+                    return false
+                }
+            },
+        })
 
-      //CTRL+4
-      this.addBinding({
-        key: 52,
-        ctrlKey: true,
-        handler: function () {
-          if(store.getters.getModalOpen == false) {
-            EventBus.$emit("changeStandardList",  4)
-            return false
-          }
-        }
-      })
+        //CTRL+4
+        this.addBinding({
+            key: 52,
+            ctrlKey: true,
+            handler: function () {
+                if (store.getters.getModalOpen == false) {
+                    EventBus.$emit('changeStandardList', 4)
+                    return false
+                }
+            },
+        })
 
-      //CTRL+5
-      this.addBinding({
-        key: 53,
-        ctrlKey: true,
-        handler: function () {
-          if(!store.getters.getModalOpen) {
-            EventBus.$emit("changeStandardList",  5)
-            return false
-          }
-        }
-      })
+        //CTRL+5
+        this.addBinding({
+            key: 53,
+            ctrlKey: true,
+            handler: function () {
+                if (!store.getters.getModalOpen) {
+                    EventBus.$emit('changeStandardList', 5)
+                    return false
+                }
+            },
+        })
     }
 }

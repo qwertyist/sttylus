@@ -5,5 +5,5 @@ export default childWindow = {
         alert: (message) => {
             window.alert(message)
         },
-    }
+    },
 }

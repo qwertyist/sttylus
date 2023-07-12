@@ -16,22 +16,22 @@ import {
     FormGroupPlugin,
     FormInputPlugin,
     InputGroupPlugin,
-    JumbotronPlugin, 
-    LayoutPlugin, 
-    ListGroupPlugin, 
-    ModalPlugin, 
-    NavbarPlugin, 
+    JumbotronPlugin,
+    LayoutPlugin,
+    ListGroupPlugin,
+    ModalPlugin,
+    NavbarPlugin,
     OverlayPlugin,
-    PaginationPlugin, 
-    SidebarPlugin, 
-    TablePlugin, 
+    PaginationPlugin,
+    SidebarPlugin,
+    TablePlugin,
     TabsPlugin,
     FormRadioPlugin,
     FormCheckboxPlugin,
     FormSelectPlugin,
     FormFilePlugin,
-    FormTextareaPlugin
-} from "bootstrap-vue";
+    FormTextareaPlugin,
+} from 'bootstrap-vue'
 
 export default {
     install: (app, options) => {
@@ -57,16 +57,15 @@ export default {
         app.use(SidebarPlugin)
         app.use(TablePlugin)
         app.use(TabsPlugin)
-        app.component("BIcon", BIcon)
-        app.component("BIconBrush", BIconBrush)
-        app.component("BIconDownload", BIconDownload)
-        app.component("BIconExclamationCircleFill", BIconExclamationCircleFill)
-        app.component("BIconTrash", BIconTrash)
-        app.component("BInputGroup", BInputGroup)
-        app.component("BInputGroupAppend", BInputGroupAppend)
-        app.component("BPopover", BPopover)
-        app.component("BSpinner", BSpinner)
-        app.directive("b-tooltip", VBTooltip)
-
-    }
+        app.component('BIcon', BIcon)
+        app.component('BIconBrush', BIconBrush)
+        app.component('BIconDownload', BIconDownload)
+        app.component('BIconExclamationCircleFill', BIconExclamationCircleFill)
+        app.component('BIconTrash', BIconTrash)
+        app.component('BInputGroup', BInputGroup)
+        app.component('BInputGroupAppend', BInputGroupAppend)
+        app.component('BPopover', BPopover)
+        app.component('BSpinner', BSpinner)
+        app.directive('b-tooltip', VBTooltip)
+    },
 }
