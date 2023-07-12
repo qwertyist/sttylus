@@ -6,6 +6,7 @@ stats.html
 *.db
 *.dat
 *.zip
+changelog.json
 
 packages/frontpage/
 packages/backend/public/

@@ -1,0 +1,393 @@
+changelog:
+  - date: 2023-07-12T22:00:00.000Z
+    changes:
+      - id: 0
+        type: version
+        description: VERSION 1.3.1
+      - id: 1
+        type: minor
+        description: >-
+          <b>Storstädning av programkod och förnyade rutiner för utveckling och drift</b><br />
+          Som användare av programmet lär man inte märka någon skillnad annat än att det eventuellt kommer laddas lite snabbare.
+      - id: 2
+        type: 
+  - date: 2023-07-05T22:00:00.000Z
+    changes:
+      - id: 0
+        type: version
+        description: VERSION 1.3.0
+      - id: 1
+        type: minor
+        description: >-
+          Tillåt att klistra in text i skrivläget med <kbd>CTRL+SHIFT+V</kbd>.<br />Märk att kortkommandot är annorlunda. Detta för att förhindra infogandet av felaktigt formaterad text.
+      - id: 2
+        type: fix
+        description: Distanstolkningar går att ta bort.
+      - id: 3
+        type: fix
+        description: >-
+          När en förkortning skapas till delad lista läggs den till även till den egna.
+      - id: 4
+        type: fix
+        description: Delade förkortningslistor kan sparas/importeras.
+  - date: 2023-06-01T22:00:00.000Z
+    changes:
+      - id: 1
+        type: fix
+        description: >-
+          Åtgärdat buggar kopplade till stor- och liten bokstav.<br /><ul><li>Kontrollerar att förkortningen är längre än en bokstav.</li><li>Känner igen siffror som nedslag i stor bokstav-logiken.</li><li>Stor bokstav hamnar på rätt ord efter F4.</li></ul>
+  - date: 2023-02-16T23:00:00.000Z
+    changes:
+      - id: 0
+        type: version
+        description: TESTVERSION 1.2.1
+      - id: 1
+        type: update
+        description: >-
+          Distanstolkningar går koppla till closed captions i Zoom, men har irriterande och konstiga beteenden för sig fortfarande.
+      - id: 2
+        type: update
+        description: Förkortningslistor kan exporteras som textfil
+      - id: 3
+        type: minor
+        description: >-
+          Info/hjälptexter om:<br/><ul><li>import från ProType</li><li>inloggning i lokala versionen</li></ul>
+      - id: 4
+        type: minor
+        description: Fler och tydligare felmeddelanden och popups
+      - id: 5
+        type: fix
+        description: >-
+          Åtgärdat en bugg där funktionen 'Tolkning på projektorduk eller extern skärm' inte ville hoppa igång om man klickat runt för mycket i menyer
+          innan.
+      - id: 6
+        type: fix
+        description: >-
+          Åtgärdat en bugg där distanstolkningar skickar en bokstav per rad till tolkanvändaren och tills en tolk rensat skärmen med <kbd>F4</kbd>.
+        action: 'Svår uppmaning, men testkör gärna i dåliga webbläsare'
+  - date: 2022-12-13T23:00:00.000Z
+    changes:
+      - id: 0
+        type: version
+        description: Version 1.1.1
+      - id: 1
+        type: update
+        description: Lös ut förkortningar med bortvänd parentes )
+      - id: 2
+        type: update
+        description: >-
+          Inaktiverar förhandsgranskning av manuskript då den inte beter sig korreket
+      - id: 3
+        type: update
+        description: Ta bort föregående ord i manuskript med pil vänster
+      - id: 4
+        type: minor
+        description: <i>Påminn inte</i> i stödtolkningsrutan döljer förkortningen direkt.
+      - id: 5
+        type: update
+        description: Knapp för att nollställa missade förkortningar.
+      - id: 6
+        type: update
+        description: Export av ämneslistor i STTylus fungerar
+  - date: 2022-12-06T23:00:00.000Z
+    changes:
+      - id: 0
+        type: version
+        description: Version 1.1.0
+      - id: 1
+        type: update
+        description: >-
+          Förkortningslistor cachas lokalt i webbläsaren för att skrivläget ska vara så responsivt som det bara går.
+      - id: 2
+        type: minor
+        description: Tillåt ej att scrolla horisontellt i skrivläget
+      - id: 3
+        type: minor
+        description: Rensa/nollställ stödtolkningsrutan när den stängs
+      - id: 4
+        type: update
+        description: >-
+          Åtgärdat en allvarlig bugg ('Concurrent write') som orsakat två krascher i distanstolkningsservern senaste veckorna.
+  - date: 2022-11-23T23:00:00.000Z
+    changes:
+      - id: 0
+        type: update
+        description: >-
+          Egennamn följt av kolon i början av en rad triggar stor bokstav på nästa nedslag.
+      - id: 1
+        type: update
+        description: >-
+          QR-kod finns som alternativ till länk.<br /> Tolkanvändarvyn kan visa QR-kod för aktuell tolkning.
+  - date: 2022-11-22T23:00:00.000Z
+    changes:
+      - id: 0
+        type: update
+        description: >-
+          Tolkanvändarvyn försöker hindra skärmen från att gå i viloläge eller låsas.
+      - id: 1
+        type: update
+        description: >-
+          QR-kod finns som alternativ till länk.<br /> Tolkanvändarvyn kan visa QR-kod för aktuell tolkning.
+  - date: 2022-11-15T23:00:00.000Z
+    changes:
+      - id: 0
+        type: update
+        description: <h2>Zoom-funktionaliteten är släckt tills vidare</h2>
+      - id: 1
+        type: update
+        description: >-
+          Meddela kollegan i distanstolkningen att det är dags att byta med <kbd>F3</kbd>
+      - id: 2
+        type: minor
+        description: >-
+          Bättre meddelanden kring distanstolkning:<ul><li>Tolkanvändare kan ansluta i förväg, men informeras att bokningen inte börjat än</li><li>Korrekta meddelanden vid upp- och nedkoppling från tolkar och tolkanvändare.</li></ul>
+      - id: 3
+        type: minor
+        description: Flyttat infomeddelanden till övre högra hörnet
+      - id: 4
+        type: minor
+        description: Flyttat infomeddelanden till övre högra hörnet
+      - id: 5
+        type: update
+        description: Byt standardlista med <kbd>CTRL+1...5</kbd>
+  - date: 2022-11-09T23:00:00.000Z
+    changes:
+      - id: 0
+        type: update
+        description: >-
+          Exportera/importera mellan STTylus-konton och mellan
+          online/offline-versionerna.
+      - id: 1
+        type: update
+        description: >-
+          Optimerat förkortningsvyn kraftigt. 'Fuzzy search' i förkortningar, man behöver alltså inte söka på hela frasen eller stava rätt för att hitta
+          matchande förkortningar.
+      - id: 2
+        type: fix
+        description: Alla dialogrutor stänger om man trycker på escape
+      - id: 3
+        type: fix
+        description: <kbd>CTRL+HÖGERPIL</kbd> stannar vid sista positionen i texten.
+  - date: 2022-11-03T23:00:00.000Z
+    changes:
+      - id: 0
+        type: fix
+        description: >-
+          När förkortningar matas ut på sista raden/nästa rad så följer textmarkören med.
+      - id: 1
+        type: fix
+        description: >-
+          Åtgärdat en bugg där det blir stor bokstav på konstiga ställen om man backar förbi ett stort skiljetecken med <kbd>BACKSPACE</kbd> eller <kbd>CTRL+BACKSPACE</kbd>.
+      - id: 2
+        type: update
+        description: >-
+          Offline-versionen av STTylus använder AppData så att användarinställningar sparas mellan uppdateringarna
+      - id: 3
+        type: update
+        description: <kbd>F11</kbd> växlar till och från fullskärm i offline-versionen.
+  - date: 2022-08-25T22:00:00.000Z
+    changes:
+      - id: 0
+        type: update
+        description: Förhandsgranskning av manuskript.
+      - id: 1
+        type: fix
+        description: >-
+          Åtgärdat en bugg där talstreck i början av en rad förvandlas till en punktlista.
+  - date: 2022-06-26T22:00:00.000Z
+    changes:
+      - id: 0
+        type: update
+        description: <h2>STTylus finns nu som desktop- och offlineversion.</h2>
+older:
+  before: 2022-06-25T22:00:00.000Z
+  changes:
+    - id: 38
+      type: fix
+      description: Åtgärdat en bugg som gjorde att man inte kunde skriva ? eller /.
+    - id: 37
+      type: update
+      description: Skapat funktioner för exportering av listor till ProType och TextOnTop.
+      action: 'Återkoppla gärna om TextOnTop, jag har inte det programmet själv'
+    - id: 36
+      type: update
+      description: Skapat funktion för importering av IllumiType-exporter.
+    - id: 35
+      type: update
+      description: >-
+        Fälten i Stödtolkningsrutan kan visas/döljas och markeras med kortkommandon.
+    - id: 34
+      type: fix
+      description: Delad lista funktionen har bättre och säkrare felhantering.
+    - id: 33
+      type: fix
+      description: >-
+        Manuskript-redigering upptäcker osparade ändringar och stänger öppnade dokument korrekt.
+    - id: 32
+      type: minor
+      description: >-
+        <kbd>ENTER</kbd> ansluter till kollegas distanstolkning istället för att man ska behöva klicka med musen.
+    - id: 31
+      type: update
+      description: >-
+        Stänger man ner webbläsaren eller fliken STTylus körs i så kopplas man ner från eventuell distanstolkning.
+    - id: 30
+      type: update
+      description: >-
+        STTylus tar diverse genvägar för att använda mindre bandbredd.<br />Förhoppningen är att det resulterar i att programmet fungerar bättre när/om man råkar ha svajig internetuppkoppling.
+    - id: 29
+      type: fix
+      description: >-
+        Manuskript laddas in korrekt igen.<br/>En tidigare uppdatering ställde
+        till det så att man behövde ladda om hela sidan för att manuskripten
+        skulle läsas in.
+    - id: 28
+      type: minor
+      description: >-
+        Stödtolkningsrutan markerar 'Slå upp förkortning' om delad lista inte
+        används. Annars markeras 'Lägg till delad förkortning'
+    - id: 27
+      type: minor
+      description: >-
+        <kbd>SHIFT+F2</kbd> öppnar 'Skapa förkortning' men ger frasen små
+        bokstäver.
+    - id: 26
+      type: minor
+      description: Inställning för byte av typsnitt.
+    - id: 25
+      type: minor
+      description: Tolkanvändare kan byta radavstånd och typsnitt.
+    - id: 24
+      type: update
+      description: >-
+        Lagt till en högerspalt som visar anslutna användare/tolkar under
+        distanstolkning.<br/>Öppna och stäng den med <kbd>F3</kbd> eller genom
+        att klicka på 'Visa ... anslutna' i toppmenyn.
+      action: Testa och återkom med feedback
+    - id: 23
+      type: minor
+      description: >-
+        Förkortningar matas fram när man scrollar i listan. <br />Scrollbar
+        lista över förkortningslistor.
+    - id: 22
+      type: minor
+      description: Visar antalet anslutna till din distanstolkning i toppmenyn.
+    - id: 21
+      type: update
+      description: >-
+        STTylus laddar in inställningssidan i bakgrunden vilket gör att det går mycket snabbare att växla fram och tillbaka till textläget.
+      action: Testa och återkoppla om fel uppstår.
+    - id: 20
+      type: minor
+      description: >-
+        Meddelandena <em>Tolk kopplade upp/ner</em> ska endast gälla när en tolk
+        faktiskt kopplar upp och ner som en följd av den större uppdateringen
+        ovan.
+    - id: 19
+      type: minor
+      description: Notifikationer visas längre tid och med större text.
+    - id: 18
+      type: minor
+      description: Större text i 'Lägg till förkortning'.
+    - id: 17
+      type: minor
+      description: >-
+        Förkortningar kan slås ut på tre sätt:<br/><ol><li><em>smsm</em> blir <em>så mycket som möjligt</em></li><li><em>Smsm</em> blir <em>Så mycket som möjligt</em></li><li><em>SMSM</em> blir <em>SÅ MYCKET SOM MÖJLIGT</em></li></ol>
+    - id: 16
+      type: minor
+      description: >-
+        'Ignorera alla' i stödtolkningsrutan ska nu fungera.<br />Om
+        stödtolksfunktionen är långsam på att reagera så kan det bero på att
+        listan med förslag har blivit lång. Detta problem i sig ska lösas på
+        sikt.
+    - id: 15
+      type: minor
+      description: Förkortningar löses ut efter citat-tecken (både enkel och dubbel-fnuttar).
+    - id: 14
+      type: minor
+      description: STTylus varnar när programmet inte kan skicka text till Zoom CC.
+    - id: 13
+      type: update
+      description: Lagt till möjligheten att redigera förkortningslistor (namn och typ).
+      action: Testa och återkoppla om fel uppstår
+    - id: 12
+      type: minor
+      description: Ändrat färgschemat
+    - id: 11
+      type: update
+      description: Lagt till möjligheten att importera TextOnTop-listor.
+      action: Testa och återkoppla om fel uppstår
+    - id: 10
+      type: update
+      description: >-
+        Lagt till stödtolkningsfunktionen 'Delad lista'.<br>Vid distanstolkning
+        kan du skapa en delad lista som både du och din kollega får tillgång
+        till.<br />Öppna stödtolkningsfunktionen och tryck <kbd>Enter</kbd> i
+        rutan uppe i höger för att skapa den. Sifferkoden delar du med din
+        kollega.<br />Förkortningar som läggs till i det här läget kan användas
+        av båda skrivtolkarna.<br />Efter distanstolkningen kan du välja att
+        importera och på så sätt spara förkortningar från listan.
+      action: Testa och återkoppla om fel uppstår
+    - id: 9
+      type: minor
+      description: >-
+        Importering av förkortningslistor hanterar felaktiga format och
+        konflikter på ett bättre sätt. Det går även att ladda in i befintliga
+        listor om konflikterna blir lösta.
+    - id: 8
+      type: fix
+      description: >-
+        Åtgärdat en bugg där frammatning av manuskript ignorerade upprepade
+        skiljetecken i slutet på en rad.<br />Exempel: <i>"Det här är ett citat
+        på en rad!"</i> eller <i>En mening avslutas med
+        trippelpunkt/ellips...</i>.<br />I dessa fall skulle bara det första
+        skiljetecknet tas med, så programmet skulle ha matat fram <i>"det här är
+        ett citat<b>!</b></i> och <i>trippelpunkt/ellipsis.</i>
+      action: Testa och återkoppla om fel uppstår
+    - id: 7
+      type: minor
+      description: >-
+        Frammatning av manuskript stängs av oavsett hur slutet av dokumentet
+        nåtts.
+      action: Testa och återkoppla om fel uppstår
+    - id: 6
+      type: minor
+      description: >-
+        Lösenord kan nollställas på så sätt att tolken själv väljer sitt nya
+        lösenord.
+    - id: 5
+      type: minor
+      description: >-
+        Visar hjälptext för hur man byter lista i <b>Skapa förkortning</b> om
+        man har mer än en lista markerad.<br /><kbd>F2</kbd> både öppnar rutan
+        och växlar mellan listor.
+    - id: 4
+      type: fix
+      description: >-
+        Systemet rättar till förkortningar med stora bokstäver.<br />Tidigare så
+        bråkar systemet om man lägger in t.ex. <i>Hoas</i> för hoppas.<br
+        />Förkortningar med inledande stor bokstav i förkortningen kan inte
+        lösas ut i skrift och förkortningslistan tolkar <i>Hoas</i> som en annan
+        förkortning än <i>hoas</i>.<br />Detta gäller både om "Skapa
+        förkortning" eller <kbd>F2</kbd> används, men också vid importering av
+        förkortningar
+      action: Testa och återkoppla om fel uppstår
+    - id: 3
+      type: update
+      description: >-
+        Manuskriptfunktionen ska vara i rullning och även fungera tillsammans
+        med Zoom.<br />Mata fram manuskript på samma rad som dess förkortning
+        med <kbd>Space</kbd> eller på ny rad med <kbd>Enter</kbd>.
+      action: Testa och återkoppla om fel uppstår
+    - id: 2
+      type: fix
+      description: >-
+        Problem där Zoom inte tog emot text när man skrev på annan rad än den
+        längst ner.<br />Gör man ny rad när man har en tom rad under markören så
+        hoppar den längst ner.
+      action: Testa och återkoppla om fel uppstår
+    - id: 1
+      type: minor
+      description: >-
+        Radavstånd mindre än 1 är borrtaget då t.ex. Å, Ä och Ö visades konstigt
+        med den inställningen.
