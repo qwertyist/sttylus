@@ -21,6 +21,7 @@ type Client struct {
 type Message struct {
 	Type PoolMessage `json:"type"`
 	Msg  string      `json:"msg,omitempty"`
+	Password  string      `json:"password,omitempty"`
 	Abb  *SharedAbb  `json:"abb,omitempty"`
 	Body struct {
 		Version int         `json:"version"`
@@ -44,6 +45,8 @@ const (
 	LeaveSession              = 3
 	GetInfo                   = 4
 	SetInfo                   = 5
+	SessionPassword 					= 6
+	NotAuthorized 						= 401
 	NoSession                 = 404
 	TXDelta                   = 20
 	RXDelta                   = 21
@@ -66,12 +69,17 @@ func (c *Client) messageHandler(msg Message) (*Message, bool) {
 	switch msg.Type {
 	case CreateSession:
 		c.Pool.Tabula = collab.NewTabula(collab.Delta{Version: msg.Body.Version, Delta: &msg.Body.Delta})
+		c.Pool.Password = msg.Password
+		log.Println("Session created with password:", msg.Password)
 		if msg.Msg == "started" {
 			c.Pool.Started = true
 		}
 		return nil, false
 	case JoinSession:
 		log.Println("JoinSession:", msg)
+		if c.Pool.Password != msg.Password {
+			return &Message{Type: NotAuthorized}, false
+		}
 		if c.Pool.Tabula != nil {
 			log.Println("Joining existing Tabula")
 			m := Message{Type: RetrieveDoc}
@@ -102,6 +110,10 @@ func (c *Client) messageHandler(msg Message) (*Message, bool) {
 	case GetInfo:
 		log.Println("Info:", msg)
 		return &msg, true
+	case SetPassword:
+		log.Println("SetPassword:", msg.Password)
+		c.Pool.Password = msg.Password
+		return nil, false
 	case SetInfo:
 		log.Println("SetInfo:", msg.Zoom)
 		err := c.Pool.Tabula.SetZoomData(msg.Zoom)

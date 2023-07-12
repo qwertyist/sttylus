@@ -5,16 +5,16 @@ TODO <===
   - [ ] marginalinställningar
   - [ ] visa alltid hela rader (anpassa textstorlek efter vy)
   - [ ] fokuser alltid nedersta raden
-- [ ] förkortningar:
-  - [ ] lös ut förkortningar efter alla tänkbara skiljetecken (;mhet)
+- [-] förkortningar:
+  - [-] lös ut förkortningar efter alla tänkbara skiljetecken (;mhet)
   - [ ] förhandsgranska förkortning
   - [ ] tvinga gemener/versaler i förkortning
   - [ ] sortera ämneslistor:
     - [ ] visa prioordning för ämneslistor
     - [ ] flytta upp ämneslista
   - [ ] senaste användning av förkortning
-- [ ] manuskript:
-  - [ ] enter
+- [-] manuskript:
+  - [X] enter
   - [ ] knyt till ordlista
 - [ ] admin:
   - [ ] använd rätt förkortningslista vid skapandet av ny användare
@@ -32,13 +32,13 @@ TODO <===
 - [-] stödtolkning:
   -  [ ] ordet vid markören
   -  [X] lägg till i egen lista (bugg)
-- [ ] Distanstolkning:
-  - [ ] Dölj bokningar när ansluten
+- [-] Distanstolkning:
+  - [X] Dölj bokningar när ansluten
   - [ ] Schemalägg/skapa tolkning i förväg
   - [ ] Bjud in kollegor
-  - [ ] Återkommande bokningar 
-  - [ ] Säkerställ unikhet i bokningsnummer
-  - [ ] Lösenordsskydda Distanstolkningar
+  - [ ] Återkommande bokningar
+  - [X] Säkerställ unikhet i bokningsnummer
+  - [X] Lösenordsskydda Distanstolkningar
 
 Distanstolkningar
 ================

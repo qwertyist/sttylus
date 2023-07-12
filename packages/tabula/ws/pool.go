@@ -14,6 +14,7 @@ type Pool struct {
 	Clients    map[*Client]bool
 	Broadcast  chan Broadcast
 	Tabula     *collab.Tabula
+	Password   string
 	Started    bool
 }
 

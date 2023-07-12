@@ -50,7 +50,7 @@ func (a *App) serveWebsocket(w http.ResponseWriter, r *http.Request) {
 	if string(p) == "interpreter" {
 		interpreter = true
 	}
-
+	
 	if a.pools[id] == nil {
 		a.CreatePool(id)
 		conn.WriteJSON(ws.Message{Type: ws.CreateSession})

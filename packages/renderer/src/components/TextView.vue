@@ -30,6 +30,7 @@ export default {
         return {
             quill: null,
             websocket: null,
+            password: "",
             quillNode: null,
             cache: false,
             presentation: false,
@@ -114,6 +115,7 @@ export default {
             EventBus.$on('sendSessionData', this.sendSessionData)
             EventBus.$on('sendReadySignal', this.sendReadySignal)
             EventBus.$on('recvReadySignal', this.recvReadySignal)
+            EventBus.$on('setSessionPassword', this.setSessionPassword)
 
             EventBus.$on('connectLocal', this.connectLocal)
             EventBus.$on('disconnectLocal', this.disconnectLocal)
@@ -157,14 +159,14 @@ export default {
             EventBus.$off('getAbbCache')
         },
         createSession() {
-            this.websocket.createsession()
         },
-        joinSession(id) {
+        joinSession(id, password) {
             console.log('join Session with id:', id)
             this.clear()
             this.websocket = new wsConnection(
                 this.quill,
-                this.$collabServer + 'conn/' + id
+                this.$collabServer + 'conn/' + id,
+                password,
             )
         },
         websocketConnected() {
@@ -217,6 +219,11 @@ export default {
         sendSessionData(data) {
             console.log('should send session data')
             this.websocket.sendSessionData(data)
+        },
+        setSessionPassword(pw) {
+            this.password = pw
+            console.log("setting password to", pw)
+            this.websocket.sendSessionPassword(pw)
         },
         recvReadySignal() {
             this.$toast.info('Kollega redo att ta över')

@@ -25,6 +25,7 @@ export default {
     return {
       quill: null,
       websocket: null,
+      password: "",
       name: "",
       capitalize: true,
       version: 0,
@@ -58,6 +59,10 @@ export default {
     },
   },
   mounted() {
+
+    const id = this.$route.params.id
+    this.password = this.$route.params.password
+    console.log("id:", id, "\npassword:", this.password)
     this.websocket = null;
     this.initializeEditor();
     this.quill.version = 0;
@@ -66,26 +71,14 @@ export default {
       "init"
     );*/
     this.addEventListeners();
+    this.quill.focus();
     setTimeout(() => {
-      this.quill.focus();
-
-      let uri = window.location.href.split("?");
-      console.log("URI:", uri);
-      if (uri.length == 2) {
-        let vars = uri[1].split("&");
-        let id;
-        let tmp = "";
-        vars.forEach(function (v) {
-          tmp = v.split("=");
-          if (tmp.length == 2) id = tmp[1];
-        });
-        if (id !== "") {
-          console.log("ID:", id);
-          this.$store.commit("setSessionID", id);
-          this.joinSession(id)
-          return
-        }
-
+      if (id !== "") {
+        console.log("ID:", id);
+        this.$store.commit("setSessionID", id);
+        //this.$store.commit("setSessionPassword", this.password);
+        this.joinSession(id, this.password)
+        return
       } else {
         this.$store.commit("setSessionID", "local")
         this.joinSession("local")
@@ -106,7 +99,7 @@ export default {
       var editor = document.getElementsByClassName("ql-editor")
       editor[0].addEventListener("scroll", (e) => {
         editor[0].scrollTop = editor[0].scrollHeight;
-      }) 
+      })
       document.addEventListener('keypress', (e) => {
         if (e.key == "~") {
           e.preventDefault();
@@ -126,6 +119,7 @@ export default {
       EventBus.$on("createSession", this.createSession);
       EventBus.$on("setSessionData", this.setSessionData)
       EventBus.$on("leaveRemoteSession", this.leaveSession)
+      EventBus.$on("notAuthorized", this.enterPassword)
 
       EventBus.$on("websocketConnected", this.websocketConnected)
       EventBus.$on("websocketClosed", this.websocketClosed)
@@ -145,6 +139,7 @@ export default {
       EventBus.$off("joinedRunningSession")
       EventBus.$off("createSession");
       EventBus.$off("setSessionData")
+      EventBus.$off("notAuthorized")
 
       EventBus.$off("websocketConnected")
       EventBus.$off("websocketClosed")
@@ -156,8 +151,9 @@ export default {
       console.log("open settings");
       this.$bvModal.show("consumerSettings")
     },
-    joinSession(id) {
+    joinSession(id, password) {
       console.log("join Session with id:", id);
+      console.log("and password", password);
       this.clear()
       if (id == "local") {
         let uri = window.location.href.split("http://")[1]
@@ -167,7 +163,7 @@ export default {
         return
       }
       EventBus.$emit("setQRCodeURL", window.location.href)
-      this.websocket = new wsConnection(this.quill, this.$collab + "conn/" + id);
+      this.websocket = new wsConnection(this.quill, this.$collab + "conn/" + id, this.password);
 
     },
     joinedEmptySession() {
@@ -203,11 +199,14 @@ export default {
       console.log(tries, "försöket...")
         const msg = "Försöker ansluta igen ... (#" + tries + ")"
         this.$toast.info(msg, tries)
-        
+
     },
     setSessionData(data) {
       console.log("textview got event, should send session data")
       this.websocket.sendSessionData(data)
+    },
+    enterPassword() {
+      this.$bvModal.show("login")
     },
     leaveSession() {
       if (!this.websocket) {

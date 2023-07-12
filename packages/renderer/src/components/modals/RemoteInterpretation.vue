@@ -63,7 +63,7 @@
                                 <h5>Dina bokade tolkningar</h5>
                                 <div class="float-right" v-if="inSession">
                                     <b-badge variant="warning"
-                                        >Du är redan ansluten.</b-badge
+                                        >Du är ansluten till en distanstolkning.</b-badge
                                     >
                                 </div>
                             </b-card-header>
@@ -79,15 +79,13 @@
                                     v-for="sess in sessions"
                                     v-bind:key="sess.id"
                                 >
-                                    <b-list-group-item>
+                                    <b-list-group-item v-if="!inSession || sess.id == session.id">
                                         <b-row>
                                             <b-col>
                                                 <b>
                                                     {{ sess.name }}
-                                                    <div v-if="sess.ref == you">
-                                                        (Din tolkning)
-                                                    </div>
                                                 </b>
+                              <!--
                                                 <b-button
                                                     @click.prevent
                                                     :id="'details' + sess.id"
@@ -183,6 +181,7 @@
                                                     <br />
                                                     <br />
                                                 </b-popover>
+                              -->
                                             </b-col>
                                             <b-col>
                                                 <b-button
@@ -215,11 +214,6 @@
                         </b-card>
                         <b-card title="Anslut till kollegas distanstolkning">
                             <b-card-text>
-                                <div class="float-right" v-if="inSession">
-                                    <b-badge variant="warning"
-                                        >Du är redan ansluten.</b-badge
-                                    >
-                                </div>
                                 <br />
                                 <b-form
                                     inline
@@ -275,10 +269,16 @@
                                     >
                                         <b-card-text>
                                             <b-form inline class="float-right">
+                                                <!--<b-form-input
+                                                    :value="
+                                                            'http://localhost:3345/#/' + session.id + '/' + session.password
+                                                    "
+                                                />#
+                                                -->
                                                 <b-form-input
                                                     :value="
-                                                        'https://sttylus.se/view2.html?id=' +
-                                                        session.id
+                                                        'https://sttylus.se/visa/#/' +
+                                                        session.id + '/' + session.password
                                                     "
                                                 />#
                                                 <h3>{{ session.id }}</h3>
@@ -393,6 +393,8 @@ import EventBus from '../../eventbus.js'
 import axios from 'axios'
 import eventbus from '../../eventbus.js'
 
+import { tools } from "../../../assets/passwordlist.json"
+
 export default {
     components: {
         QrcodeVue,
@@ -503,20 +505,24 @@ export default {
             switch (this.broadcast) {
                 case 'remote':
                     console.log('Skapa distanstolkning...')
+                    this.generatePassword()
+                    console.log("Med lösenord:", this.session.password)
                     axios
                         .post(this.$collabAPI + 'session', {
                             ref: this.$store.state.userData.id,
+                            password: this.session.password
                         })
                         .then((resp) => {
                             console.log('create session', resp.data)
                             this.session.id = resp.data.id
                             this.getSessions()
-                            EventBus.$emit('joinRemoteSession', this.session.id)
+                            EventBus.$emit('joinRemoteSession', this.session.id, this.session.password)
+
                         })
                         .catch((err) => {
                             console.log('create session failed:', err)
                         })
-                    EventBus.$emit('createRemoteSession', 'online')
+                    EventBus.$emit('createSession', 'online')
                     break
                 case 'offline':
                     EventBus.$emit('createOfflineSession')
@@ -616,7 +622,10 @@ export default {
         disconnectRemoteSession() {
             EventBus.$emit('leaveRemoteSession')
         },
-        setSessionPassword() {},
+        setSessionPassword() {
+          console.log("submitted password");
+          EventBus.$emit("setSessionPassword", this.session.password)
+        },
         bindAPIToken() {
             if (this.session.token.length < 35) {
                 this.$toast.warning('Inte en giltig API-token')
@@ -631,6 +640,10 @@ export default {
             if (this.session.id) {
                 console.log('session id:', this.session.id)
             }
+        },
+        generatePassword() {
+          const password = tools.sort(() => 0.5 - Math.random()).slice(0, 2).join("")
+          this.session.password = password
         },
     },
     computed: {

@@ -1,5 +1,13 @@
 changelog:
-  - date: 2023-07-12T22:00:00.000Z
+  - date: 2023-07-11T22:00:00.000Z
+    changes:
+      - id: 0
+        type: version
+        description: TESTVERSION 1.4.0
+      - id: 1
+        type: update
+        description: Distanstolkningar lösenordsskyddas per automatik.<br />Tolkar ansluter som vanligt, men tolkanvändare använder en URL med nytt format som rymmer både bokningsnumret och lösenordet.
+  - date: 2023-07-11T22:00:00.000Z
     changes:
       - id: 0
         type: version
@@ -10,7 +18,14 @@ changelog:
           <b>Storstädning av programkod och förnyade rutiner för utveckling och drift</b><br />
           Som användare av programmet lär man inte märka någon skillnad annat än att det eventuellt kommer laddas lite snabbare.
       - id: 2
-        type: 
+        type: update
+        description: Dialogrutan för distanstolkningar visar bara den aktuella tolkningen när du är ansluten.
+      - id: 3
+        type: minor
+        description: Tillåt ny rad vid frammatning av manuskript
+      - id: 4
+        type: minor
+        description: Lös ut förkortning efter ? och !
   - date: 2023-07-05T22:00:00.000Z
     changes:
       - id: 0
