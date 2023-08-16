@@ -85,6 +85,21 @@
                                                 <b>
                                                     {{ sess.name }}
                                                 </b>
+                                  <br/>
+                                                    <b-button
+                                                        v-if="
+                                                            !sess.public &&
+                                                            !inSession
+                                                        "
+                                                        @click="
+                                                            removeRemoteSession(
+                                                                sess.id
+                                                            )
+                                                        "
+                                                        size="sm"
+                                                        variant="danger"
+                                                        >Ta bort</b-button
+                                                    >
                               <!--
                                                 <b-button
                                                     @click.prevent
@@ -163,27 +178,13 @@
                                                         "
                                                     />
                                                     <hr />
-                                                    <b-button
-                                                        v-if="
-                                                            !sess.public &&
-                                                            !inSession
-                                                        "
-                                                        @click="
-                                                            removeRemoteSession(
-                                                                sess.id
-                                                            )
-                                                        "
-                                                        class="float-right"
-                                                        size="sm"
-                                                        variant="danger"
-                                                        >Ta bort</b-button
-                                                    >
                                                     <br />
                                                     <br />
                                                 </b-popover>
                               -->
                                             </b-col>
                                             <b-col>
+
                                                 <b-button
                                                     @click="copyLink(sess.id)"
                                                     variant="secondary"
