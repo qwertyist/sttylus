@@ -56,7 +56,7 @@ export default {
                 {
                     whichKey: 'ESC',
                     command:
-                        'Hoppar till slutet av dokumentet, samt avbryter frammatning av manuskript',
+                        'Hoppar till slutet av dokumentet, döljer toppmenyn samt avbryter frammatning av manuskript',
                 },
                 { whichKey: 'CTRL+B', command: 'Växla fetstilt text' },
                 { whichKey: 'CTRL+I', command: 'Växla kursiv text' },

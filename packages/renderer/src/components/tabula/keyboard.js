@@ -209,6 +209,7 @@ export default class keyboard extends Keyboard {
     this.addBinding({
       key: 27,
       handler: function (range, _context) {
+        EventBus.$emit('closeNav', true)
         let end = this.quill.getText().length - 1
         if (this.lastKey == 'Escape') {
           this.prompt = ''
