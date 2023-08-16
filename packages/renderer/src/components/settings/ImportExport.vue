@@ -100,7 +100,7 @@
                 </div>
                 <div v-if="to == 'sttylus' || to == 'textfile'">
                     <h3>Exportera till STTylus eller textfil</h3>
-                    <b-list-group>
+                    <b-list-group style="height: 80vh !important; overflow-y: auto">
                         <b-list-group-item
                             v-for="standard in standardLists"
                             v-bind:key="standard.value"

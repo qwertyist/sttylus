@@ -2,6 +2,7 @@ todo.md
 node_modules/
 dist/
 stats.html
+tmp/
 
 *.db
 *.dat
