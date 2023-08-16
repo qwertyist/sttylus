@@ -2,24 +2,17 @@
     <div>
         <ColorPicker ref="colorPicker" />
         <b-row>
-            <b-col cols="4">
+            <b-col cols="4" style="overflow-y: auto;">
                 <div id="fontSettings">
                     <b-form @change="onChange" @reset="onReset">
-                        <!--    <b-form-group label="Typsnitt">
-        <b-form-select name="fontFamily" id="fontFamily" v-model="form.family.selected">
-          <option
-            v-for="(fontFamily, indexOpt) in form.family.options"
-            :key="indexOpt"
-            :value="fontFamily"
-          >{{fontFamily}}</option>
-        </b-form-select>
-      </b-form-group>
-            -->
-                        <!--    <b-form-group label="Textbeteende">
-              <b-form-checkbox v-model="form.capitalizeOnNewLine">
-                Stor bokstav vid ny rad
-              </b-form-checkbox>
-            </b-form-group>
+            <!--
+              Hide button for capializeOnNewLine as the setting is also disabled
+                        <b-form-checkbox
+                              v-model="form.capitalizeOnNewLine"
+                              >
+                  Stor bokstav vid ny rad
+                        </b-form-checkbox>
+
             -->
                         <b-row>
                             <b-col cols="3">
@@ -97,7 +90,12 @@
                                 </b-form-radio>
                             </b-form-radio-group>
                         </b-form-group>
+                        <!--
+                        <b-row>
+                        <b-col>
                         Marginaler
+                        </b-col>
+                        <b-col>
                         <div class="float-right">
                             <b-form-checkbox
                                 v-model="form.margins.linked"
@@ -105,36 +103,59 @@
                                 >Länka</b-form-checkbox
                             >
                         </div>
-                        <br />Vänster
-                        <b-form-input
-                            @change="onMarginChange"
-                            type="number"
-                            min="0"
-                            max="200"
-                            v-model.number="form.margins.left"
-                        />Topp
-                        <b-form-input
+                        </b-col>
+                        </b-row>
+                        <b-row>
+                          <b-col cols=3>Vänster</b-col>
+                          <b-col>
+                            <b-form-input
+                                @change="onMarginChange"
+                                type="number"
+                                min="0"
+                                max="200"
+                                v-model.number="form.margins.left"
+                            />
+                          </b-col>
+                        </b-row>
+                        <b-row>
+                          <b-col cols=3>Topp</b-col>
+                          <b-col>
+                            <b-form-input
                             @change="onMarginChange"
                             type="number"
                             min="0"
                             max="200"
                             v-model.number="form.margins.top"
-                        />Höger
+                            /></b-col>
+                        </b-row>
+                        <b-row>
+                          <b-col cols=3>
+                        Höger
+                          </b-col>
+                          <b-col>
                         <b-form-input
                             @change="onMarginChange"
                             type="number"
                             min="0"
                             max="200"
                             v-model.number="form.margins.right"
-                        />Botten
+                            /></b-col>
+                        </b-row>
+                        <b-row>
+                          <b-col cols=3>
+                            Botten
+                          </b-col>
+                          <b-col>
                         <b-form-input
                             @change="onMarginChange"
                             type="number"
                             min="0"
                             max="200"
                             v-model.number="form.margins.bottom"
-                        />
-                        <!-- <b-button type="submit" variant="primary">Spara</b-button> -->
+                            />
+                          </b-col>
+                        </b-row>
+                        -->
                     </b-form>
                 </div>
             </b-col>
@@ -287,6 +308,7 @@ export default {
             }
             this.setFontSettings()
         },
+
         onMarginLinkedChange() {},
         onMarginChange(val) {
             if (this.form.margins.linked) {
@@ -343,6 +365,7 @@ export default {
         },
         getSettings() {
             const fontSettings = this.$store.state.settings.font || this.form
+            const textBehaviour = this.$store.state.settings.behaviour
             this.form.family.selected = fontSettings.family
             this.form.size = fontSettings.size
             this.form.colorID = fontSettings.colorID
@@ -352,6 +375,12 @@ export default {
                 right: 0,
                 bottom: 0,
             }
+            if (textBehaviour.capitalizeOnNewLine != undefined) {
+              this.form.capitalizeOnNewLine = textBehaviour.capitalizeOnNewLine
+            } else {
+              this.form.capitalizeOnNewLine = true
+            }
+
             if (fontSettings.customColors.valid) {
                 this.colorOptions[6].colors.foreground =
                     fontSettings.customColors.foreground
@@ -363,7 +392,6 @@ export default {
             const selected = this.form.colorID
             this.foreground = this.colorOptions[selected].colors.foreground
             this.background = this.colorOptions[selected].colors.background
-            this.form.capitalizeOnNewLine = fontSettings.capitalizeOnNewLine
         },
         selectColor() {},
         editColorScheme(e) {
