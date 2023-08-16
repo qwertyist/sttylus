@@ -93,14 +93,15 @@
             </div>
         </b-col>
 
-        <b-col>
+        <b-col >
             <div v-if="exportList">
+              <b-row style="height: 80vh !important; overflow-y: auto">
                 <div v-if="to == 'textontop'">
                     <h3>Exportera till TextOnTop</h3>
                 </div>
                 <div v-if="to == 'sttylus' || to == 'textfile'">
                     <h3>Exportera till STTylus eller textfil</h3>
-                    <b-list-group style="height: 80vh !important; overflow-y: auto">
+                    <b-list-group>
                         <b-list-group-item
                             v-for="standard in standardLists"
                             v-bind:key="standard.value"
@@ -185,7 +186,10 @@
                         </b-list-group-item>
                     </b-list-group>
                 </div>
-                <div v-if="to != 'sttylus' && to != 'textfile'">
+                <div v-if="to != 'sttylus' && to != 'textfile'" >
+                  <div v-if="to == 'protype'">
+                    <h3>Exportera till ProType</h3>
+                  </div>
                     <b-form
                         @change="listenToEvent"
                         @submit.prevent="submitExport"
@@ -194,7 +198,7 @@
                             v-model="exportForm.standard"
                             :required="to == 'protype'"
                         >
-                            <b-list-group>
+                            <b-list-group >
                                 <b-list-group-item
                                     v-for="standard in standardLists"
                                     v-bind:key="standard.value"
@@ -220,7 +224,7 @@
                                 </b-list-group-item>
                             </b-list-group>
                         </b-form-radio-group>
-                        <b-form-checkbox-group v-model="exportForm.addons">
+                        <b-form-checkbox-group v-model="exportForm.addons" >
                             <b-list-group-item
                                 v-for="addon in addonLists"
                                 v-bind:key="addon.value"
@@ -243,9 +247,15 @@
                             </b-list-group-item>
                         </b-form-checkbox-group>
                         <hr />
-                        <b-button type="submit">Exportera</b-button>
                     </b-form>
+
                 </div>
+              </b-row>
+              <b-row>
+                <b-col>
+                <b-button type="submit">Exportera</b-button>
+                </b-col>
+              </b-row>
             </div>
             <div v-if="!confirm">
                 <div v-if="from == 'sttylus'">

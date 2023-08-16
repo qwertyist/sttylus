@@ -237,13 +237,15 @@ export default {
 }
 .manuscriptEditor .quillWrapper {
     height: 65vh;
+    width: 65vw !important;
 }
 .ql-editor {
     outline: 1px solid red;
     width: 100% !important;
 }
+
 .ql-container {
-    width: 55vw !important;
+    width: 65vw !important;
     height: 95% !important;
 }
 .navMargin {
