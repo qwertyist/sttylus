@@ -10,7 +10,19 @@ changelog:
       - id: 2
         type: minor
         description: Lagt till list för att scrolla bland förkortningslistor i Import/Export-vyn.
-  - date: 2023-07-11T22:00:00.000Z
+      - id: 3
+        type: fix
+        description: Åtgärdat en bugg där ny rad inte alltid versalerar första bokstaven för vissa användare.
+      - id: 4
+        type: update
+        description: Gjort så att <kbd>ESCAPE</kbd> döljer menyraden.
+      - id: 5
+        type: minor
+        description: Programmet fokuserar sista textraden när man lämnar inställningsvyn.
+      - id: 6
+        type: fix
+        description: Återinstiftade knappen för att ta bort distanstolkningar...
+  - date: 2023-07-16T22:00:00.000Z
     changes:
       - id: 0
         type: version
