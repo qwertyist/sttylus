@@ -157,6 +157,8 @@ export default {
             EventBus.$off('clientConnected')
             EventBus.$off('clientDisconnected')
             EventBus.$off('getAbbCache')
+            EventBus.$off('sessionPasswordUpdated')
+            EventBus.$off('setSessionPassword')
         },
         createSession() {
         },
@@ -223,7 +225,7 @@ export default {
         setSessionPassword(pw) {
             this.password = pw
             console.log("setting password to", pw)
-            this.websocket.sendSessionPassword(pw)
+            this.websocket.setSessionPassword(pw)
         },
         recvReadySignal() {
             this.$toast.info('Kollega redo att ta över')

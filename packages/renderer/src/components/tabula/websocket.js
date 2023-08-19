@@ -193,6 +193,11 @@ export default class wsConnection {
           }
           EventBus.$emit('zoomConnected', false)
           break
+
+        case this.mt.SessionPassword:
+          console.log('SessionPassword', rx)
+          EventBus.$emit('passwordMessage', rx.msg)
+          break
         case this.mt.RXDelta:
           //console.log("RXDelta (version: ", rx.body.version, "):", rx.body.delta, rx.body.index)
           //console.log("local version:", this.quill.version)
@@ -210,10 +215,11 @@ export default class wsConnection {
           this.quill.setText('')
           break
         case this.mt.RetrieveDoc:
-          //console.log("RetrieveDoc:", rx.body.version, rx.body.delta)
+          console.log('RetrieveDoc and password:', rx.body.version)
           this.quill.version = rx.body.version
           this.quill.setContents(rx.body.delta, 'collab')
           this.quill.setSelection(rx.body.index)
+
           break
         case this.mt.RXAbb:
           EventBus.$emit('sharedAbb', rx.abb)
@@ -253,7 +259,7 @@ export default class wsConnection {
     console.log(sharedAbbMessage)
     self.websocket.send(sharedAbbMessage)
   }
-  sendSessionPassword(pw) {
+  setSessionPassword(pw) {
     let sessionPasswordMessage = JSON.stringify({
       type: this.mt.SessionPassword,
       password: pw,

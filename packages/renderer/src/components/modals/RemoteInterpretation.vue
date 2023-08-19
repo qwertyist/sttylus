@@ -186,13 +186,13 @@
                                             <b-col>
 
                                                 <b-button
-                                                    @click="copyLink(sess.id)"
+                                                    @click="toClipboard('user', sess)"
                                                     variant="secondary"
                                                     >Kopiera länk</b-button
                                                 >
                                                 <b-button
                                                     @click="
-                                                        toggleQRCode(sess.id)
+                                                        toggleQRCode(sess)
                                                     "
                                                     variant="secondary"
                                                     >Visa QR-kod</b-button
@@ -269,84 +269,121 @@
                                         subTitle="Dessa uppgifter delar du med dig om du vill låta användare eller kollegor ansluta till din tolkning"
                                     >
                                         <b-card-text>
-                                            <b-form inline class="float-right">
-                                                <!--<b-form-input
-                                                    :value="
-                                                            'http://localhost:3345/#/' + session.id + '/' + session.password
-                                                    "
-                                                />#
-                                                -->
+                                          <b-form>
+                                            <b-row>
+                                              <b-col cols=3>
+                                                Tolkanvändarvy
+                                              </b-col>
+                                              <b-col>
                                                 <b-form-input
+                                                    readonly
+                                                    @click="toClipboard('view', session)"
                                                     :value="
                                                         'https://sttylus.se/visa/#/' +
                                                         session.id + '/' + session.password
                                                     "
-                                                />#
-                                                <h3>{{ session.id }}</h3>
-                                            </b-form>
+                                                />
+                                              </b-col>
+                                            </b-row>
 
-                                            <b-button
-                                                @click="closeRemoteSession"
-                                                >Koppla ner från
-                                                session</b-button
-                                            >
-                                        </b-card-text>
-                                    </b-card>
-                                </div>
-                            </b-card-text>
-                        </b-card>
-                        <b-card
-                            v-show="inSession == true"
-                            title="Lösenordsskydda distanstolkningen"
-                        >
-                            <b-card-text>
+                                            <b-row>
+                                              <b-col cols=3>
+                                                Sessions-ID
+                                              </b-col>
+                                              <b-col>
+                                                <b-form-input
+                                                    readonly
+                                                    @click="toClipboard('id', session)"
+                                                    :value="session.id"
+                                                />
+                                              </b-col>
+
+                                            </b-row>
+                                            <b-row>
+                                              <b-col cols=3>Lösenord</b-col>
+                                              <b-col>
                                 <b-form
                                     inline
-                                    class="float-right"
                                     @submit.prevent="setSessionPassword"
                                 >
                                     <b-form-input
                                         placeholder="Välj ett lösenord..."
                                         v-model="session.password"
                                     />
-                                    <br />
-                                    <b-button @click="setSessionPassword"
-                                        >OK</b-button
+                                    <b-button
+                                        v-if="passwordChanged"
+                                        @click="setSessionPassword"
+                                        >Ändra</b-button
                                     >
                                 </b-form>
+                                      </b-col>
+                                            </b-row>
+                                                <!--<b-form-input
+                                                    :value="
+                                                            'http://localhost:3345/#/' + session.id + '/' + session.password
+                                                    "
+                                                />#
+                                                -->
+                                            </b-form>
+
+                                        </b-card-text>
+                                    </b-card>
+                                    <br />
+                                    <b-button
+                                        @click="closeRemoteSession"
+                                        >Koppla ner från
+                                        session</b-button
+                                    >
+                                </div>
                             </b-card-text>
                         </b-card>
                         <b-card
                             v-show="inSession == true"
-                            title="Koppla distanstolkning till videomöte"
-                            subTitle="Skicka texten till en videomötestjänst med stöd för undertexter"
+                            title="Skrivtolka till andra plattformar"
+                            subTitle="Välj att få skrivtolkningen som closed captions till t.ex. videomöten eller livestreams."
                         >
                             <b-card-text>
                                 <b-form
-                                    inline
-                                    class="float-right"
                                     @submit.prevent="bindAPIToken"
                                 >
-                                    <b-form-select
-                                        v-model="thirdpartyservice"
-                                        :options="thirdpartyOptions"
-                                    />
-                                    <b-form-input
-                                        :disabled="connected3rdparty"
-                                        placeholder="Mötets API-token"
-                                        v-model="session.token"
-                                    />
-
-                                    <br />
-                                    <b-button
-                                        v-if="!breakout"
-                                        @click="bindAPIToken"
-                                        >Anslut</b-button
+                                  <b-row>
+                                    <b-col cols=3>
+                                      <b-form-select
+                                          v-model="thirdpartyservice"
+                                          :options="thirdpartyOptions"
+                                      />
+                                    </b-col>
+                                    <b-col
+                                      cols=6
+                                      v-if="thirdpartyservice == 'captions'"
                                     >
-                                </b-form>
+                                      <b-form-input
+                                        :value="'https://sttylus.se/text/' + session.id"
+                                        @click="toClipboard('captions', session)"
 
-                                <br />
-                                <br />
+                                      />
+                                      <b-form-input
+                                        :value="'https://sttylus.se/GETlivecap/' + session.id"
+                                        @click="toClipboard('glc', session)"
+                                      />
+                                    </b-col>
+                                    <b-col
+                                       cols=6
+                                      v-if="thirdpartyservice == 'zoom'"
+                                    >
+                                      <b-form-input
+                                        :disabled="connected3rdparty"
+                                          placeholder="Mötets API-token"
+                                          v-model="session.token"
+                                      />
+                                    </b-col>
+                                      <b-col v-if="thirdpartyservice == 'zoom'">
+                                        <b-button
+                                          @click="bindAPIToken"
+                                          >Anslut</b-button
+                                        >
+                                      </b-col>
+
                                 <b-form
                                     v-if="breakout"
                                     inline
@@ -379,6 +416,9 @@
                                         {{ thirdPartyError }}</small
                                     >
                                 </div>
+                                  </b-row>
+                                </b-form>
+
                             </b-card-text>
                         </b-card>
                     </b-tab>
@@ -422,9 +462,11 @@ export default {
             ],
             localIP: '127.0.0.1',
             thirdPartyError: '',
-            thirdpartyservice: 'zoom',
+            thirdpartyservice: null,
             thirdpartyOptions: [
-                { value: 'zoom', text: 'Zoom', disabled: false },
+              { value: null, text: 'Ej valt...', disabled: true },
+              { value: 'zoom', text: 'Zoom', disabled: false },
+              { value: 'captions', text: 'Livetextning', disabled: true },
             ],
             password: '',
             ZoomUser: false,
@@ -439,12 +481,77 @@ export default {
         }
     },
     methods: {
-        copyLink(id) {
-            var copyText = 'https://sttylus.se/view2.html?id=' + id
-            navigator.clipboard.writeText(copyText)
+        addEventListeners() {
+          EventBus.$on('passwordMessage', (msg) => {
+            if(msg instanceof Object) { return }
+            if(msg == "ok") {
+              this.$toast.success("Lösenordet byttes")
+              this.password = this.session.password
+            } else if (msg == "whitespace") {
+              this.$toast.warning("Lösenordet får inte innehålla blanksteg")
+              this.session.password = this.password
+            } else {
+              this.session.password = msg
+              this.password = msg
+            }
+          })
+          EventBus.$on('networkStatusUpdate', (status) => {
+              this.connected = status
+          })
+          EventBus.$on('zoomConnected', (success) => {
+              if (success) {
+                  this.$toast.success('Anslöt till Zoom')
+                  this.connected3rdparty = true
+              } else {
+                  this.$toast.warning(
+                      'Kunde inte ansluta till Zoom. Kontrollera API-token.'
+                  )
+                  this.connected3rdparty = false
+              }
+          })
+          EventBus.$on('sessionUpdate', this.updateSessionInfo)
         },
-        toggleQRCode(id) {
-            this.qr.value = 'https://sttylus.se/view2.html?id=' + id
+        removeEventListeners() {
+          EventBus.$off('sessionPasswordUpdated')
+          EventBus.$off('passwordMessage')
+          EventBus.$off('networkStatsUpdate', (status) => {
+              this.connected = status
+          })
+          EventBus.$off('sessionUpdate', this.updateSessionInfo)
+        },
+        toClipboard(target, sess) {
+          let copyText;
+          let successText;
+
+
+          if(Object.keys(sess).length === 0) {
+            this.$toast.error('Fel: Inget att kopiera')
+            navigator.clipboard.writeText("")
+            return
+          }
+
+          if (target == 'captions') {
+            copyText = 'https://sttylus.se/text/' + sess.id
+            successText = 'Livetextningens webbadress kopierades'
+          } else if (target == "glc") {
+            copyText = 'https://sttylus.se/GETlivecap/' + sess.id
+            successText = 'Livetextningens GETlivecap-feed kopierades'
+          } else if (target == 'id') {
+            copyText = sess.id
+            successText = 'Distanstolkningens sessions-ID kopierades'
+          } else {
+            // "target" == user
+            copyText = 'https://sttylus.se/visa/#/' + sess.id + '/' + sess.password
+            successText = 'Distanstolkningens webbadress kopierades'
+          }
+          navigator.clipboard.writeText(copyText)
+          this.$toast.success(successText)
+
+
+
+        },
+        toggleQRCode(sess) {
+            this.qr.value = 'https://sttylus.se/visa/#/' + sess.id + '/' + sess.password
             this.qr.show = !this.qr.show
         },
         getSessionType(type) {
@@ -471,6 +578,7 @@ export default {
                         this.$store.state.userData.id
                 )
                 .then((resp) => {
+                  console.log(resp.data)
                     this.sessions = resp.data
                 })
                 .catch((err) => {
@@ -571,7 +679,7 @@ export default {
                     .then((resp) => {
                         if (resp.status == 204) {
                             this.$toast.warning(
-                                'Ingen distanstolkning med det ID-numret'
+                                'Ingen distanstolkning med det ID-numret. Anslut igen för att skapa.'
                             )
                             this.session.id = ''
                             this.inSession = false
@@ -621,10 +729,12 @@ export default {
                 })
         },
         disconnectRemoteSession() {
+            this.thirdpartyservice = null
             EventBus.$emit('leaveRemoteSession')
         },
         setSessionPassword() {
           console.log("submitted password");
+          this.$toast.info("Byter lösenord...")
           EventBus.$emit("setSessionPassword", this.session.password)
         },
         bindAPIToken() {
@@ -644,6 +754,7 @@ export default {
         },
         generatePassword() {
           const password = tools.sort(() => 0.5 - Math.random()).slice(0, 2).join("")
+          this.password = password
           this.session.password = password
         },
     },
@@ -662,22 +773,14 @@ export default {
                 this.$store.commit('setSessionConnected', value)
             },
         },
+      passwordChanged() {
+        return this.password != this.session.password
+      },
+      passwordMessage(msg) {
+      },
     },
     mounted() {
-        EventBus.$on('networkStatusUpdate', (status) => {
-            this.connected = status
-        })
-        EventBus.$on('zoomConnected', (success) => {
-            if (success) {
-                this.$toast.success('Anslöt till Zoom')
-                this.connected3rdparty = true
-            } else {
-                this.$toast.warning(
-                    'Kunde inte ansluta till Zoom. Kontrollera API-token.'
-                )
-                this.connected3rdparty = false
-            }
-        })
+        this.addEventListeners()
         this.connected3rdparty = false
         if (import.meta.env.VUE_APP_STTYLUS_MODE == 'webapp') {
             this.broadcastOptions.splice(1)
@@ -698,13 +801,9 @@ export default {
         this.ZoomUser = false;
       });
       */
-        EventBus.$on('sessionUpdate', this.updateSessionInfo)
     },
     beforeDestroy() {
-        EventBus.$off('networkStatsUpdate', (status) => {
-            this.connected = status
-        })
-        EventBus.$off('sessionUpdate', this.updateSessionInfo)
+      this.removeEventListeners()
     },
 }
 </script>
