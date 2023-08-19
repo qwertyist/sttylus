@@ -37,6 +37,7 @@ export default {
             child: null,
             name: '',
             capitalize: true,
+            hint: "",
             version: 0,
             settings: {
                 font: {
@@ -99,6 +100,7 @@ export default {
             console.log(ev.target.id)
         },
         addEventListeners() {
+          //EventBus.$on("previewAbb", (hint) => { this.hint = hint})
             EventBus.$on('sharedAbb', this.sharedAbbs)
             EventBus.$on('addAbbreviation', this.openAddModal)
             EventBus.$on('setSelectedManuscripts', this.loadManuscripts)

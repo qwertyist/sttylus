@@ -46,9 +46,19 @@ export default class keyboard extends Keyboard {
     this.lastKey = ''
     this.cache = null
     this.getAbbCache()
+    this.timeout = null
   }
 
   listen() {
+    /*
+    if (this.timeout) {
+      clearTimeout(this.timeout)
+      this.timeout = null
+    }
+    this.timeout = setTimeout(() => {
+      EventBus.$emit('previewAbb', this.insertHint())
+    }, 2500)
+    */
     this.quill.root.addEventListener('keydown', (e) => {
       if (this.URL) {
         if (e.key != '.' && separators.indexOf(e.key) !== -1) {
@@ -101,7 +111,8 @@ export default class keyboard extends Keyboard {
     }*/
 
   wordBeforeCursor(prefix) {
-    return prefix.split(/[\u200B\s-.,:;_!?\/"'()]/).pop()
+    this.currentWord = prefix.split(/[\u200B\s-.,:;_!?\/"'()]/).pop()
+    return this.currentWord
   }
 
   capitalize(word) {

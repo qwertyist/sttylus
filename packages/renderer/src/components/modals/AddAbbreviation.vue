@@ -232,6 +232,7 @@ export default {
     },
 
     mounted() {
+        EventBus.$on('updatedSelectedLists', this.updateLists)
         EventBus.$on('showTextView', () => {
             this.$bvModal.hide('addAbb')
             this.$bvModal.hide('support')
@@ -253,6 +254,7 @@ export default {
     },
     beforeDestroy() {
         EventBus.$off('showTextView')
+        EventBus.$off('updatedSelectedLists')
     },
 }
 </script>

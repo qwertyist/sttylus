@@ -51,7 +51,7 @@
                 <b-table
                     fixed
                     hover
-                    :items="addonLists"
+                    :items="orderedAddonLists"
                     :fields="addonlistFields"
                     @row-clicked="
                         (item) => {
@@ -74,11 +74,13 @@
                         <span class="pl-3">{{ data.item.counter }}</span>
                     </template>
                     <template #cell(checkbox)="data">
+                      <kbd v-if="selectedAddons.indexOf(data.item.id) != -1">{{ data.index + 1}}</kbd>
                         <b-form-checkbox
                             v-model="selectedAddons"
                             class="float-right"
                             :value="data.item.id"
-                            @change="toggleSelectAddon($event)"
+                            :key="data.item.id"
+                            :id="data.item.id + '_' + data.index"
                         />
                     </template>
                 </b-table>
@@ -339,6 +341,17 @@ export default {
                 return list
             },
         },
+        orderedAddonLists() {
+          return this.addonLists.sort((a, b) => this.selectedAddons.indexOf(b.id) - this.selectedAddons.indexOf(a.id));
+        },
+    },
+    watch: {
+      selectedAddons(val) {
+            this.$store.commit('setSelectedAddons', this.selectedAddons)
+            this.$nextTick(() => {
+              EventBus.$emit("updatedSelectedLists", true)
+            })
+      }
     },
     mounted() {
         this.userAbbs = new Map()
@@ -351,6 +364,11 @@ export default {
         }
 
         //window.addEventListener("scroll", this.onScrollAbbs);
+        EventBus.$on("resetStore", () => {
+            this.$nextTick(() => {
+              this.selectedAddons = []
+            })
+        }),
         EventBus.$on('changeStandardList', this.quickSelectStandard)
         EventBus.$on('createdAbb', (abb) => {
             if (abb.targetListId == this.viewedList.id) {
@@ -390,12 +408,6 @@ export default {
             })
         },
         toggleSelectAddon(listIDs) {
-            console.log(
-                'set selected addon in view:',
-                this.selectedAddons.length
-            )
-            this.selectedAddons = listIDs
-            this.$store.commit('setSelectedAddons', this.selectedAddons)
         },
         addList() {
             this.$bvModal.show('addList')
