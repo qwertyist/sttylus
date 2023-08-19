@@ -7,6 +7,7 @@ import (
 )
 
 type Tabula struct {
+	ID      string
 	Version int
 	Doc     *delta.Delta
 	Ops     map[int]delta.Op
@@ -19,8 +20,9 @@ type Delta struct {
 	Index   int
 }
 
-func NewTabula(d Delta) *Tabula {
+func NewTabula(id string, d Delta) *Tabula {
 	return &Tabula{
+		ID:      id,
 		Version: d.Version,
 		Doc:     d.Delta,
 		Ops:     make(map[int]delta.Op),

@@ -19,11 +19,11 @@ type Client struct {
 }
 
 type Message struct {
-	Type PoolMessage `json:"type"`
-	Msg  string      `json:"msg,omitempty"`
-	Password  string      `json:"password,omitempty"`
-	Abb  *SharedAbb  `json:"abb,omitempty"`
-	Body struct {
+	Type     PoolMessage `json:"type"`
+	Msg      string      `json:"msg,omitempty"`
+	Password string      `json:"password,omitempty"`
+	Abb      *SharedAbb  `json:"abb,omitempty"`
+	Body     struct {
 		Version int         `json:"version"`
 		Delta   delta.Delta `json:"delta,omitempty"`
 		Index   int         `json:"index"`
@@ -45,8 +45,9 @@ const (
 	LeaveSession              = 3
 	GetInfo                   = 4
 	SetInfo                   = 5
-	SessionPassword 					= 6
-	NotAuthorized 						= 401
+	SetPassword               = 6
+	GetPassword               = 7
+	NotAuthorized             = 401
 	NoSession                 = 404
 	TXDelta                   = 20
 	RXDelta                   = 21
@@ -65,10 +66,11 @@ const (
 )
 
 func (c *Client) messageHandler(msg Message) (*Message, bool) {
+	id := c.Pool.ID
 	//log.Println("Message type:", msg.Type)
 	switch msg.Type {
 	case CreateSession:
-		c.Pool.Tabula = collab.NewTabula(collab.Delta{Version: msg.Body.Version, Delta: &msg.Body.Delta})
+		c.Pool.Tabula = collab.NewTabula(id, collab.Delta{Version: msg.Body.Version, Delta: &msg.Body.Delta})
 		c.Pool.Password = msg.Password
 		log.Println("Session created with password:", msg.Password)
 		if msg.Msg == "started" {
@@ -77,8 +79,11 @@ func (c *Client) messageHandler(msg Message) (*Message, bool) {
 		return nil, false
 	case JoinSession:
 		log.Println("JoinSession:", msg)
-		if c.Pool.Password != msg.Password {
+		if !c.Interpreter && c.Pool.Password != msg.Password {
 			return &Message{Type: NotAuthorized}, false
+		} else {
+			p := Message{Type: SetPassword, Msg: c.Pool.Password}
+			c.send(p)
 		}
 		if c.Pool.Tabula != nil {
 			log.Println("Joining existing Tabula")
@@ -93,15 +98,11 @@ func (c *Client) messageHandler(msg Message) (*Message, bool) {
 			} else {
 				m.Msg = "waiting"
 			}
-			c.mu.Lock()
-			c.Conn.WriteJSON(m)
-			c.mu.Unlock()
+			c.send(m)
 		} else {
 			log.Println("No session exists")
 			m := Message{Type: NoSession}
-			c.mu.Lock()
-			c.Conn.WriteJSON(m)
-			c.mu.Unlock()
+			c.send(m)
 		}
 		return &msg, true
 	case LeaveSession:
@@ -120,7 +121,7 @@ func (c *Client) messageHandler(msg Message) (*Message, bool) {
 		if err != nil {
 			msg.Msg = err.Error()
 			msg.Zoom.MainStep = -1
-			c.Conn.WriteJSON(msg)
+			c.send(msg)
 			return nil, false
 		}
 		return &msg, true
@@ -213,9 +214,7 @@ func (c *Client) Read() {
 				broadcast := Broadcast{Conn: c.Conn, Message: handledMsg}
 				c.Pool.Broadcast <- broadcast
 			} else {
-				c.mu.Lock()
-				c.Conn.WriteJSON(handledMsg)
-				c.mu.Unlock()
+				c.send(*handledMsg)
 			}
 		} else {
 			continue

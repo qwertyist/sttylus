@@ -9,6 +9,7 @@ import (
 var Pools map[string]*Pool
 
 type Pool struct {
+	ID         string
 	Register   chan *Client
 	Unregister chan *Client
 	Clients    map[*Client]bool
@@ -18,8 +19,9 @@ type Pool struct {
 	Started    bool
 }
 
-func NewPool() *Pool {
+func NewPool(id string) *Pool {
 	return &Pool{
+		ID:         id,
 		Register:   make(chan *Client),
 		Unregister: make(chan *Client),
 		Clients:    make(map[*Client]bool),
@@ -37,11 +39,9 @@ func (pool *Pool) Start() {
 				if c == client {
 					continue
 				}
-				client.mu.Lock()
 				msg := Message{Type: JoinSession}
 				msg.Msg = "Client connected"
-				c.Conn.WriteJSON(msg)
-				client.mu.Unlock()
+				client.send(msg)
 			}
 			break
 		case client := <-pool.Unregister:
@@ -49,27 +49,23 @@ func (pool *Pool) Start() {
 			delete(pool.Clients, client)
 			fmt.Println("Size of connection pool:", len(pool.Clients))
 			for client := range pool.Clients {
-				client.mu.Lock()
 				msg := Message{Type: LeaveSession}
 				if interpreter {
 					msg.Msg = "interpreter"
 				} else {
 					msg.Msg = "user"
 				}
-				client.Conn.WriteJSON(msg)
-				client.mu.Unlock()
+				client.send(msg)
 			}
 			break
 		case broadcast := <-pool.Broadcast:
 			for client := range pool.Clients {
 				if broadcast.Conn != client.Conn {
-					client.mu.Lock()
-					if err := client.Conn.WriteJSON(broadcast.Message); err != nil {
+
+					if err := client.send(*broadcast.Message); err != nil {
 						fmt.Println(err)
-						client.mu.Unlock()
 						return
 					}
-					client.mu.Unlock()
 				}
 			}
 			break
