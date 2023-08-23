@@ -345,7 +345,7 @@ export default {
             document.removeEventListener('keydown', this.preventDefaults)
             EventBus.$emit('modalClosed')
             EventBus.$emit('closeNav')
-            EventBus.$emit('refocus', '')
+            EventBus.$emit('refocus', false)
         },
         onSubmitSharedList() {
             if (this.form.sharedList != '' && this.selectedBaseList == null) {

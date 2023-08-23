@@ -50,7 +50,6 @@ export default {
   },
   computed: {
     wrapper() {
-      console.log("nav:", this.nav)
       return {
         backgroundColor: this.settings.font.backgroundColor,
         padding: 20 + "px",
@@ -62,7 +61,6 @@ export default {
 
     const id = this.$route.params.id
     this.password = this.$route.params.password
-    console.log("id:", id, "\npassword:", this.password)
     this.websocket = null;
     this.initializeEditor();
     this.quill.version = 0;
@@ -74,7 +72,6 @@ export default {
     this.quill.focus();
     setTimeout(() => {
       if (id !== "") {
-        console.log("ID:", id);
         this.$store.commit("setSessionID", id);
         //this.$store.commit("setSessionPassword", this.password);
         this.joinSession(id, this.password)
@@ -86,7 +83,6 @@ export default {
     }, 500)
   },
   beforeDestroy() {
-    console.log("destroying textview");
     if (this.websocket) {
       this.websocket.close();
     }
@@ -103,7 +99,6 @@ export default {
       document.addEventListener('keypress', (e) => {
         if (e.key == "~") {
           e.preventDefault();
-          console.log(this.quill.getContents())
 
         }
       });
@@ -126,6 +121,9 @@ export default {
       EventBus.$on("websocketDropped", this.websocketDropped)
       EventBus.$on("websocketFailed", this.websocketFailed)
       EventBus.$on("websocketReconnecting", this.websocketReconnecting)
+
+      EventBus.$on("TXChat", this.sendChat)
+
     },
     removeEventListeners() {
       EventBus.$off("addAbbreviation");
@@ -146,18 +144,15 @@ export default {
       EventBus.$off("websocketDropped")
       EventBus.$off("websocketFailed")
       EventBus.$off("websocketReconnecting")
+
+      EventBus.$off("TXChat")
     },
     doubleClickHandler() {
-      console.log("open settings");
       this.$bvModal.show("consumerSettings")
     },
-    joinSession(id, password) {
-      console.log("join Session with id:", id);
-      console.log("and password", password);
-      this.clear()
-      if (id == "local") {
+    joinSession(id) {
+      this.clear() if (id == "local") {
         let uri = window.location.href.split("http://")[1]
-        console.log("uri:", uri)
         EventBus.$emit("setQRCodeURL", window.location.href)
         this.websocket = new wsConnection(this.quill,  "ws://" + uri + "conn/" + "local");
         return
@@ -167,7 +162,6 @@ export default {
 
     },
     joinedEmptySession() {
-      console.log("joined waiting session")
       this.waiting = true
       this.quill.setText("Du är en ansluten till tolkningen, men den har inte börjat än.", "collab")
     },
@@ -196,17 +190,19 @@ export default {
       this.$toast.info("Du kopplades ner", msg)
     },
     websocketReconnecting(tries = 1) {
-      console.log(tries, "försöket...")
         const msg = "Försöker ansluta igen ... (#" + tries + ")"
         this.$toast.info(msg, tries)
 
     },
     setSessionData(data) {
-      console.log("textview got event, should send session data")
       this.websocket.sendSessionData(data)
     },
     enterPassword() {
       this.$bvModal.show("login")
+    },
+
+    sendChat(data) {
+      this.websocket.sendChat(data)
     },
     leaveSession() {
       if (!this.websocket) {
@@ -260,7 +256,6 @@ export default {
     loadTextSettings() {
       let settings = Text.loadTextSettings();
       this.settings.font = settings.font;
-      console.log(this.settings.font)
     },
     setupEditor() {
       this.loadTextSettings();
@@ -287,7 +282,6 @@ export default {
     },
     saveSettings() {
       let settings = this.$store.state.settings;
-      console.log("save settings:", settings);
     },
   },
 };

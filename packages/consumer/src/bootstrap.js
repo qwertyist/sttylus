@@ -8,9 +8,11 @@ import {
   FormInputPlugin,
   FormPlugin,
   FormSelectPlugin,
+  ListGroupPlugin,
   ModalPlugin,
   LayoutPlugin,
   OverlayPlugin,
+  TabsPlugin,
 } from 'bootstrap-vue'
 
 export default {
@@ -25,7 +27,9 @@ export default {
     app.use(FormInputPlugin)
     app.use(FormSelectPlugin)
     app.use(LayoutPlugin)
+    app.use(ListGroupPlugin)
     app.use(ModalPlugin)
     app.use(OverlayPlugin)
+    app.use(TabsPlugin)
   },
 }

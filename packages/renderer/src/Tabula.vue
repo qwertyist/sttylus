@@ -12,11 +12,10 @@
                 v-show="view == 'tabula'"
                 :key="editorKey"
                 :nav="showNav"
-                :chat="showChat"
                 ref="tabula"
             />
-            <RemotePane />
         </div>
+        <Chat :nav="showNav" ref="chat" />
     </div>
 </template>
 
@@ -25,15 +24,15 @@ import EventBus from './eventbus.js'
 import Settings from './Settings.vue'
 import Navigation from './components/Navigation.vue'
 import TextView from './components/TextView.vue'
-import RemotePane from './components/RemotePane.vue'
+import Chat from './components/Chat.vue'
 import api from './api/api.js'
 export default {
     name: 'Tabula',
     components: {
         Navigation,
         TextView,
-        RemotePane,
         Settings,
+        Chat,
     },
     data() {
         return {
@@ -75,11 +74,15 @@ export default {
                 this.$bvModal.show('support')
             }
 
+            if (e.key == 'F3') {
+              EventBus.$emit("toggleChat", "")
+            }
+
             if (e.key == 'F5') {
                 e.preventDefault()
                 if (this.view == 'tabula') {
                     this.$bvModal.hide('support')
-                    this.$bvModal.hide('addAbb')
+                     this.$bvModal.hide('addAbb')
                     this.openSettings()
                 } else {
                     EventBus.$emit('showTextView')
@@ -121,7 +124,7 @@ export default {
                         this.$store.commit('setModalOpen', false)
                         EventBus.$emit('closeManuscriptEditor')
                         EventBus.$emit('openTextView')
-                        EventBus.$emit('refocus')
+                        EventBus.$emit('refocus', true)
                     })
                     .catch((err) => {
                         console.error("couldn't save settings", err)
@@ -159,9 +162,6 @@ export default {
                 this.showNav = !this.showNav
             }
         })
-        EventBus.$on('toggleChat', () => {
-            this.showChat = !this.showChat
-        })
         EventBus.$on('closeNav', () => {
             if (this.view != 'settings') {
                 this.showNav = false
@@ -175,7 +175,6 @@ export default {
         EventBus.$off('reloadEditor')
         EventBus.$off('toggleNav')
         EventBus.$off('closeNav')
-        EventBus.$off('toggleChat')
         EventBus.$off('chatHidden')
         EventBus.$off('openSettings')
         EventBus.$off('openTextView')

@@ -1,6 +1,6 @@
 <template>
     <div id="hotkeys">
-        <b-row>
+        <b-row style="height: 85vh !important; overflow-y: auto">
             <b-col cols="4">
                 <b-list-group-item
                     class="list-group col-lg-12"
@@ -34,14 +34,10 @@ export default {
                 {
                     whichKey: 'F2',
                     command:
-                        'Lägg till en förkortning<br />I skrivläget så väljs ordet vid/bakom textmarkören<br />Markera flera ord med <kbd>CTRL+SHIFT ←/→</kbd>',
+                  'Lägg till en förkortning<br />I skrivläget så väljs ordet vid/bakom textmarkören<br />Markera flera ord med <kbd>CTRL+SHIFT ←/→</kbd><br /><kbd>SHIFT+F2</kbd> ger den valda frasen gemener',
                 },
-                {
-                    whichKey: 'SHIFT+F2',
-                    command:
-                        'Samma funktion som ovan, men endast gemener i frasen',
-                },
-                { whichKey: 'F2', command: 'Växla mellan förkortningslistor' },
+                { whichKey: 'F2', command: 'Växla mellan förkortningslistor i Lägg till-rutan' },
+              { whichKey: 'F3', command: 'Visa/dölj chatt<br /> <kbd>SHIFT+F3</kbd> signalerar redo för byte' },
                 { whichKey: 'F4', command: 'Rensa texten' },
                 {
                     whichKey: 'F5',
@@ -72,12 +68,12 @@ export default {
                 {
                     whichKey: 'SHIFT+ENTER',
                     command:
-                        'Infoga ny rad med liten bokstav om inställningen är stor bokstav på ny rad och vice versa',
+                        'Infoga ny rad med utan att versalera nästa ord'
                 },
                 {
                     whichKey: 'PIL HÖGER →',
                     command:
-                        'Mata fram ord ur aktiverat manuskript vid sista ordet.',
+                        'Mata fram ord ur aktiverat manuskript vid sista ordet',
                 },
                 {
                     whichKey: 'PIL NEDÅT ↓',
@@ -89,7 +85,11 @@ export default {
                 },
                 {
                     whichKey: 'CTRL+SHIFT+V',
-                    command: 'Klistra in (oformaterad) text i textvyn.',
+                    command: 'Klistra in (oformaterad) text i textvyn',
+                },
+                {
+                    whichKey: 'CTRL+1...5',
+                    command: 'Växla mellan standardlistor',
                 },
                 /*{
           whichKey: "CTRL+HÖGER PIL",

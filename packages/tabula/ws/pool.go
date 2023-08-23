@@ -2,7 +2,9 @@ package ws
 
 import (
 	"fmt"
+	"log"
 
+	"github.com/jaevor/go-nanoid"
 	"github.com/qwertyist/tabula/collab"
 )
 
@@ -19,6 +21,7 @@ type Pool struct {
 	Started    bool
 }
 
+
 func NewPool(id string) *Pool {
 	return &Pool{
 		ID:         id,
@@ -34,28 +37,38 @@ func (pool *Pool) Start() {
 		select {
 		case client := <-pool.Register:
 			pool.Clients[client] = true
+			id, _ := nanoid.CustomASCII("abcdef1234567890", 8)
+			client.ID = id()
+
 			fmt.Println("Size of connection pool: ", len(pool.Clients))
 			for c := range pool.Clients {
-				if c == client {
-					continue
-				}
+				log.Println("Client:", c.ID)
 				msg := Message{Type: JoinSession}
-				msg.Msg = "Client connected"
-				client.send(msg)
+				if client.Interpreter {
+					msg.Msg = "interpreter"
+				} else {
+					msg.Msg = "user"
+				}
+				msg.ID = client.ID
+				if c == client {
+					msg.Msg = ""
+				}
+				c.send(msg)
 			}
 			break
 		case client := <-pool.Unregister:
 			interpreter := client.Interpreter
 			delete(pool.Clients, client)
 			fmt.Println("Size of connection pool:", len(pool.Clients))
-			for client := range pool.Clients {
+			for c := range pool.Clients {
 				msg := Message{Type: LeaveSession}
+				msg.ID = client.ID
 				if interpreter {
 					msg.Msg = "interpreter"
 				} else {
 					msg.Msg = "user"
 				}
-				client.send(msg)
+				c.send(msg)
 			}
 			break
 		case broadcast := <-pool.Broadcast:

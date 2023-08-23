@@ -131,6 +131,8 @@ export default {
             EventBus.$on('clientConnected', this.clientConnected)
             EventBus.$on('clientDisconnected', this.clientDisconnected)
             EventBus.$on('getAbbCache', this.updateCache)
+
+            EventBus.$on("TXChat", this.TXChat)
         },
         removeEventListeners() {
             EventBus.$off('sharedAbb')
@@ -161,6 +163,8 @@ export default {
             EventBus.$off('getAbbCache')
             EventBus.$off('sessionPasswordUpdated')
             EventBus.$off('setSessionPassword')
+
+            EventBus.$off("TXChat")
         },
         createSession() {
         },
@@ -197,6 +201,7 @@ export default {
             this.$toast.info(msg, tries)
         },
         clientConnected(rx) {
+            this.$store.commit("clientConnected", rx)
             switch (rx.msg) {
                 case 'interpreter':
                     this.$toast.success('En tolk anslöt')
@@ -209,6 +214,7 @@ export default {
             }
         },
         clientDisconnected(rx) {
+            this.$store.commit("clientDisconnected", rx)
             switch (rx.msg) {
                 case 'interpreter':
                     this.$toast.success('En tolk kopplade ner')
@@ -385,22 +391,18 @@ export default {
                 EventBus.$emit('sharedAbbEvent')
             }
         },
-        focus() {
+        focus(reload) {
+          if(reload) {
             Text.initText()
             let settings = Text.loadTextSettings()
             this.settings.font = settings.font
-
-            /*
-      this.$nextTick(() => {
-        this.quill.focus();
-      })
-      */
-            let editor = document.querySelector('.ql-editor')
-            setTimeout(() => {
-                editor.focus()
-                this.quill.focus()
-                this.quill.setSelection(this.quill.getText().length)
-            }, 25)
+          }
+          let editor = document.querySelector('.ql-editor')
+          setTimeout(() => {
+              editor.focus()
+              this.quill.focus()
+              this.quill.setSelection(this.quill.getText().length)
+          }, 25)
         },
         clear() {
             window.scrollTo(0, 0)
@@ -478,6 +480,9 @@ export default {
             let settings = this.$store.state.settings
             console.log('save settings:', settings)
         },
+      TXChat(data) {
+        this.websocket.sendChat(data)
+      }
     },
 }
 </script>

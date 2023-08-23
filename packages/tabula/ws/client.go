@@ -12,6 +12,7 @@ import (
 
 type Client struct {
 	ID          string
+	Name        string
 	Interpreter bool
 	Conn        *websocket.Conn
 	Pool        *Pool
@@ -19,16 +20,19 @@ type Client struct {
 }
 
 type Message struct {
-	Type     PoolMessage `json:"type"`
-	Msg      string      `json:"msg,omitempty"`
-	Password string      `json:"password,omitempty"`
-	Abb      *SharedAbb  `json:"abb,omitempty"`
+	ID       string       `json:"id,omitempty"`
+	Type     PoolMessage  `json:"type"`
+	Chat     *ChatMessage `json:"chat,omitempty"`
+	Msg      string       `json:"msg,omitempty"`
+	Password string       `json:"password,omitempty"`
+	Abb      *SharedAbb   `json:"abb,omitempty"`
 	Body     struct {
 		Version int         `json:"version"`
 		Delta   delta.Delta `json:"delta,omitempty"`
 		Index   int         `json:"index"`
 	} `json:"body,omitempty"`
-	Zoom collab.ZoomCC `json:"zoom,omitempty"`
+	Zoom    collab.ZoomCC `json:"zoom,omitempty"`
+	Clients []Client      `json:"clients,omitempty"`
 }
 
 type Broadcast struct {
@@ -47,6 +51,7 @@ const (
 	SetInfo                   = 5
 	SetPassword               = 6
 	GetPassword               = 7
+	GetClients                = 8
 	NotAuthorized             = 401
 	NoSession                 = 404
 	TXDelta                   = 20
@@ -59,6 +64,8 @@ const (
 	RXManuscript              = 27
 	ReadySignal               = 38
 	RetrieveDoc               = 30
+	TXChat                    = 40
+	RXChat                    = 41
 	ZoomCC                    = 200111
 	Ping                      = 200
 	Pong                      = 300
@@ -78,7 +85,10 @@ func (c *Client) messageHandler(msg Message) (*Message, bool) {
 		}
 		return nil, false
 	case JoinSession:
-		log.Println("JoinSession:", msg)
+		log.Println("JoinSession", msg.ID, msg)
+		if msg.ID != "" {
+			c.ID = msg.ID
+		}
 		if !c.Interpreter && c.Pool.Password != msg.Password {
 			return &Message{Type: NotAuthorized}, false
 		} else {
@@ -86,10 +96,8 @@ func (c *Client) messageHandler(msg Message) (*Message, bool) {
 			c.send(p)
 		}
 		if c.Pool.Tabula != nil {
-			log.Println("Joining existing Tabula")
 			m := Message{Type: RetrieveDoc}
 			d := c.Pool.Tabula.RetrieveDoc()
-			log.Printf("RetrieveDoc: %+v\n", d)
 			m.Body.Delta = *d.Delta
 			m.Body.Version = d.Version
 			m.Body.Index = d.Index
@@ -103,6 +111,7 @@ func (c *Client) messageHandler(msg Message) (*Message, bool) {
 			log.Println("No session exists")
 			m := Message{Type: NoSession}
 			c.send(m)
+			return nil, false
 		}
 		return &msg, true
 	case LeaveSession:
@@ -158,14 +167,34 @@ func (c *Client) messageHandler(msg Message) (*Message, bool) {
 		return &msg, true
 	case RetrieveDoc:
 		return nil, false
+	case GetClients:
+		tx := TXMessage{Type: msg.Type}
+		for client := range c.Pool.Clients {
+			tmp := Client{Name: client.Name,
+				Interpreter: client.Interpreter,
+				ID:          client.ID,
+			}
+			tx.Clients = append(msg.Clients, tmp)
+		}
+		log.Println(len(tx.Clients))
+		err := c.sendTX(tx)
+		if err != nil {
+			log.Fatal("GetClients", err)
+		}
+		return nil, false
+	case TXChat:
+		c.Name = msg.Chat.Name
+		c.sendChat(msg.Chat)
+		return nil, false
 	case ZoomCC:
 		if c.Pool.Tabula.Zoom.Token != "" {
 			c.Pool.Tabula.SendZoomCC(msg.Msg)
 		}
 		return nil, false
 	case Ping:
-		msg = Message{Type: Pong}
-		return &msg, false
+		pong := TXMessage{Type: Pong}
+		c.sendTX(pong)
+		return nil, false
 	case Pong:
 		return nil, false
 	}
