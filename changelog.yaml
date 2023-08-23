@@ -1,4 +1,21 @@
 changelog:
+  - date: 2023-08-18T14:00:00.000Z
+    changes:
+      - id: 0
+        type: version
+        description: VERSION 1.4.2
+      - id: 1
+        type: update
+        description: Markerade ämneslistor numreras och ordnas i listan efter deras prioritet. Senast valda listan prioriteras högst.
+      - id: 2
+        type: fix
+        description: Möblerat om dialogrutan för distanstolkningar
+      - id: 3
+        type: update
+        description: Distansservern använder wrapper för Mutex-lås för all utgående trafik
+      - id: 4
+        type: fix
+        description: Lösenordet syns för alla anslutna tolkar i dialogrutan för distanstolkningar.
   - date: 2023-08-16T14:00:00.000Z
     changes:
       - id: 0

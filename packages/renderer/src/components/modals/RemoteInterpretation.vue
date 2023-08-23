@@ -483,6 +483,7 @@ export default {
     methods: {
         addEventListeners() {
           EventBus.$on('passwordMessage', (msg) => {
+            if(msg == undefined) { return }
             if(msg instanceof Object) { return }
             if(msg == "ok") {
               this.$toast.success("Lösenordet byttes")
