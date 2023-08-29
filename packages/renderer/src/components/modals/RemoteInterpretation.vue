@@ -223,7 +223,7 @@
                                 >
                                     <b-form-input
                                         v-model="session.id"
-                                        placeholder="Ange sessionens sexsiffriga ID-nummer"
+                                        placeholder="Ange sessionens ID-nummer"
                                         @keydown.enter="
                                             joinRemoteSession(session.id)
                                         "
@@ -531,6 +531,9 @@ export default {
             return
           }
 
+          if(sess.password == undefined){
+            sess.password = ""
+          }
           if (target == 'captions') {
             copyText = 'https://sttylus.se/text/' + sess.id
             successText = 'Livetextningens webbadress kopierades'
