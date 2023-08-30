@@ -388,9 +388,6 @@ export default {
     mounted() {
         this.batchImport.creators = new Map()
         document.addEventListener('keydown', this.preventDefaults)
-        this.users.map((u) => {
-            this.getLists(u)
-        })
         this.users = this.users.sort((a, b) => {
             if (a.name < b.name) {
                 return -1
@@ -399,6 +396,9 @@ export default {
                 return 1
             }
             return 0
+        })
+        this.users.forEach((u) => {
+            this.getLists(u)
         })
     },
 }
