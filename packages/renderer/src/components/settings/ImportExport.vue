@@ -1,102 +1,102 @@
 <template>
-    <b-row>
-        <b-col cols="3">
-            <h3>Importera förkortningslista</h3>
-            <div v-if="!confirm">
-                <b-form>
-                    <b-select
-                        v-model="from"
-                        @change="changeFrom"
-                        :disabled="to != 'dontExport'"
-                    >
-                        <b-select-option selected value="dontImport"
-                            >...</b-select-option
-                        >
-                        <b-select-option
-                            v-for="source in sources"
-                            :key="source.value"
-                            :value="source.value"
-                            :disabled="source.disabled"
-                            >{{ source.text }}</b-select-option
-                        >
-                    </b-select>
-                </b-form>
-                <br />
-                <h3>Exportera förkortningslista</h3>
-                <b-form>
-                    <b-select
-                        v-model="to"
-                        @change="changeTo"
-                        :disabled="from != 'dontImport'"
-                    >
-                        <b-select-option selected value="dontExport"
-                            >...</b-select-option
-                        >
-                        <b-select-option
-                            v-for="target in targets"
-                            v-bind:key="target.value"
-                            v-bind:value="target.value"
-                            :disabled="target.disabled"
-                            >{{ target.text }}</b-select-option
-                        >
-                    </b-select>
-                </b-form>
-            </div>
-            <div v-if="confirm || safe">
-                <hr v-if="safe" />
-                <p>Antal förkortningar: {{ abbs.length }}</p>
-                <b-form @submit.prevent="importAbbs" autocomplete="off">
-                    <b-form-checkbox v-model="listForm.addToExisting"
-                        >Lägg till i befintlig lista</b-form-checkbox
-                    >
-                    <br />
-                    <div v-if="listForm.addToExisting">
-                        <b-form-group label="Välj förkortningslista">
-                            <b-select v-model="listForm.targetList">
-                                <b-select-option
-                                    v-bind:key="list.id"
-                                    v-bind:value="list"
-                                    v-for="list in lists"
-                                    >{{ list.name }}</b-select-option
-                                >
-                            </b-select>
-                        </b-form-group>
-                    </div>
-                    <div v-else>
-                        <b-form-group label="Döp förkortningslistan">
-                            <b-form-input
-                                required
-                                placeholder="..."
-                                v-model="listForm.name"
-                            />
-                        </b-form-group>
-                    </div>
-                    Ämneslista
-                    <b-form-checkbox
-                        v-model="listForm.standard"
-                        inline
-                        name="standard-switch"
-                        switch
-                        >Standardlista</b-form-checkbox
-                    >
-                    <br />
-                    <br />
-                    <b-button @click="onCancelImport" variant="danger"
-                        >Avbryt</b-button
-                    >
-                    <div v-if="!conflicts" class="float-right">
-                        <b-button variant="primary" type="submit"
-                            >Lägg till</b-button
-                        >
-                    </div>
-                </b-form>
-            </div>
-        </b-col>
+  <b-row>
+      <b-col cols="3">
+          <h3>Importera förkortningslista</h3>
+          <div v-if="!confirm">
+              <b-form>
+                  <b-select
+                      v-model="from"
+                      @change="changeFrom"
+                      :disabled="to != 'dontExport'"
+                  >
+                      <b-select-option selected value="dontImport"
+                          >...</b-select-option
+                      >
+                      <b-select-option
+                          v-for="source in sources"
+                          :key="source.value"
+                          :value="source.value"
+                          :disabled="source.disabled"
+                          >{{ source.text }}</b-select-option
+                      >
+                  </b-select>
+              </b-form>
+              <br />
+              <h3>Exportera förkortningslista</h3>
+              <b-form>
+                  <b-select
+                      v-model="to"
+                      @change="changeTo"
+                      :disabled="from != 'dontImport'"
+                  >
+                      <b-select-option selected value="dontExport"
+                          >...</b-select-option
+                      >
+                      <b-select-option
+                          v-for="target in targets"
+                          v-bind:key="target.value"
+                          v-bind:value="target.value"
+                          :disabled="target.disabled"
+                          >{{ target.text }}</b-select-option
+                      >
+                  </b-select>
+              </b-form>
+          </div>
+          <div v-if="confirm || safe">
+              <hr v-if="safe" />
+              <p>Antal förkortningar: {{ abbs.length }}</p>
+              <b-form @submit.prevent="importAbbs" autocomplete="off">
+                  <b-form-checkbox v-model="listForm.addToExisting"
+                      >Lägg till i befintlig lista</b-form-checkbox
+                  >
+                  <br />
+                  <div v-if="listForm.addToExisting">
+                      <b-form-group label="Välj förkortningslista">
+                          <b-select v-model="listForm.targetList">
+                              <b-select-option
+                                  v-bind:key="list.id"
+                                  v-bind:value="list"
+                                  v-for="list in lists"
+                                  >{{ list.name }}</b-select-option
+                              >
+                          </b-select>
+                      </b-form-group>
+                  </div>
+                  <div v-else>
+                      <b-form-group label="Döp förkortningslistan">
+                          <b-form-input
+                              required
+                              placeholder="..."
+                              v-model="listForm.name"
+                          />
+                      </b-form-group>
+                  </div>
+                  Ämneslista
+                  <b-form-checkbox
+                      v-model="listForm.standard"
+                      inline
+                      name="standard-switch"
+                      switch
+                      >Standardlista</b-form-checkbox
+                  >
+                  <br />
+                  <br />
+                  <b-button @click="onCancelImport" variant="danger"
+                      >Avbryt</b-button
+                  >
+                  <div v-if="!conflicts" class="float-right">
+                      <b-button variant="primary" type="submit"
+                          >Lägg till</b-button
+                      >
+                  </div>
+              </b-form>
+          </div>
+      </b-col>
 
-        <b-col >
-            <div v-if="exportList">
-              <b-row style="height: 80vh !important; overflow-y: auto">
-                <div v-if="to == 'textontop'">
+      <b-col >
+          <div v-if="exportList">
+            <b-row style="height: 80vh !important; overflow-y: auto">
+              <div v-if="to == 'textontop'">
                     <h3>Exportera till TextOnTop</h3>
                 </div>
                 <div v-if="to == 'sttylus' || to == 'textfile'">
@@ -253,7 +253,7 @@
               </b-row>
               <b-row>
                 <b-col>
-                <b-button type="submit">Exportera</b-button>
+                <b-button v-if="to != 'sttylus'" type="submit" @click="submitExport">Exportera</b-button>
                 </b-col>
               </b-row>
             </div>
@@ -778,6 +778,7 @@ export default {
                     link.click()
                     document.body.removeChild(link)
                 } else if (this.to == 'textontop') {
+                  this.$toast.info("Exporterar till TextOnTop...")
                     const url = window.URL.createObjectURL(
                         new Blob([resp.data], { type: 'application/json' })
                     )
