@@ -112,6 +112,7 @@ export default class keyboard extends Keyboard {
 
   wordBeforeCursor(prefix) {
     this.currentWord = prefix.split(/[\u200B\s-.,:;_!?\/"'()]/).pop()
+    console.log(this.currentWord)
     return this.currentWord
   }
 
@@ -541,7 +542,7 @@ export default class keyboard extends Keyboard {
         if (abb.length == 0) return true
         this.abbreviate(range.index, abb, '/', this.quill)
         this.capitalizeNext = false
-        this.abbreviated = true
+        this.abbreviated = false
       },
     })
     // Double quotation mark "
