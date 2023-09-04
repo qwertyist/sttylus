@@ -132,6 +132,7 @@
 </template>
 <script>
 import api from '../../../api/api.js'
+import axios from 'axios';
 export default {
     name: 'AdminListView',
     props: ['users'],
@@ -370,13 +371,16 @@ export default {
             })
         },
         getLists(user) {
-            api.getUserListsByID(user.id)
+          console.log("Get lists for user", user.name)
+          axios.get("https://sttylus.se/api2/abbs/lists", { headers: { "X-Id-Token": user.id }})
                 .then((resp) => {
                     if (resp.data != null) {
-                        resp.data.map((list) => {
+                        console.log(user.id, resp.data.length)
+                        resp.data.forEach((list) => {
                             list.owner = user.name
                             this.lists.push(list)
                         })
+                        console.log("got", this.lists.length, "lists in total")
                     }
                 })
                 .catch((err) => {

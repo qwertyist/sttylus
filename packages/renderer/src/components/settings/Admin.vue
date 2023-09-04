@@ -1,7 +1,7 @@
 <template>
     <div>
         <template v-if="usersLoaded">
-            <AdminListView :users="users" />
+            <AdminListView lazy :users="users" />
         </template>
         <b-container fluid>
             <b-row>
@@ -52,16 +52,6 @@
                     {{ row.item.updated | formatDate }}
                 </template>
                 <template #cell(remove)="row">
-                    <!-- <b-button
-              v-model="row.item.commend"
-              type="submit"
-              size="md"
-              class="mt-0"
-              variant="primary"
-              @click="commendAbb(row.item, viewedList.id)"
-            >
-              <b-icon-arrow-up />
-            </b-button>-->
                     <b-button
                         v-model="row.item.remove"
                         type="submit"

@@ -1,20 +1,15 @@
 TODO <===
+- [ ] boltdb:
+    - [ ] .db per användare.
 - [-] QoL:
-  - [X] visa två rader text
-  - [ ] kortkommando dölja/visa menyrad
   - [ ] marginalinställningar
   - [ ] visa alltid hela rader (anpassa textstorlek efter vy)
   - [ ] fokuser alltid nedersta raden
 - [-] förkortningar:
-  - [-] lös ut förkortningar efter alla tänkbara skiljetecken (;mhet)
   - [ ] förhandsgranska förkortning
   - [ ] tvinga gemener/versaler i förkortning
-  - [ ] sortera ämneslistor:
-    - [ ] visa prioordning för ämneslistor
-    - [ ] flytta upp ämneslista
   - [ ] senaste användning av förkortning
 - [-] manuskript:
-  - [X] enter
   - [ ] knyt till ordlista
 - [ ] admin:
   - [ ] använd rätt förkortningslista vid skapandet av ny användare
@@ -33,12 +28,16 @@ TODO <===
   -  [ ] ordet vid markören
   -  [X] lägg till i egen lista (bugg)
 - [-] Distanstolkning:
-  - [X] Dölj bokningar när ansluten
   - [ ] Schemalägg/skapa tolkning i förväg
   - [ ] Bjud in kollegor
   - [ ] Återkommande bokningar
   - [X] Säkerställ unikhet i bokningsnummer
-  - [X] Lösenordsskydda Distanstolkningar
+- [X] Lösenordsskydda Distanstolkningar
+- [X] visa två rader text
+- [X] kortkommando dölja/visa menyrad
+  - [X] sortera ämneslistor:
+    - [X] visa prioordning för ämneslistor
+    - [X] flytta upp ämneslista
 
 Distanstolkningar
 ================

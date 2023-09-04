@@ -12,7 +12,7 @@ type repo struct {
 	bolt *bolt.DB
 }
 
-//NewBoltRepository returns a repo connected to provided bolt db
+// NewBoltRepository returns a repo connected to provided bolt db
 func NewBoltRepository(bolt *bolt.DB) repository.Repository {
 	return &repo{
 		bolt,

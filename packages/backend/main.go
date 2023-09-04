@@ -30,14 +30,15 @@ func init() {
 
 func main() {
 	if cfg.mode == "desktop" {
-		if cfg.version != "0.0.0" {
-			log.Println("Build version", cfg.version)
-			if cfg.updateURL != "" {
-				doUpdate(cfg.updateURL)
-			}
-		} else {
-			log.Println("Test build 0.0.0")
-		}
+		/*		if cfg.version != "0.0.0" {
+					log.Println("Build version", cfg.version)
+					if cfg.updateURL != "" {
+						doUpdate(cfg.updateURL)
+					}
+				} else {
+					log.Println("Test build 0.0.0")
+				}
+		*/
 	}
 	repo = boltdb.NewBoltRepository(openBoltDB(cfg.dbFileName))
 	err := repo.Init()
