@@ -151,7 +151,8 @@ export default {
       this.$bvModal.show("consumerSettings")
     },
     joinSession(id) {
-      this.clear() if (id == "local") {
+      this.clear()
+      if (id == "local") {
         let uri = window.location.href.split("http://")[1]
         EventBus.$emit("setQRCodeURL", window.location.href)
         this.websocket = new wsConnection(this.quill,  "ws://" + uri + "conn/" + "local");

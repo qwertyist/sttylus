@@ -16,7 +16,7 @@
       @show="onOpen"
       @hide="onClose"
     >
-    <b-tabs>
+    <b-tabs lazy>
       <b-tab
         style="height: 50vh"
         title="Chat"
@@ -26,6 +26,7 @@
       <b-tab
         title="Textinställningar"
         style="height: 50vh"
+        @click="getFontSettings"
       >
       <br />
         <div
@@ -90,6 +91,7 @@
       </b-tab>
       <b-tab
         title="Övrigt"
+        @click="getMiscSettings()"
       >
           <b-form
             style="height: 50vh"
@@ -100,7 +102,7 @@
               <b-form-input v-model="name" />
             </b-col>
             <b-col>
-              <b-button type="submit">Spara</b-button>
+              <b-button type="submit" @click="updateName()">Spara</b-button>
             </b-col>
           </b-row>
         <hr />
@@ -191,18 +193,30 @@ export default {
     }
   },
   mounted() {
-    this.name = this.$store.state.name
+    this.getFontSettings()
+    this.getMiscSettings()
+  },
+  methods: {
+    getFontSettings() {
     if (localStorage.getItem("fontSettings")) {
+      console.log("got stored font settings");
       this.fontSettings = JSON.parse(localStorage.getItem("fontSettings"));
     } else {
+      console.log("no stored font settings, storing defaults");
       const data = JSON.stringify(this.fontSettings);
       localStorage.setItem("fontSettings", data);
     }
-  },
-  methods: {
+
+    },
+    getMiscSettings() {
+      this.name = this.$store.state.name
+    },
     toggleQRCode() {
       this.$bvModal.hide("consumerSettings")
       EventBus.$emit("toggleQRCode");
+    },
+    updateName() {
+        this.$store.commit("setName", this.name)
     },
     increaseTextSize() {
       this.fontSettings.size += 4;
@@ -228,9 +242,11 @@ export default {
       this.updateSettings();
     },
     changeLineHeight() {
+      console.log("change lineheight");
       this.updateSettings();
     },
     changeFontFamily() {
+      console.log("change font family");
       this.updateSettings();
     },
     updateSettings() {
@@ -244,7 +260,9 @@ export default {
       } else {
         this.orientation = "PORTRAIT"
       }
+      console.log(this.orientation)
       let stored = JSON.parse(localStorage.getItem("fontSettings"));
+      chttps://sttylus.se/visa/#/38228437/spännrambjörntrådonsole.log("on open:", stored);
       this.fontSettings = stored;
     },
     onClose() {

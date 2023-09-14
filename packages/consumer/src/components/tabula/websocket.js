@@ -1,3 +1,4 @@
+import { store } from '../../store'
 import EventBus from '../../eventbus'
 const mt = {
   OK: 0,
@@ -101,8 +102,7 @@ export default class wsConnection {
       }, 500 + tries * 250)
     }
     self.websocket.onclose = () => {}
-    self.websocket.onmessage = (e) => {
-    }
+    self.websocket.onmessage = (e) => {}
     self.websocket.onopen = (e) => {
       this.onOpen(e)
       self.websocket.onerror = (e) => this.onError(e)
@@ -203,6 +203,7 @@ export default class wsConnection {
           this.quill.setText('')
           break
         case this.mt.RetrieveDoc:
+          this.sendName()
           switch (rx.msg) {
             case 'waiting':
               EventBus.$emit('joinedEmptySession')
@@ -270,9 +271,18 @@ export default class wsConnection {
   leavesession() {
     self.websocket.send(JSON.stringify({ type: this.mt.LeaveSession }))
   }
+  sendName() {
+    let chatMessage = JSON.stringify({
+      type: this.mt.TXChat,
+      chat: {
+        name: store.state.name,
+        message: '',
+      },
+    })
+    self.websocket.send(chatMessage)
+  }
   sendChat(data) {
     let chatMessage = JSON.stringify({
-      id: this.id,
       type: this.mt.TXChat,
       chat: data,
     })

@@ -64,6 +64,7 @@ export default {
           this.$store.commit("clearMessages")
         },
         recv(msg) {
+          if (msg.chat.message == null) { return }
           let now = new Date()
           let timestamp = now.toLocaleTimeString().slice(0,5);
           this.unread++;
