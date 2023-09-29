@@ -1,6 +1,27 @@
 <template>
-  <b-sidebar ref="chat" title="Chat" v-model="show" right z-index=800 :header-class="{ navOpen: nav }">
-    <div style="height: 75%">
+  <b-sidebar ref="chat" title="Distanstolkning" v-model="show" right z-index=800 :header-class="{ navOpen: nav }">
+
+    <div style="height:15%">
+      <div class="sidebar-field">
+        <b-icon icon="person-fill" />
+        <span class="float-right">
+          Anslutna
+        </span>
+      </div>
+      <div v-for="(interpreter, idx) in interpreters">
+        <b-badge>{{ interpreter }}</b-badge>
+      </div>
+      <div v-for="(user, idx) in users">
+        <b-badge></b-badge>
+      </div>
+    </div>
+    <div style="height: 35%">
+      <div class="sidebar-field">
+          <b-icon icon="chat-dots-fill" />
+        <span class="float-right">
+          Chatt
+        </span>
+      </div>
       <b-list-group v-for="(msg, i) in messages" :key="msg.id + '_' + i">
         <b-list-group-item style="white-space: pre-wrap">
           <small>{{ msg.timestamp }}</small> <b>{{ msg.name }}</b>: {{ msg.message }}
@@ -10,7 +31,6 @@
     </div>
     <template #footer="{}">
       <b-form @submit.prevent="send" autocomplete="off">
-        {{ id }}
         <div class="d-flex align-items-center px-3 py-2">
           <kbd>TAB</kbd>
           <b-form-select v-model="form.to" :options="targets"></b-form-select>
@@ -57,6 +77,7 @@ export default {
         { value: "interpreters", text: "Alla tolkar" },
         { value: "users", text: "Alla tolkanvändare" }
       ]
+      /*
       this.interpreters.forEach(interpreter => {
         if (!interpreter.name) {
           interpreter.name = interpreter.id
@@ -69,6 +90,7 @@ export default {
         }
         targets.push({ value: user.id, text: user.name })
       })
+      */
       return targets
     }
   },
@@ -171,6 +193,13 @@ export default {
 }
 </script>
 <style>
+
+.sidebar-field {
+  font-size: 1.1rem;
+  font-weight: bold;
+  padding: 0.5rem 1rem;
+}
+
 .navOpen {
   padding-top: 2em !important;
 }

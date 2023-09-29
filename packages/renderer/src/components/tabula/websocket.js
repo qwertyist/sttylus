@@ -235,6 +235,7 @@ export default class wsConnection {
           this.quill.setText('')
           break
         case this.mt.RetrieveDoc:
+          this.sendName()
           console.log('RetrieveDoc and password:', rx.body.version)
           this.quill.version = rx.body.version
           this.quill.setContents(rx.body.delta, 'collab')
@@ -310,6 +311,17 @@ export default class wsConnection {
       type: this.mt.ReadySignal,
     })
     self.websocket.send(readySignalMessage)
+  }
+
+  sendName() {
+    let chatMessage = JSON.stringify({
+      type: this.mt.TXChat,
+      chat: {
+        name: store.state.userData.name,
+        message: '',
+      },
+    })
+    self.websocket.send(chatMessage)
   }
 
   sendChat(data) {
