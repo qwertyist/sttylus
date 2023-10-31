@@ -37,7 +37,7 @@ export default {
                   'Lägg till en förkortning<br />I skrivläget så väljs ordet vid/bakom textmarkören<br />Markera flera ord med <kbd>CTRL+SHIFT ←/→</kbd><br /><kbd>SHIFT+F2</kbd> ger den valda frasen gemener',
                 },
                 { whichKey: 'F2', command: 'Växla mellan förkortningslistor i Lägg till-rutan' },
-              { whichKey: 'F3', command: 'Visa/dölj chatt<br /> <kbd>SHIFT+F3</kbd> signalerar redo för byte' },
+                { whichKey: 'F3', command: 'Signalera redo för byte' },
                 { whichKey: 'F4', command: 'Rensa texten' },
                 {
                     whichKey: 'F5',
@@ -46,6 +46,7 @@ export default {
                 { whichKey: 'F6', command: 'Gör texten mindre' },
                 { whichKey: 'F7', command: 'Gör texten större' },
                 { whichKey: 'F8', command: 'Växla textfärg' },
+                { whichKey: 'F10', command: 'Visa/dölj chatt' },
                 { whichKey: 'F11', command: 'Växla helskärm' },
             ],
             hotkeys: [
