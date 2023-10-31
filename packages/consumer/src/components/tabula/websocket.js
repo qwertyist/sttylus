@@ -1,3 +1,4 @@
+import { store } from '../../store'
 import EventBus from '../../eventbus'
 const mt = {
   OK: 0,
@@ -16,6 +17,8 @@ const mt = {
   TXManuscript: 26,
   RXManuscript: 27,
   RetrieveDoc: 30,
+  TXChat: 40,
+  RXChat: 41,
   Loss: 500,
   Ping: 200,
   Pong: 300,
@@ -47,6 +50,7 @@ export default class wsConnection {
     this.ready = false
     this.password = password
     self.websocket = null
+    this.id = ''
     this.connect(endpoint, password)
   }
 
@@ -70,11 +74,9 @@ export default class wsConnection {
   ping() {
     if (!self.websocket) {
       this.status = 'disconnected'
-      console.log('No websocket, dont ping')
       return
     }
     if (self.websocket.readyState !== 1) {
-      console.log('ReadyState not true')
       this.status = 'pending'
       return
     }
@@ -94,16 +96,13 @@ export default class wsConnection {
     this.connect(this.endpoint, this.password)
     this.status = 'reconnecting'
     self.websocket.onerror = (e) => {
-      console.log('error while reconnecting, retry...')
       tries++
       setTimeout(() => {
         this.reconnect(tries)
       }, 500 + tries * 250)
     }
     self.websocket.onclose = () => {}
-    self.websocket.onmessage = (e) => {
-      console.log('recv message while reconnecting:', e)
-    }
+    self.websocket.onmessage = (e) => {}
     self.websocket.onopen = (e) => {
       this.onOpen(e)
       self.websocket.onerror = (e) => this.onError(e)
@@ -112,7 +111,6 @@ export default class wsConnection {
     }
   }
   close() {
-    console.log('close')
     self.websocket.close()
     self.websocket = null
   }
@@ -149,7 +147,6 @@ export default class wsConnection {
   }
 
   onError(e) {
-    console.log('onError connection status:', this.status)
     if (this.status != 'reconnecting') {
       if (self.websocket.readyState == 1) {
         console.log('ws normal error', e.type)
@@ -166,22 +163,21 @@ export default class wsConnection {
         case this.mt.Pong:
           break
         case this.mt.CreateSession:
-          console.log('Server: Create Session')
           this.createsession()
           this.ready = true
           break
         case this.mt.JoinSession:
-          console.log('User joined')
+          if (!rx.id) {
+            this.id = rx.id
+          }
           break
         case this.mt.LeaveSession:
-          console.log('User disconnected')
           break
         case this.mt.NotAuthorized:
           EventBus.$emit('notAuthorized', this.password)
           break
         case this.mt.RXDelta:
           if (rx.msg == 'starting') {
-            console.log('NU KÖR VI IGÅNG!')
             this.quill.setContents(rx.body.delta, 'collab')
             this.quill.setSelection(rx.body.index, 0, 'collab')
             this.quill.version = rx.body.version
@@ -194,7 +190,6 @@ export default class wsConnection {
               this.quill.setSelection(rx.body.index, 0, 'collab')
               this.quill.version = rx.body.version
             } else {
-              console.log('old message')
             }
           } else {
             this.buffer.push(rx.body)
@@ -208,7 +203,7 @@ export default class wsConnection {
           this.quill.setText('')
           break
         case this.mt.RetrieveDoc:
-          console.log('RetrieveDoc:', rx.body.version, rx.msg, rx.body.delta)
+          this.sendName()
           switch (rx.msg) {
             case 'waiting':
               EventBus.$emit('joinedEmptySession')
@@ -225,12 +220,14 @@ export default class wsConnection {
           this.quill.setSelection(rx.body.index)
           this.ready = true
           break
+        case this.mt.RXChat:
+          EventBus.$emit('RXChat', rx)
+          break
       }
     }
     //this.quill.updateContents()
   }
   send(data) {
-    console.log(data)
     self.websocket.send(data)
   }
   sendClear() {
@@ -250,7 +247,6 @@ export default class wsConnection {
     self.websocket.send(deltaMessage)
   }
   createsession() {
-    console.log('version:', this.quill.version)
     let createMessage = JSON.stringify({
       type: this.mt.CreateSession,
       body: {
@@ -268,12 +264,28 @@ export default class wsConnection {
       msg: 'user',
       password: this.password,
     })
-    console.log('join:', JoinMessage)
     waitForConnection(self.websocket, function () {
       self.websocket.send(JoinMessage)
     })
   }
   leavesession() {
     self.websocket.send(JSON.stringify({ type: this.mt.LeaveSession }))
+  }
+  sendName() {
+    let chatMessage = JSON.stringify({
+      type: this.mt.TXChat,
+      chat: {
+        name: store.state.name,
+        message: '',
+      },
+    })
+    self.websocket.send(chatMessage)
+  }
+  sendChat(data) {
+    let chatMessage = JSON.stringify({
+      type: this.mt.TXChat,
+      chat: data,
+    })
+    self.websocket.send(chatMessage)
   }
 }

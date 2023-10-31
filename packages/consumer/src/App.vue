@@ -7,7 +7,7 @@
     </template>
     <div id="app" @mousedown="handleMouseDown" @dbclick="handleDblClick">
       <Consumer />
-      <ConsumerSettings />
+      <ConsumerSettings :visisble="modalOpen" />
     </div>
   </b-overlay>
 </template>
@@ -31,32 +31,65 @@ export default {
             },
             clicks: 0,
             timer: null,
-            screenLock: {}
+            unread: 0,
+            screenLock: {},
+            modalOpen: false,
         }
     },
     mounted() {
+
+      window.addEventListener('beforeunload', this.leaving);
       console.log("mobile:", this.$mobile);
+      EventBus.$on("RXChat", this.recv)
       EventBus.$on("toggleQRCode", this.toggleQRCode)
       EventBus.$on("setQRCodeURL", this.setQRCode)
+      EventBus.$on("modalOpen", val => this.modalOpen = val)
       this.getScreenLock();
     },
     beforeDestroy() {
+      EventBus.$off("modalOpen")
+      EventBus.$off("modalClosed")
+      EventBus.$off("RXChat")
       EventBus.$off("toggleQRCode")
       EventBus.$off("setQRCodeURL")
       if(typeof this.screenLock !== "undefined" && this.screenLock != null) {
           this.screenLock.release()
           .then(() => {
-            console.log("Lock released 🎈");
             this.screenLock = null;
           });
       }
     },
     methods: {
+        leaving() {
+          this.$store.commit("clearMessages")
+        },
+        recv(msg) {
+          if (msg.chat.message == null) { return }
+          let now = new Date()
+          let timestamp = now.toLocaleTimeString().slice(0,5);
+          this.unread++;
+          this.$store.commit("addMessage",
+            {
+              timestamp: timestamp,
+              id: msg.id,
+              name: msg.chat.name,
+              message: msg.chat.message
+            }
+          )
+          if(this.modalOpen) {
+            this.unread = 0
+          } else {
+            this.$toast.info(
+              "Oläst chatmeddelande (" + this.unread +")",
+              { duration: 750}
+            )
+          }
+        },
         setQRCode(val) {
           this.qr.url = val
         },
         toggleQRCode() {
-          this.qr.show = !this.qr.show; 
+          this.qr.show = !this.qr.show;
         },
         getScreenLock() {
             navigator.wakeLock.request("screen")
@@ -64,10 +97,9 @@ export default {
               this.screenLock = lock
             })
             .catch(err => {
-              console.log(err.name, err.message)});
+              console.error(err.name, err.message)});
         },
         handleDblClick() {
-            console.log("Open settings");
         },
         handleMouseDown() {
             if (this.$mobile) {
@@ -77,9 +109,9 @@ export default {
                         this.clicks = 0;
                     }, 700)
                 } else {
-                    console.log("open settings")
                     clearTimeout(this.timer);
                     this.clicks = 0;
+                    this.unread = 0
                     this.$bvModal.show("consumerSettings")
                 }
             }

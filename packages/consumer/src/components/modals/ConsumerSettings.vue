@@ -16,6 +16,33 @@
       @show="onOpen"
       @hide="onClose"
     >
+    <b-tabs lazy>
+      <b-tab
+        style="height: 50vh"
+        title="Chat"
+      >
+      <ConsumerChat />
+      </b-tab>
+      <b-tab
+        title="Textinställningar"
+        style="height: 50vh"
+        @click="getFontSettings"
+      >
+      <br />
+        <div
+          :style="{
+            display: 'block',
+            height: (orientation == 'LANDSCAPE' ? 25 : 37 ) + 'vh',
+            width: '100%',
+            overflow: 'hidden',
+            fontSize: fontSettings.size + 'px',
+            fontFamily: fontSettings.family,
+            lineHeight: fontSettings.lineHeight,
+            backgroundColor: fontSettings.background,
+            color: fontSettings.foreground,
+          }"
+          v-html="example"
+        ></div>
       <b-form inline class="mb-2">
         <div v-show="!isMobile">
           <b-button size="md" @click="decreaseTextSize">
@@ -27,7 +54,6 @@
             Större
           </b-button>
           <b-button size="md" @click="changeColor">Byt färger</b-button>
-          <b-button size="md" class="float-right">Visa QR-kod</b-button>
         </div>
         <b-input-group prepend="Typsnitt">
           <b-form-select
@@ -47,20 +73,6 @@
             style="width: 80px"
           />
         </b-input-group>
-        <div
-          :style="{
-            display: 'block',
-            height: (orientation == 'LANDSCAPE' ? 120 : 250) + 'px',
-            width: '100%',
-            overflow: 'hidden',
-            fontSize: fontSettings.size + 'px',
-            fontFamily: fontSettings.family,
-            lineHeight: fontSettings.lineHeight,
-            backgroundColor: fontSettings.background,
-            color: fontSettings.foreground,
-          }"
-          v-html="example"
-        ></div>
       </b-form>
         <template v-if="isMobile">
         <div class="d-flex justify-content-between align-items-center">
@@ -75,19 +87,52 @@
             <b-button size="md" @click="changeColor">Byt färger</b-button>
         </div>
         <br />
-        <b-button @click="toggleQRCode()" size="md" class="float-right" variant="info">QR-kod</b-button>
       </template>
+      </b-tab>
+      <b-tab
+        title="Övrigt"
+        @click="getMiscSettings()"
+      >
+          <b-form
+            style="height: 50vh"
+          >
+          Namn som visas i distanstolkningar:
+          <b-row>
+            <b-col cols=4>
+              <b-form-input v-model="name" />
+            </b-col>
+            <b-col>
+              <b-button type="submit" @click="updateName()">Spara</b-button>
+            </b-col>
+          </b-row>
+        <hr />
+        <b-row>
+          <b-col cols=4>
+          Dela på distanstolkning
+          </b-col>
+          <b-col>
+            <b-button @click="toggleQRCode()" size="md" >Visa QR-kod</b-button>
+          </b-col>
+        </b-row>
+          </b-form>
+      </b-tab>
+    </b-tabs>
     </b-modal>
   </div>
+
 </template>
 
 <script>
 import EventBus from "../../eventbus.ts";
+import ConsumerChat from "../ConsumerChat.vue";
 export default {
   name: "ConsumerSettings",
-  props: ["dave"],
+  components: { ConsumerChat },
+  props: { visible: Boolean },
   data() {
     return {
+      modalOpen: false,
+      name: "",
       orientation: "PORTRAIT",
       example_full:
         "<em>Såhär</em> ser <b>texten</b> ut...<br /> Dina inställningar lagras till nästa distanstolkning.",
@@ -148,6 +193,11 @@ export default {
     }
   },
   mounted() {
+    this.getFontSettings()
+    this.getMiscSettings()
+  },
+  methods: {
+    getFontSettings() {
     if (localStorage.getItem("fontSettings")) {
       console.log("got stored font settings");
       this.fontSettings = JSON.parse(localStorage.getItem("fontSettings"));
@@ -156,11 +206,17 @@ export default {
       const data = JSON.stringify(this.fontSettings);
       localStorage.setItem("fontSettings", data);
     }
-  },
-  methods: {
+
+    },
+    getMiscSettings() {
+      this.name = this.$store.state.name
+    },
     toggleQRCode() {
       this.$bvModal.hide("consumerSettings")
       EventBus.$emit("toggleQRCode");
+    },
+    updateName() {
+        this.$store.commit("setName", this.name)
     },
     increaseTextSize() {
       this.fontSettings.size += 4;
@@ -198,6 +254,7 @@ export default {
       localStorage.setItem("fontSettings", data);
     },
     onOpen() {
+      EventBus.$emit("modalOpen", true)
       if(window.screen.orientation.angle == 90) {
         this.orientation = "LANDSCAPE"
       } else {
@@ -205,11 +262,11 @@ export default {
       }
       console.log(this.orientation)
       let stored = JSON.parse(localStorage.getItem("fontSettings"));
-      console.log("on open:", stored);
+      chttps://sttylus.se/visa/#/38228437/spännrambjörntrådonsole.log("on open:", stored);
       this.fontSettings = stored;
     },
     onClose() {
-      console.log("on close");
+      EventBus.$emit("modalOpen", false)
       this.updateSettings();
       EventBus.$emit("refocus", "");
     },

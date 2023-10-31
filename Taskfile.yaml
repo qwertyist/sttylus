@@ -160,10 +160,11 @@ tasks:
       VITE_STTYLUS_STAGING: true
       VITE_STTYLUS_MODE: api
       VITE_STTYLUS_BACKEND: https://sttylus.se/api2/
+      VITE_STTYLUS_COLLAB_SERVER: wss://sttylus.se/ws2/
     cmds:
       - task: webapp
       - yarn run prebuild
-      - sh ./deploy_webapp.sh
+      - yarn run build:consumer
     silent: true
   deploy:consumer:
     cmds:

@@ -3,8 +3,10 @@ import {
   BadgePlugin,
   BIcon,
   BIconBrush,
+  BIconChatDotsFill,
   BIconDownload,
   BIconExclamationCircleFill,
+  BIconPersonFill,
   BIconTrash,
   BInputGroup,
   BPopover,
@@ -61,8 +63,10 @@ export default {
     app.use(TabsPlugin)
     app.component('BIcon', BIcon)
     app.component('BIconBrush', BIconBrush)
+    app.component('BIconChatDotsFill', BIconChatDotsFill)
     app.component('BIconDownload', BIconDownload)
     app.component('BIconExclamationCircleFill', BIconExclamationCircleFill)
+    app.component('BIconPersonFill', BIconPersonFill)
     app.component('BIconTrash', BIconTrash)
     app.component('BInputGroup', BInputGroup)
     app.component('BInputGroupAppend', BInputGroupAppend)

@@ -45,7 +45,6 @@ export default {
       this.id = this.$store.state.session.id;
     },
     hide() {
-      console.log("hiding");
       this.$router.push(
         { path: "/" + this.id + "/" + this.password,
         }

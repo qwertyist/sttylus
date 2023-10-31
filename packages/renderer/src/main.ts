@@ -47,7 +47,7 @@ import VueToast from 'vue-toast-notification'
 
 import VueCookie from 'vue-cookie'
 
-Vue.use(VueToast, { duration: 4000, position: 'top-right' })
+Vue.use(VueToast, { duration: 4000, position: 'top-right', pauseOnHover: false })
 
 Vue.use(Vue2TouchEvents)
 Vue.use(Vuex)

@@ -10,7 +10,7 @@ import TextView from "./TextView.vue"
 export default {
     components: {
         TextView,
-        Login
+        Login,
     }
 }
 </script>

@@ -25,9 +25,8 @@ const router = new VueRouter({
   ],
 })
 
-Vue.use(VueToast, { duration: 5000 })
+Vue.use(VueToast, { duration: 3000, pauseOnHover: false })
 Vue.prototype.$collab = import.meta.env.VITE_STTYLUS_COLLAB_SERVER
-console.log(Vue.prototype.$collab)
 Vue.prototype.$mobile =
   /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
     navigator.userAgent
@@ -49,6 +48,7 @@ const store = new Vuex.Store({
     licenseKey: '',
     userData: {},
     name: '',
+    messages: [],
     session: {
       host: false,
       connected: false,
@@ -72,6 +72,14 @@ const store = new Vuex.Store({
       },
     },
   },
+  getters: {
+    storedMessages: (state) => {
+      if (!state.messages) {
+        state.messages = []
+      }
+      return state.messages
+    },
+  },
   mutations: {
     setSettings(state, newSettings) {
       console.log('setSettings')
@@ -87,20 +95,25 @@ const store = new Vuex.Store({
     },
 
     setSessionID(state, id) {
-      console.log('setsessionid')
       state.session.id = id
     },
-    setName(state, identify) {
-      state.name = identify.name
-      state.remember = identify.remember
-      if (state.remember) {
-        VueCookie.set('name', identify.name, { expires: '1M' })
+    setName(state, name) {
+      state.name = name
+    },
+    addMessage(state, message) {
+      state.messages.push(message)
+    },
+    storeMessages(state, messages) {
+      if (!messages) {
+        state.messages = []
       } else {
-        VueCookie.delete('name')
+        state.messages = messages
       }
     },
+    clearMessages(state) {
+      state.messages = []
+    },
     remember(state) {
-      console.log('Should remember:', state.remember)
     },
     loginSuccess(state) {
       state.loginFailed = false
@@ -109,7 +122,6 @@ const store = new Vuex.Store({
       state.loginFailed = true
     },
     setSessionInfo(state, info) {
-      console.log('set session info:', info)
       state.session.protected = info.protected
     },
     setSessionConnected(state, connected) {

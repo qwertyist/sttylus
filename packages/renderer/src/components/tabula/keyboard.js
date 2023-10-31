@@ -99,7 +99,7 @@ export default class keyboard extends Keyboard {
       .getAbbCache()
       .then((resp) => {
         this.cache = new Map(Object.entries(resp.data))
-        console.log(this.instance, this.cache)
+        //console.log(this.instance, this.cache)
       })
       .catch((err) => {
         console.error("couldn't get cached abbs", err)
@@ -259,9 +259,9 @@ export default class keyboard extends Keyboard {
         EventBus.$emit('addAbbreviation', phrase.toLowerCase())
       },
     })
-    //F3
     this.addBinding({
       key: 114,
+      shiftKey: false,
       handler: function () {
         EventBus.$emit('sendReadySignal')
       },
@@ -308,7 +308,7 @@ export default class keyboard extends Keyboard {
       key: 118,
       ctrlKey: true,
       handler: function () {
-        console.log('keybinding ctrl+f7')
+        //console.log('keybinding ctrl+f7')
         EventBus.$emit('sizeChange', { inc: true, send: true })
       },
     })
@@ -332,7 +332,7 @@ export default class keyboard extends Keyboard {
     this.addBinding({
       key: 120,
       handler: function () {
-        console.log('keybinding F9')
+        //console.log('keybinding F9')
         EventBus.$emit('createSession', true)
       },
     })
@@ -561,7 +561,7 @@ export default class keyboard extends Keyboard {
     this.addBinding({
       key: 191,
       handler: function (range, context) {
-        console.log("' quotation mark")
+        //console.log("' quotation mark")
         let abb = this.wordBeforeCursor(context.prefix)
         if (abb.length == 0) return true
         this.abbreviate(range.index, abb, "'", this.quill)
@@ -574,7 +574,7 @@ export default class keyboard extends Keyboard {
       key: 8,
       ctrlKey: true,
       handler: function (_range, context) {
-        console.log('prefix:', context.prefix, 'length.', context.prefix.length)
+        //console.log('prefix:', context.prefix, 'length.', context.prefix.length)
         if (context.prefix.trim().split(' ').length == 1) {
           this.capitalizeNext = true
         }
