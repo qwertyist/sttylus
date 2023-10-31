@@ -86,7 +86,7 @@ func respondWithJSON(w http.ResponseWriter, code int, payload interface{}) {
 func (a *App) initializeRoutes() {
 	a.db = repo.NewRepository(repo.OpenBoltDB("bolt.db"))
 	a.Router.HandleFunc("/api", apiHelper).Methods("GET", "POST")
-	sessionService := session.NewSessionService(a.db)
+	sessionService := session.NewSessionService(a.db, a.pools)
 	sessionHandler := session.NewSessionHandler(sessionService)
 	session.AddHandlers(a.Router, sessionHandler)
 }

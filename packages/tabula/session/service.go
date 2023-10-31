@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/go-playground/validator/v10"
+	"github.com/qwertyist/tabula/ws"
 )
 
 var validate *validator.Validate
@@ -18,18 +19,20 @@ type SessionService interface {
 	CreateUser(u User) *User
 	GetUser(u User) *User
 	GetUsers() []*User
+	GetCaption(id string) string
 }
 
 type sessionService struct {
 	repo     Repository
 	Sessions map[string]*Session
+	pools    map[string]*ws.Pool
 	UserIDs  []string
 	Users    []User
 }
 
-func NewSessionService(repo Repository) SessionService {
+func NewSessionService(repo Repository, pools map[string]*ws.Pool) SessionService {
 	validate = validator.New()
-	return &sessionService{repo: repo, Sessions: make(map[string]*Session)}
+	return &sessionService{repo: repo, Sessions: make(map[string]*Session), pools: pools}
 }
 
 func (s *sessionService) Validate(sess Session) *ErrorLog {
