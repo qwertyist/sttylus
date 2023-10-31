@@ -258,10 +258,9 @@ export default class keyboard extends Keyboard {
         EventBus.$emit('addAbbreviation', phrase.toLowerCase())
       },
     })
-    //Shift+F3
     this.addBinding({
       key: 114,
-      shiftKey: true,
+      shiftKey: false,
       handler: function () {
         EventBus.$emit('sendReadySignal')
       },

@@ -74,7 +74,8 @@ export default {
                 this.$bvModal.show('support')
             }
 
-            if (e.key == 'F3') {
+            if (e.key == 'F10') {
+              e.preventDefault()
               EventBus.$emit("toggleChat", "")
             }
 
