@@ -179,6 +179,7 @@ export default {
         },
         websocketConnected() {
             this.$toast.success('Du kopplades upp')
+            EventBus.$emit("clearChat")
         },
         websocketFailed(err) {
             this.$toast.error('Anslutningen misslyckades')
