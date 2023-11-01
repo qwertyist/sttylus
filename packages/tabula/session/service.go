@@ -20,14 +20,18 @@ type SessionService interface {
 	GetUser(u User) *User
 	GetUsers() []*User
 	GetCaption(id string) string
+	SetAuthToken(token string)
+	CheckAuthToken(token string) bool
+	ResetSessions() int
 }
 
 type sessionService struct {
-	repo     Repository
-	Sessions map[string]*Session
-	pools    map[string]*ws.Pool
-	UserIDs  []string
-	Users    []User
+	AuthToken string
+	repo      Repository
+	Sessions  map[string]*Session
+	pools     map[string]*ws.Pool
+	UserIDs   []string
+	Users     []User
 }
 
 func NewSessionService(repo Repository, pools map[string]*ws.Pool) SessionService {

@@ -9,9 +9,10 @@ import (
 
 func (s *sessionService) GetCaption(id string) string {
 	pool, ok := s.pools[id]
-	if ok { text, err := pool.Tabula.GETlivecap(nil)
+	if ok {
+		text, err := pool.Tabula.GETlivecap(nil)
 		if err != nil {
-			log.Fatal("Couldn't get cap:", err)
+			log.Println("Couldn't get cap:", err)
 			return ""
 		}
 		return string(text)

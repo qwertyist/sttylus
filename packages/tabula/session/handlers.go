@@ -19,6 +19,7 @@ type SessionHandler interface {
 	getUser(w http.ResponseWriter, r *http.Request)
 	getUsers(w http.ResponseWriter, r *http.Request)
 	getCaption(w http.ResponseWriter, r *http.Request)
+	taskResetSessions(w http.ResponseWriter, r *http.Request)
 }
 
 type sessionHandler struct {
@@ -41,6 +42,7 @@ func AddHandlers(r *mux.Router, h SessionHandler) {
 	r.HandleFunc("/session/{id:[0-9]+}/{action}", h.updateSession).Methods("PUT")
 	r.HandleFunc("/session/{id:[0-9]+}", h.deleteSession).Methods("DELETE")
 	r.HandleFunc("/caption/{id:[0-9]+}", h.getCaption).Methods("GET")
+	r.HandleFunc("/task/reset/{token}", h.taskResetSessions).Methods("GET")
 }
 
 func apiHelper(w http.ResponseWriter, r *http.Request) {

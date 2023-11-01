@@ -18,12 +18,12 @@ type App struct {
 	pools  map[string]*ws.Pool
 }
 
-func (a *App) Initialize() {
+func (a *App) Initialize(config *envVariables) {
 	a.Router = mux.NewRouter()
 	a.Router.HandleFunc("/conn/{id}", func(w http.ResponseWriter, r *http.Request) {
 		a.serveWebsocket(w, r)
 	})
-	a.initializeRoutes()
+	a.initializeRoutes(config)
 }
 
 func (a *App) CreatePool(id string) {
@@ -83,11 +83,13 @@ func respondWithJSON(w http.ResponseWriter, code int, payload interface{}) {
 	w.Write(response)
 }
 
-func (a *App) initializeRoutes() {
+func (a *App) initializeRoutes(config *envVariables) {
 	a.db = repo.NewRepository(repo.OpenBoltDB("bolt.db"))
 	a.Router.HandleFunc("/api", apiHelper).Methods("GET", "POST")
+
 	sessionService := session.NewSessionService(a.db, a.pools)
 	sessionHandler := session.NewSessionHandler(sessionService)
+	sessionService.SetAuthToken(config.taskAuthToken)
 	session.AddHandlers(a.Router, sessionHandler)
 }
 
