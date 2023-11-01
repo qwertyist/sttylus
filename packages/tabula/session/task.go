@@ -22,6 +22,7 @@ func (h *sessionHandler) taskResetSessions(w http.ResponseWriter, r *http.Reques
 	if h.Service.CheckAuthToken(token) {
 		errs := h.Service.ResetSessions()
 		if errs > 0 {
+			log.Println("[API] CheckAuthToken failed:", token)
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
@@ -34,9 +35,9 @@ func (h *sessionHandler) taskResetSessions(w http.ResponseWriter, r *http.Reques
 
 func (s *sessionService) ResetSessions() int {
 	var errs []error
+	log.Println("[API] Reset textcontents for", len(s.pools), "sessions")
 	for _, sess := range s.pools {
 		if len(sess.Clients) > 0 {
-			log.Println("Dont reset, clients connected")
 			continue
 		}
 		err := sess.Tabula.ClearHandler()
