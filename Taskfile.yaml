@@ -153,7 +153,7 @@ tasks:
       VITE_STTYLUS_BACKEND: https://sttylus.se/api2/
     cmds:
       - task: webapp:build
-      - sh ./deploy_webapp.sh
+      - scp -r dist/renderer/assets dist/renderer/index.html qwertyist@sttylus.se:/var/www/html/staging/
   deploy:staging:
     env:
       STTYLUS_MODE: webapp
@@ -169,7 +169,8 @@ tasks:
   deploy:consumer:
     cmds:
       - task: consumer
-      - sh ./deploy_consumer.sh
+      - scp -r dist/consumer/* qwertyist@sttylus.se:/var/www/html/visa/
+      - scp -r packages/tabula/* qwertyist@sttylus.se:tabula/
   router:
     cmds:
       #- task: prebuild
@@ -183,8 +184,8 @@ tasks:
       - yarn run build:consumer
       - mkdir -p dist/renderer/public
       - rm -rf dist/renderer/public/* packages/backend/public/*
-      - cp -rf dist/consumer/* dist/renderer/public/
-      - cp -rf dist/consumer/* packages/backend/public/
+        #- cp -rf dist/consumer/* dist/renderer/public/
+        #- cp -rf dist/consumer/* packages/backend/public/
   build:
     env:
       VITE_STTYLUS_MODE: desktop
