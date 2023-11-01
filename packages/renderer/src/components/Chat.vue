@@ -1,7 +1,7 @@
 <template>
   <b-sidebar ref="chat" title="Distanstolkning" v-model="show" right z-index=800 :header-class="{ navOpen: nav }">
 
-    <div style="height:15%">
+   <!-- <div style="height:15%">
       <div class="sidebar-field">
         <b-icon icon="person-fill" />
         <span class="float-right">
@@ -15,6 +15,7 @@
         <b-badge></b-badge>
       </div>
     </div>
+   -->
     <div style="height: 35%">
       <div class="sidebar-field">
           <b-icon icon="chat-dots-fill" />
@@ -116,6 +117,7 @@ export default {
       EventBus.$on("RXChat", this.recv)
       EventBus.$on("toggleChat", this.toggleChat)
       EventBus.$on("clientListUpdated", this.updateClients)
+      EventBus.$on("clearChat", this.clearMessages)
       EventBus.$on("recvClientId", (id) => { this.id = id })
     },
     removeEventListeners() {
@@ -126,6 +128,7 @@ export default {
       EventBus.$off("recvClientId")
       EventBus.$off("clientListUpdated")
       EventBus.$off("toggleChat");
+      EventBus.$off("clearChat")
     },
     toggleChat() {
       this.show = !this.show;
@@ -133,6 +136,9 @@ export default {
     onShow() {
       this.unread = 0
       this.form.message = ""
+      this.$nextTick( () => {
+        this.$refs.lastMessage.scrollIntoView();
+      });
       this.$nextTick(() => {
         setTimeout(() => this.$refs.input.focus(), 250);
       })
@@ -172,6 +178,7 @@ export default {
       console.log("recv:", msg)
       let now = new Date()
        let timestamp = now.toLocaleTimeString().slice(0,5);
+      if (msg.chat.message == undefined) { msg.chat.message = "anslöt" }
       this.messages.push(
         {
           timestamp: timestamp,
@@ -188,6 +195,9 @@ export default {
         this.unread++;
         this.$toast.info("Oläst chatmeddelande (" + this.unread +")")
       }
+    },
+    clearMessages() {
+      this.messages = []
     },
   }
 }
