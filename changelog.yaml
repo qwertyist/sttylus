@@ -1,5 +1,30 @@
 changelog:
+  - date: 2023-11-01T14:00:00.000Z
+    changes:
+      - id: 0
+        type: version
+        description: VERSION 1.7.0
+      - id: 1
+        type: update
+        description: <p><b>DIREKTTEXTNING</b> genom implementering av protokollet <a href="https://github.com/richardgatarski/GETlivecap">GETlivecap</a></p><p>Direkttexter kan användas på två sätt:<ul><li>Rå JSON-ström på adressen https://sttylus.se/ws/caption/########</li><li>Formatterad textvy som kan visas eller bäddas in direkt på https://sttylus.se/caption.html?id=########</li></ul>Där fyrkanterna representerar tolkningens sessions-ID.</p><p>Denna <a href="https://youtu.be/ZlJcfdMFh7I" target="_blank">demonstration av konceptet med Rickard Gatarski hos WeStreamU</a> går igenom det viktigaste. <br />Har man fler frågor kan man mejla mig på <a href="mailto:asdf@qwertyist.se">asdf@qwertyist.se</a></p>
+      - id: 2
+        type: update
+        description: Ett fält i toppmenyn visar <b>antalet anslutna</b> till distanstolkningen. <small>(Jag får erkänna att det tagit mig orimligt lång tid att förstå hur viktig denna helt rimliga funktion är)</small>
+      - id: 3
+        type: update
+        description: <kbd>F10</kbd> öppnar en <b>CHATT</b> i tolkvyn. Tolkar kan skicka meddelanden sinsemellan, till tolkanvändare eller till alla. Tolkanvändare kan skicka meddelanden till tolkarna. Tolkanvändaren väljer sitt namn första gången den vill skicka meddelande, sen <b><i>ska</i></b> det lagras på enheten. Har testats på tyskreggad ThinkPad och begagnad och sen skärmsprucken Android-telefon och det har funkat.
+        action: "Meddela om det inte funkar, och var utförlig i beskrivningen av situationen tack! På vilka enheter tolkades och lästes det och med vilka webbläsare, och hur många användare, och vilket sessions-ID, och när var det."
+      - id: 4
+        type: fix
+        description: Löser ut förkortningar efter vanligt snedstreck (/).
+      - id: 5
+        type: fix
+        description: Täppt igen ännu en export till TextOnTop-bugg.
+      - id: 6
+        type: minor
+        description: Admin-vyn hämtar användarnas förkortningslistor korrekt
   - date: 2023-08-23T14:00:00.000Z
+    changes:
       - id: 0
         type: version
         description: TESTVERSION 1.5.0
