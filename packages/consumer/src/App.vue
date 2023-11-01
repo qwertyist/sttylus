@@ -67,7 +67,9 @@ export default {
           if (msg.chat.message == null) { return }
           let now = new Date()
           let timestamp = now.toLocaleTimeString().slice(0,5);
-          this.unread++;
+          if(msg.id != this.$store.getters.socketId) {
+            this.unread++;
+          }
           this.$store.commit("addMessage",
             {
               timestamp: timestamp,
@@ -78,11 +80,14 @@ export default {
           )
           if(this.modalOpen) {
             this.unread = 0
+            EventBus.$emit("recv")
           } else {
-            this.$toast.info(
-              "Oläst chatmeddelande (" + this.unread +")",
-              { duration: 750}
-            )
+            if (this.unread > 0) {
+              this.$toast.info(
+                "Oläst chatmeddelande (" + this.unread +")",
+                { duration: 750}
+              )
+            }
           }
         },
         setQRCode(val) {

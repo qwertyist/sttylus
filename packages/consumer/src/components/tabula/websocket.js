@@ -167,8 +167,9 @@ export default class wsConnection {
           this.ready = true
           break
         case this.mt.JoinSession:
-          if (!rx.id) {
+          if (rx.id) {
             this.id = rx.id
+            store.commit('setSocketID', this.id)
           }
           break
         case this.mt.LeaveSession:

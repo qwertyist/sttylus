@@ -43,6 +43,9 @@ export const store = new Vuex.Store({
     localIP: '',
     sessionId: '',
     mySessionId: '',
+    socket: {
+      id: '',
+    },
     settings: {
       font: {
         size: 32,
@@ -54,6 +57,9 @@ export const store = new Vuex.Store({
     },
   },
   getters: {
+    socketId: (state) => {
+      return state.socket.id
+    },
     storedMessages: (state) => {
       if (!state.messages) {
         state.messages = []
@@ -78,6 +84,10 @@ export const store = new Vuex.Store({
     setSessionID(state, id) {
       console.log('setsessionid')
       state.session.id = id
+    },
+    setSocketID(state, id) {
+      console.log('setsocketid', id)
+      state.socket.id = id
     },
     storeMessages(state, messages) {
       if (!messages) {

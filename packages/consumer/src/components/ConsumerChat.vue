@@ -1,7 +1,7 @@
 <template>
   <div>
     <b-row>
-    <div style="height: 45vh; overflow-y: auto">
+    <div ref="messageList" style="height: 45vh; overflow-y: auto">
       <b-list-group v-for="(msg, i) in messages" :key="msg.id + '_' + i">
         <b-list-group-item style="white-space: pre-wrap">
           <small>{{ msg.timestamp }}</small> <b>{{ msg.name }}</b>: {{ msg.message }}
@@ -52,6 +52,7 @@ export default {
   },
   mounted() {
     this.addEventListeners();
+    this.onShow()
     /*
     if(storedMessages
     this.messages = storedMessages;
@@ -63,9 +64,12 @@ export default {
   },
   methods: {
     addEventListeners() {
-      EventBus.$on("modalOpen", val => { this.modalOpen = val  })
+      EventBus.$on("modalOpen", val => {
+        this.modalOpen = val
+      })
       EventBus.$on("toggleChat", this.toggleChat)
       EventBus.$on("recvClientId", (id) => { this.id = id })
+      EventBus.$on("recv", () => { this.scrollToBottom()})
     },
     removeEventListeners() {
       EventBus.$off("modalOpen")
@@ -75,12 +79,13 @@ export default {
     onShow() {
       this.unread = 0
       this.form.message = ""
-      this.$nextTick(() => {
-        setTimeout(() => this.$refs.input.focus(), 250);
-      })
+      this.scrollToBottom()
     },
     onHide() {
       EventBus.$emit("refocus", false)
+    },
+    scrollToBottom() {
+      setTimeout(() => this.$refs.messageList.scrollTo(0, 100000000000), 125);
     },
     send() {
       if (this.name == "" && this.form.name != "") {
@@ -90,6 +95,7 @@ export default {
       this.$nextTick(() => {
         EventBus.$emit("TXChat", { to: this.form.to, message: this.form.message, name: this.name})
         this.form.message = "";
+        this.scrollToBottom()
       })
     },
   }
