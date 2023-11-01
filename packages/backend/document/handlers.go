@@ -29,14 +29,14 @@ type query struct {
 	UserID string   `json:"user_id"`
 }
 
-//NewDocHandler returns a DocHandler paired with provided DocService
+// NewDocHandler returns a DocHandler paired with provided DocService
 func NewDocHandler(docService DocService) DocHandler {
 	return &docHandler{
 		docService,
 	}
 }
 
-//Endpoints sets handlers to the provided router
+// Endpoints sets handlers to the provided router
 func Endpoints(r *mux.Router, h DocHandler) {
 	r.HandleFunc("/docs", h.GetDocs).Methods("GET")
 	r.HandleFunc("/docs/{id}", h.GetDoc).Methods("GET")
@@ -87,7 +87,7 @@ func (h *docHandler) ImportDoc(w http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		w.WriteHeader(http.StatusNotModified)
 		w.Write([]byte(err.Error()))
-		log.Fatal(err)
+		log.Print(err)
 		return
 	}
 	defer f.Close()

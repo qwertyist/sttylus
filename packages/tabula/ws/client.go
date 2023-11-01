@@ -179,7 +179,7 @@ func (c *Client) messageHandler(msg Message) (*Message, bool) {
 		log.Println(len(tx.Clients))
 		err := c.sendTX(tx)
 		if err != nil {
-			log.Fatal("GetClients", err)
+			log.Println("GetClients", err)
 		}
 		return nil, false
 	case TXChat:
