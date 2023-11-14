@@ -3,6 +3,14 @@ changelog:
     changes:
       - id: 0
         type: version
+        description: VERSION 1.7.2
+      - id: 1
+        type: minor
+        descrition: Lägg till förkortning fungerar tillsammans med chatten. Fokus återgår till chatten när dialogrutan stängs.
+  - date: 2023-11-14T14:00:00.000Z
+    changes:
+      - id: 0
+        type: version
         description: VERSION 1.7.1
       - id: 1
         type: fix

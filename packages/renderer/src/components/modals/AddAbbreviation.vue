@@ -154,6 +154,7 @@ export default {
             this.$store.commit('setModalOpen', false)
             this.$bvModal.hide('addAbb')
             EventBus.$emit('closeNav')
+            EventBus.$emit('abbModalClosed')
             EventBus.$emit('refocus', false)
 
             this.form.abb = ''

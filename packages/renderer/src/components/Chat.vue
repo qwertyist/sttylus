@@ -38,7 +38,7 @@
         </div>
         <div class="d-flex bg-dark text-light align-items-center px-3 py-2">
 
-          <b-form-input v-model="form.message" ref="input" autofocus placeholder="Skriv ett meddelande..."></b-form-input>
+          <b-form-input @keydown.tab.prevent="changeTarget" v-model="form.message" ref="input" autofocus placeholder="Skriv ett meddelande..."></b-form-input>
           <b-button type="submit" size="sm">Skicka</b-button>
         </div>
       </b-form>
@@ -57,6 +57,7 @@ export default {
       messages: [],
       unread: 0,
       show: false,
+      focus: false,
       form: {
         index: 0,
         message: "",
@@ -102,18 +103,14 @@ export default {
     this.removeEventListeners();
   },
   methods: {
-    hotkeys(e) {
-      if (e.which == 9) {
-        if (!this.show) { return }
-        e.preventDefault();
-        this.changeTarget()
-        this.$refs.input.focus()
-      }
+    focusInput(val) {
+      console.log("focus input:", val)
+      this.focus = val;
     },
     addEventListeners() {
-      document.addEventListener("keyup", this.hotkeys)
       this.$refs.chat.$on("shown", this.onShow)
       this.$refs.chat.$on("hidden", this.onHide)
+      EventBus.$on("abbModalClosed", this.onShow)
       EventBus.$on("RXChat", this.recv)
       EventBus.$on("toggleChat", this.toggleChat)
       EventBus.$on("clientListUpdated", this.updateClients)
@@ -121,10 +118,10 @@ export default {
       EventBus.$on("recvClientId", (id) => { this.id = id })
     },
     removeEventListeners() {
-      document.removeEventListener("keyup", this.hotkeys)
       this.$refs.chat.$off("shown");
       this.$refs.chat.$off("hidden");
       EventBus.$off("RXChat");
+      EventBus.$off("abbModalClosed")
       EventBus.$off("recvClientId")
       EventBus.$off("clientListUpdated")
       EventBus.$off("toggleChat");
