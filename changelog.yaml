@@ -3,10 +3,18 @@ changelog:
     changes:
       - id: 0
         type: version
+        description: VERSION 1.7.3
+      - id: 1
+        type: minor
+        description: Textfältets storlek anpassas efter om chatten är öppen eller stängd.
+  - date: 2023-11-14T14:00:00.000Z
+    changes:
+      - id: 0
+        type: version
         description: VERSION 1.7.2
       - id: 1
         type: minor
-        descrition: Lägg till förkortning fungerar tillsammans med chatten. Fokus återgår till chatten när dialogrutan stängs.
+        description: Lägg till förkortning fungerar tillsammans med chatten. Fokus återgår till chatten när dialogrutan stängs.
   - date: 2023-11-14T14:00:00.000Z
     changes:
       - id: 0
@@ -14,7 +22,7 @@ changelog:
         description: VERSION 1.7.1
       - id: 1
         type: fix
-        descrition: Chatten tappar inte fokus av att kollegan skriver
+        description: Chatten tappar inte fokus av att kollegan skriver
   - date: 2023-11-01T14:00:00.000Z
     changes:
       - id: 0

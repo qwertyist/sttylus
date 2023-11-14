@@ -12,6 +12,7 @@
                 v-show="view == 'tabula'"
                 :key="editorKey"
                 :nav="showNav"
+                :chat="showChat"
                 ref="tabula"
             />
         </div>
@@ -76,6 +77,7 @@ export default {
 
             if (e.key == 'F10') {
               e.preventDefault()
+              this.showChat = !this.showChat
               EventBus.$emit("toggleChat", "")
             }
 
@@ -155,6 +157,11 @@ export default {
         EventBus.$on('reloadEditor', this.reload)
         EventBus.$on('openSettings', this.openSettings)
         EventBus.$on('openTextView', this.openTextView)
+      EventBus.$on("chatOpened", () => {
+        this.showChat = true })
+
+      EventBus.$on("chatClosed", () => {
+        this.showChat = false })
         EventBus.$on('chatHidden', () => {
             this.showChat = false
         })
@@ -173,6 +180,8 @@ export default {
 
     beforeDestroy() {
         window.removeEventListener('keydown', this.hotkeys)
+      EventBus.$off("chatClosed")
+      EventBus.$off("chatOpened")
         EventBus.$off('reloadEditor')
         EventBus.$off('toggleNav')
         EventBus.$off('closeNav')

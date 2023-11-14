@@ -3,7 +3,7 @@
         <slot name="toolbar"></slot>
         <div
             ref="quillContainer"
-            :class="{ 'ql-container': true, 'no-horizontal-scroll': true }"
+            :class="{ 'ql-container': true, 'chatOpen': chat, 'no-horizontal-scroll': true }"
             :style="settings.font"
             spellcheck="false"
         ></div>
@@ -25,6 +25,7 @@ export default {
     },
     props: {
         nav: Boolean,
+        chat: Boolean,
     },
     data() {
         return {
@@ -59,12 +60,18 @@ export default {
             userColor: 'red',
         }
     },
+  watch: {
+    chat: function (newval, oldval) {
+      console.log("chat prop:")
+      console.log("new", newval)
+      console.log("old", oldval)
+    }
+  },
     computed: {
         wrapper() {
             return {
                 backgroundColor: this.settings.font.backgroundColor,
                 height: 100 - (this.nav ? 5 : 0) + 'vh',
-                overflowX: 'hidden',
             }
         },
     },
@@ -505,5 +512,8 @@ export default {
 }
 .wrapper {
     height: 100vh;
+}
+.chatOpen {
+  width: calc(100vw - 320px);
 }
 </style>

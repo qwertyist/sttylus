@@ -133,6 +133,7 @@ export default {
     onShow() {
       this.$store.commit('setModalOpen', true)
       EventBus.$emit('modalOpened')
+      EventBus.$emit('chatOpened')
       this.unread = 0
       this.form.message = ""
       this.$nextTick( () => {
@@ -145,6 +146,7 @@ export default {
     onHide() {
       this.$store.commit('setModalOpen', false)
       EventBus.$emit('modalClosed')
+      EventBus.$emit('chatClosed')
       EventBus.$emit("refocus", false)
     },
     updateClients() {
