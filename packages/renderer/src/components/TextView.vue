@@ -1,3 +1,7 @@
+<!-- TODO:
+  skapa fast editor-variabel
+  använd editor.scrollTop för att tvinga scroll längst ner vid jämna mellanrum.
+-->
 <template>
     <div ref="quillWrapper" class="quillWrapper" :style="wrapper">
         <slot name="toolbar"></slot>
@@ -113,6 +117,7 @@ export default {
             EventBus.$on('setSelectedManuscripts', this.loadManuscripts)
             EventBus.$on('fontSettingsUpdated', this.loadTextSettings)
             EventBus.$on('refocus', this.focus)
+            EventBus.$on('scrollDown', this.scrollDown)
             EventBus.$on('clear', this.clear)
             EventBus.$on('newLine', this.newline)
             EventBus.$on('sizeChange', this.changeTextSize)
@@ -147,6 +152,8 @@ export default {
             EventBus.$off('setSelectedManuscripts')
             EventBus.$off('fontSettingsUpdated')
             EventBus.$off('refocus')
+            EventBus.$off('scrollDown')
+
             EventBus.$off('clear')
             EventBus.$off('newLine')
             EventBus.$off('sizeChange')
@@ -399,6 +406,10 @@ export default {
                 EventBus.$emit('sharedAbbEvent')
             }
         },
+      scrollDown() {
+        let editor = document.querySelector('.ql-editor')
+        editor.scrollTop = editor.scrollHeight;
+      },
         focus(reload) {
           if(reload) {
             Text.initText()

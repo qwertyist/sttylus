@@ -38,7 +38,7 @@
         </div>
         <div class="d-flex bg-dark text-light align-items-center px-3 py-2">
 
-          <b-form-input @keydown.tab.prevent="changeTarget" v-model="form.message" ref="input" autofocus placeholder="Skriv ett meddelande..."></b-form-input>
+          <b-form-input @focus="focus = true" @blur="focus = false" @keydown.tab.prevent="changeTarget" v-model="form.message" ref="input" autofocus placeholder="Skriv ett meddelande..."></b-form-input>
           <b-button type="submit" size="sm">Skicka</b-button>
         </div>
       </b-form>
@@ -58,6 +58,7 @@ export default {
       unread: 0,
       show: false,
       focus: false,
+      updateInterval: null,
       form: {
         index: 0,
         message: "",
@@ -97,12 +98,22 @@ export default {
     }
   },
   mounted() {
+    this.updateInterval = setInterval(
+        () => this.update()
+    ,100);
+
     this.addEventListeners();
   },
   beforeDestroy() {
+    clearInterval(this.updateInterval)
     this.removeEventListeners();
   },
   methods: {
+    update() {
+      if(this.focus) {
+        EventBus.$emit("scrollDown", "")
+      }
+    },
     focusInput(val) {
       console.log("focus input:", val)
       this.focus = val;
@@ -110,7 +121,7 @@ export default {
     addEventListeners() {
       this.$refs.chat.$on("shown", this.onShow)
       this.$refs.chat.$on("hidden", this.onHide)
-      EventBus.$on("abbModalClosed", this.onShow)
+      EventBus.$on("abbModalClosed", this.focus)
       EventBus.$on("RXChat", this.recv)
       EventBus.$on("toggleChat", this.toggleChat)
       EventBus.$on("clientListUpdated", this.updateClients)
@@ -136,18 +147,21 @@ export default {
       EventBus.$emit('chatOpened')
       this.unread = 0
       this.form.message = ""
-      this.$nextTick( () => {
-        this.$refs.lastMessage.scrollIntoView();
-      });
-      this.$nextTick(() => {
-        setTimeout(() => this.$refs.input.focus(), 250);
-      })
+      this.$refs.input.focus()
     },
     onHide() {
       this.$store.commit('setModalOpen', false)
       EventBus.$emit('modalClosed')
       EventBus.$emit('chatClosed')
       EventBus.$emit("refocus", false)
+    },
+    focus() {
+      this.$nextTick( () => {
+        this.$refs.lastMessage.scrollIntoView();
+      });
+      this.$nextTick(() => {
+        setTimeout(() => this.$refs.input.focus(), 250);
+      })
     },
     updateClients() {
       this.users = []
