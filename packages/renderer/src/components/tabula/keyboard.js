@@ -213,7 +213,9 @@ export default class keyboard extends Keyboard {
     this.bindings[9].unshift({
       key: 9,
       handler: function (range) {
-        console.log('TAB')
+        if (this.lastKey == 'Tab') {
+          this.quill.insertText(range.index, ' ')
+        }
         this.quill.insertText(range.index, '\u200B')
       },
     })
@@ -259,11 +261,12 @@ export default class keyboard extends Keyboard {
         EventBus.$emit('addAbbreviation', phrase.toLowerCase())
       },
     })
+    //F3
     this.addBinding({
       key: 114,
       shiftKey: false,
       handler: function () {
-        EventBus.$emit('sendReadySignal')
+        //EventBus.$emit('toggleCollab')
       },
     })
     //F4

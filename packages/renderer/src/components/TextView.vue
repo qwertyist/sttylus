@@ -64,13 +64,6 @@ export default {
             userColor: 'red',
         }
     },
-  watch: {
-    chat: function (newval, oldval) {
-      console.log("chat prop:")
-      console.log("new", newval)
-      console.log("old", oldval)
-    }
-  },
     computed: {
         wrapper() {
             return {
@@ -127,6 +120,7 @@ export default {
             EventBus.$on('createSession', this.createSession)
             EventBus.$on('leaveRemoteSession', this.leaveSession)
             EventBus.$on('sendSessionData', this.sendSessionData)
+
             EventBus.$on('sendReadySignal', this.sendReadySignal)
             EventBus.$on('recvReadySignal', this.recvReadySignal)
             EventBus.$on('setSessionPassword', this.setSessionPassword)
@@ -254,6 +248,9 @@ export default {
             this.$toast.info('Kollega redo att ta över')
         },
         sendReadySignal() {
+            if (this.chat) {
+              EventBus.$emit("")
+            }
             if (this.websocket != null) {
                 this.websocket.sendReadySignal()
             }
