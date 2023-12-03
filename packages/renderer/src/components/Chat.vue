@@ -60,9 +60,9 @@ export default {
       focused: false,
       updateInterval: null,
       form: {
-        index: 0,
+        index: 1,
         message: "",
-        to: null,
+        to: "interpreters",
       },
       interpreters: [],
       users: [],
