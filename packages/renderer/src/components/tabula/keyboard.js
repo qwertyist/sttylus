@@ -272,7 +272,7 @@ export default class keyboard extends Keyboard {
       handler: function (range, _context) {
         removePreviews(range.index, this.quill)
         this.URL = false
-        this.quill.setText(' ')
+        this.quill.setText('')
         this.capitalizeNext = true
         this.abbreviated = false
         EventBus.$emit('clear')

@@ -69,8 +69,8 @@ export default {
         },
     },
     watch: {
-        id() {
-            if (this.id == 'new') {
+        id(newVal, oldVal) {
+            if (newVal == 'new') {
                 this.quill.setText('')
                 return
             }
@@ -159,6 +159,7 @@ export default {
             })
         },
         clear() {
+            this.quill.setText('')
             window.scrollTo(0, 0)
             if (this.websocket) {
                 this.websocket.sendClear()

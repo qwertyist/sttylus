@@ -477,21 +477,22 @@ export default {
         },
         savedManuscript({ id, close }) {
             console.log('eventbus got savedManuscript:', id, 'close:', close)
-            this.id = 'new'
+            this.id = id
             this.title = ''
             this.getManuscripts()
             this.$bvModal.hide('savemanuscript')
             this.manuscript = {}
-            if (close) {
-                console.log('Stäng och gå tillbaka till listan över manuskript')
-                this.tabIndex = 0
-                this.id = 'new'
-                this.createAction = this.actions[2]
                 this.$nextTick(function () {
                     // DOM is now updated
                     // `this` is bound to the current instance
                     this.$forceUpdate()
                 })
+            if (close) {
+                EventBus.$emit("clear")
+                console.log('Stäng och gå tillbaka till listan över manuskript')
+                this.tabIndex = 0
+                this.id = 'new'
+                this.createAction = this.actions[2]
             } else {
                 this.tabIndex = 1
                 this.createAction = this.actions[2]
