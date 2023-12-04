@@ -220,6 +220,7 @@
         </div>
         <hr />
 
+        <!--
         <div class="d-flex justify-content-between align-items-center">
             <h4>Ord som saknar förkortningar</h4>
             <b-badge>Visa/dölj med CTRL+5</b-badge>
@@ -254,6 +255,7 @@
         <div v-else>
             <b-badge>...</b-badge>
         </div>
+        -->
         <b-form-datalist id="no-datalist"></b-form-datalist>
     </b-modal>
 </template>
@@ -823,12 +825,19 @@ export default {
             this.form.sharedList = ''
             this.sharingList = false
         }
+
+        EventBus.$on('lookupPhrase', phrase => {
+          this.lookupPhrase = phrase.toLowerCase()
+          this.lookup()
+        })
+
         EventBus.$on('createdAbb', (word) => {
             this.ignoreSuggestion(word.word)
         })
     },
     beforeDestroy() {
         EventBus.$off('createdAbb')
+        EventBus.$off('lookupPhrase')
     },
 }
 </script>

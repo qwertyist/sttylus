@@ -71,7 +71,6 @@ export default {
             }
 
             if (e.key == 'F1') {
-                e.preventDefault()
                 this.$bvModal.show('support')
             }
 

@@ -231,6 +231,22 @@ export default class keyboard extends Keyboard {
         return true
       },
     })
+
+    //F1
+    this.addBinding({
+      key: 112,
+      shiftKey: false,
+      handler: function (range, context) {
+        let phrase = ''
+        if (range.length > 0) {
+          phrase = this.quill.getText(range.index, range.length)
+        } else {
+          phrase = context.prefix.split(' ').pop()
+        }
+        EventBus.$emit('lookupPhrase', phrase)
+        return true
+      },
+    })
     //F2
     this.addBinding({
       key: 113,
