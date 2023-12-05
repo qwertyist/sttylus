@@ -125,14 +125,16 @@ func (c *Client) messageHandler(msg Message) (*Message, bool) {
 		c.Pool.Password = msg.Password
 		return nil, false
 	case SetInfo:
-		log.Println("SetInfo:", msg.Zoom)
 		err := c.Pool.Tabula.SetZoomData(msg.Zoom)
 		if err != nil {
+			log.Println("SetZoomData err:", err)
 			msg.Msg = err.Error()
 			msg.Zoom.MainStep = -1
 			c.send(msg)
 			return nil, false
 		}
+		log.Println("SetZoomData OK")
+		c.send(msg)
 		return &msg, true
 	case TXDelta:
 		//		log.Printf("TXDelta: (version %d) %v", msg.Body.Version, msg.Body.Delta)

@@ -1,4 +1,27 @@
 changelog:
+  - date: 2023-12-06T10:00:00.000Z
+    changes:
+      - id: 0
+        type: version
+        description: VERSION 1.8.0
+      - id: 1
+        type: update
+        description: Sett över apikopplingen till Zooms funktion för closed captions<br /><ul><li>STTylus meddelar och "låser in" kopplingen med API-token till Zoom är OK</li><li>Zoom-kopplingen är bättre på att sända enskilda skiljetecken.</li><li>Zoom-kopplingen vissnar inte av att man matar tomma rader och många mellanslag (ena orsaken till Anna-Saras upptäckt igår).</li><li>Zoom-kopplingen blir inte inaktiv av tolkens inaktivitet.</li></ul>
+      - id: 2
+        type: fix
+        description: Tagit bort icke-kompatibla tecken från lösenordsgeneratorn.
+      - id: 3
+        type: minor
+        description: Efter att ha skapat/sparat ett manuskript så töms textfältet inför att du påbörjar ditt nästa dokument.
+      - id: 4
+        type: update
+        description: <key>F1</key> "slår upp" förkortningen för den markerade frasen (ett eller flera ord).
+      - id: 5
+        type: minor
+        description: Inaktiverat funktionen "ord som saknar förkortningar".
+      - id: 6
+        type: update
+        description: <key>F3</key> växlar fokus mellan textfältet och chatten. Sänder meddelande om tolkbyte när fokus går till textfältet eller om chatten är dold. 
   - date: 2023-11-15T14:00:00.000Z
     changes:
       - id: 0

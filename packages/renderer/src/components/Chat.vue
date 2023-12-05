@@ -16,7 +16,7 @@
       </div>
     </div>
    -->
-    <div style="height: 35%">
+    <div @click="onFocus" style="height: 100%">
       <div class="sidebar-field">
           <b-icon icon="chat-dots-fill" />
         <span class="float-right">
@@ -31,14 +31,14 @@
       <b-list-group-item style="background-color: #ddd;" ref="lastMessage"></b-list-group-item>
     </div>
     <template #footer="{}">
-      <b-form @submit.prevent="send" autocomplete="off">
+      <b-form @click="onFocus" @submit.prevent="send" autocomplete="off">
         <div class="d-flex align-items-center px-3 py-2">
           <kbd>TAB</kbd>
           <b-form-select v-model="form.to" :options="targets"></b-form-select>
         </div>
         <div class="d-flex bg-dark text-light align-items-center px-3 py-2">
 
-          <b-form-input @focus="focus = true" @blur="focus = false" @keydown.tab.prevent="changeTarget" v-model="form.message" ref="input" autofocus placeholder="Skriv ett meddelande..."></b-form-input>
+          <b-form-input @focus="focused = true" @blur="focused = false" @keydown.tab.prevent="changeTarget" v-model="form.message" ref="input" autofocus placeholder="Skriv ett meddelande..."></b-form-input>
           <b-button type="submit" size="sm">Skicka</b-button>
         </div>
       </b-form>
@@ -57,12 +57,12 @@ export default {
       messages: [],
       unread: 0,
       show: false,
-      focus: false,
+      focused: false,
       updateInterval: null,
       form: {
-        index: 0,
+        index: 1,
         message: "",
-        to: null,
+        to: "interpreters",
       },
       interpreters: [],
       users: [],
@@ -72,7 +72,6 @@ export default {
     name: function() {
       let name = this.$store.state.userData.name.split()[0]
       return "Tolk " + name
-
     },
     targets: function () {
       let targets = [
@@ -80,21 +79,19 @@ export default {
         { value: "interpreters", text: "Alla tolkar" },
         { value: "users", text: "Alla tolkanvändare" }
       ]
-      /*
-      this.interpreters.forEach(interpreter => {
-        if (!interpreter.name) {
-          interpreter.name = interpreter.id
-        }
-        targets.push({ value: interpreter.id, text: interpreter.name })
-      })
-      this.users.forEach(user => {
-        if (!user.name) {
-          user.name = user.id
-        }
-        targets.push({ value: user.id, text: user.name })
-      })
-      */
       return targets
+    }
+  },
+  watch: {
+    focused: (newVal, oldVal) => {
+      console.log("newval: ", newVal)
+      if (newVal == true) {
+        EventBus.$emit("chatFocused")
+        console.log("Chat.Vue - chat focused")
+      } else {
+        EventBus.$emit("chatBlurred")
+        console.log("Chat.Vue - chat blurred")
+      }
     }
   },
   mounted() {
@@ -109,14 +106,17 @@ export default {
     this.removeEventListeners();
   },
   methods: {
+    onFocus() {
+      console.log("chat focused")
+      this.focus()
+    },
+    onBlur() {
+      console.log("chat blurred")
+    },
     update() {
-      if(this.focus) {
+      if(this.focused) {
         EventBus.$emit("scrollDown", "")
       }
-    },
-    focusInput(val) {
-      console.log("focus input:", val)
-      this.focus = val;
     },
     addEventListeners() {
       this.$refs.chat.$on("shown", this.onShow)
@@ -160,7 +160,7 @@ export default {
         this.$refs.lastMessage.scrollIntoView();
       });
       this.$nextTick(() => {
-        setTimeout(() => this.$refs.input.focus(), 250);
+        setTimeout(() => this.$refs.input.focus(), 150);
       })
     },
     updateClients() {
@@ -195,7 +195,10 @@ export default {
       console.log("recv:", msg)
       let now = new Date()
        let timestamp = now.toLocaleTimeString().slice(0,5);
-      if (msg.chat.message == undefined) { msg.chat.message = "anslöt" }
+      if (msg.chat.message == undefined) {
+        msg.chat.message = "anslöt"
+        return
+      }
       this.messages.push(
         {
           timestamp: timestamp,

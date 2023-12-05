@@ -6,8 +6,10 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"regexp"
 	"strconv"
 	"strings"
+	"time"
 )
 
 type ZoomCC struct {
@@ -16,6 +18,8 @@ type ZoomCC struct {
 	MainStep     int
 	BreakoutStep int
 	LastKeycode  byte
+	Block        string
+	BlockTimer   *time.Timer
 }
 
 func getZoomStep(token string) int {
@@ -54,37 +58,53 @@ func (t *Tabula) SetZoomData(data ZoomCC) error {
 	t.Zoom.MainStep = step
 	t.Zoom.Token = data.Token
 
+	if t.Zoom.BlockTimer != nil {
+		return fmt.Errorf("Zoom data already set")
+	}
+	t.Zoom.BlockTimer = time.NewTimer(5 * time.Second)
+	go t.ZoomPOST()
+
 	return nil
 }
-
 func (t *Tabula) GetLastAppend() string {
 	text := t.ToText()
 	last_index := strings.LastIndex(strings.TrimRight(text, " \n"), " ")
 	return text[last_index+1:]
 }
 
-func (t *Tabula) SendZoomCC(text string) error {
+func (t *Tabula) ZoomPOST() {
+	<-t.Zoom.BlockTimer.C
+	if t.Zoom.Block == "" {
+		log.Println("Block empty, re run")
+		t.Zoom.BlockTimer = time.NewTimer(5 * time.Second)
+		go t.ZoomPOST()
+		return
+	}
+	t.Zoom.MainStep++
+	log.Printf("step: %d\ttarget: %s\n", t.Zoom.MainStep, t.Zoom.Block)
 	step := strconv.Itoa(t.Zoom.MainStep)
 	target := t.Zoom.Token + "&lang=sv-SE" + "&seq=" + step
-	msg := bytes.NewBuffer([]byte(text))
+	msg := bytes.NewBuffer([]byte(t.Zoom.Block))
 	resp, err := http.Post(target, "text/plain", msg)
+	log.Println("POST sent")
 	if err != nil {
-		return err
+		log.Println("ZoomPOST err", err)
 	}
-	log.Printf("step: %d\ttarget: %s\n", t.Zoom.MainStep, target)
+	t.Zoom.Block = ""
 	if resp.StatusCode != 200 {
 		err = fmt.Errorf("POST failed with status '%s'", resp.Status)
 		fmt.Printf("error: %s\n", err.Error())
 		if resp.StatusCode == 403 {
 			t.Zoom.MainStep++
 		}
-		return err
 	}
-	body, err := ioutil.ReadAll(resp.Body)
-	fmt.Printf("%s\n", string(body))
-	if err != nil {
-		return err
-	}
-	t.Zoom.MainStep++
-	return nil
+
+	t.Zoom.BlockTimer = time.NewTimer(5 * time.Second)
+	go t.ZoomPOST()
+}
+
+func (t *Tabula) SendZoomCC(text string) {
+	re := regexp.MustCompile(`[\n]{2,}`)
+	text = re.ReplaceAllString(text, " ")
+	t.Zoom.Block += text
 }

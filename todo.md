@@ -1,4 +1,7 @@
 TODO <===
+- [ ] anslutna
+    - [ ] hämta antal anslutna klienter som första meddelande
+    - [ ] räkna in halva ner- och uppkopplingar
 - [ ] boltdb:
     - [ ] .db per användare.
 - [-] QoL:
