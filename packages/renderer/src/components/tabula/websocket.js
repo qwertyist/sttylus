@@ -208,7 +208,7 @@ export default class wsConnection {
             EventBus.$emit('zoomConnected', false)
             return
           }
-          EventBus.$emit('zoomConnected', false)
+          EventBus.$emit('zoomConnected', true)
           break
 
         case this.mt.SessionPassword:

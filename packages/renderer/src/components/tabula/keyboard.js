@@ -360,6 +360,7 @@ export default class keyboard extends Keyboard {
         //console.log(abb.length)
         //console.log("word before cursor:", abb)
         if (!abb) {
+          EventBus.$emit('sendCC', ' ')
           this.abbreviated = false
           return true
         }
@@ -390,6 +391,7 @@ export default class keyboard extends Keyboard {
         if (abb != '') {
           this.abbreviate(range.index, abb, '\n', this.quill)
         } else {
+          EventBus.$emit('sendCC', '\n')
           this.quill.insertText(range.index, '\n')
         }
         if (this.options.capitalizeOnNewLine) {
@@ -414,6 +416,7 @@ export default class keyboard extends Keyboard {
           this.abbreviate(range.index, abb, '\n', this.quill)
           this.capitalizeNext = true
         } else {
+          EventBus.$emit('sendCC', '\n')
           this.quill.insertText(range.index, '\n')
         }
         if (this.options.capitalizeOnNewLine) {
@@ -449,6 +452,7 @@ export default class keyboard extends Keyboard {
       handler: function (range, context) {
         let abb = this.wordBeforeCursor(context.prefix)
         if (abb == '..' || !abb.trim()) {
+          EventBus.$emit('sendCC', '.')
           return true
         }
         this.capitalizeNext = true
@@ -464,11 +468,17 @@ export default class keyboard extends Keyboard {
       handler: function (range, context) {
         this.capitalizeNext = true
         context.prefix.split(' ').map((w) => {
-          if (w[0] === w[0].toLowerCase()) this.capitalizeNext = false
+          if (w[0] == undefined) {
+          } else if (w[0] === w[0].toLowerCase()) {
+            this.capitalizeNext = false
+          }
         })
 
         let abb = this.wordBeforeCursor(context.prefix)
-        if (abb.length == 0) return true
+        if (abb.length == 0) {
+          EventBus.$emit('sendCC', ':')
+          return true
+        }
         this.abbreviate(range.index, abb, ':', this.quill)
       },
     })
@@ -478,7 +488,10 @@ export default class keyboard extends Keyboard {
       key: 188,
       handler: function (range, context) {
         let abb = this.wordBeforeCursor(context.prefix)
-        if (abb.length == 0) return true
+        if (abb.length == 0) {
+          EventBus.$emit('sendCC', ',')
+          return true
+        }
         this.abbreviate(range.index, abb, ',', this.quill)
       },
     })
@@ -488,7 +501,10 @@ export default class keyboard extends Keyboard {
       shiftKey: true,
       handler: function (range, context) {
         let abb = this.wordBeforeCursor(context.prefix)
-        if (abb.length == 0) return true
+        if (abb.length == 0) {
+          EventBus.$emit('sendCC', ';')
+          return true
+        }
         this.abbreviate(range.index, abb, ';', this.quill)
       },
     })
@@ -497,7 +513,10 @@ export default class keyboard extends Keyboard {
       key: 189,
       handler: function (range, context) {
         let abb = this.wordBeforeCursor(context.prefix)
-        if (abb.length == 0) return true
+        if (abb.length == 0) {
+          EventBus.$emit('sendCC', '-')
+          return true
+        }
         this.abbreviate(range.index, abb, '-', this.quill)
       },
     })
@@ -507,7 +526,10 @@ export default class keyboard extends Keyboard {
       shiftKey: true,
       handler: function (range, context) {
         let abb = this.wordBeforeCursor(context.prefix)
-        if (abb.length == 0) return true
+        if (abb.length == 0) {
+          EventBus.$emit('sendCC', '!')
+          return true
+        }
         this.abbreviate(range.index, abb, '!', this.quill)
         this.capitalizeNext = true
         this.abbreviated = true
@@ -519,18 +541,25 @@ export default class keyboard extends Keyboard {
       shiftKey: true,
       handler: function (range, context) {
         let abb = this.wordBeforeCursor(context.prefix)
-        if (abb.length == 0) return true
+        if (abb.length == 0) {
+          EventBus.$emit('sendCC', '?')
+          return true
+        }
         this.abbreviate(range.index, abb, '?', this.quill)
         this.capitalizeNext = true
         this.abbreviated = true
       },
     })
+
     this.addBinding({
       key: 57,
       shiftKey: true,
       handler: function (range, context) {
         let abb = this.wordBeforeCursor(context.prefix)
-        if (abb.length == 0) return true
+        if (abb.length == 0) {
+          EventBus.$emit('sendCC', ')')
+          return true
+        }
         this.abbreviate(range.index, abb, ')', this.quill)
         this.capitalizeNext = false
         this.abbreviated = true
@@ -542,7 +571,10 @@ export default class keyboard extends Keyboard {
       shiftKey: true,
       handler: function (range, context) {
         let abb = this.wordBeforeCursor(context.prefix)
-        if (abb.length == 0) return true
+        if (abb.length == 0) {
+          EventBus.$emit('sendCC', '/')
+          return true
+        }
         this.abbreviate(range.index, abb, '/', this.quill)
         this.capitalizeNext = false
         this.abbreviated = false
@@ -554,7 +586,10 @@ export default class keyboard extends Keyboard {
       shiftKey: true,
       handler: function (range, context) {
         let abb = this.wordBeforeCursor(context.prefix)
-        if (abb.length == 0) return true
+        if (abb.length == 0) {
+          EventBus.$emit('sendCC', '"')
+          return true
+        }
         this.abbreviate(range.index, abb, '"', this.quill)
         this.capitalizeNext = false
         this.abbreviated = true
@@ -566,7 +601,10 @@ export default class keyboard extends Keyboard {
       handler: function (range, context) {
         //console.log("' quotation mark")
         let abb = this.wordBeforeCursor(context.prefix)
-        if (abb.length == 0) return true
+        if (abb.length == 0) {
+          EventBus.$emit('sendCC', "'")
+          return true
+        }
         this.abbreviate(range.index, abb, "'", this.quill)
         this.capitalizeNext = false
         this.abbreviated = true

@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"regexp"
 	"strconv"
 	"strings"
 	"time"
@@ -57,13 +58,15 @@ func (t *Tabula) SetZoomData(data ZoomCC) error {
 	t.Zoom.MainStep = step
 	t.Zoom.Token = data.Token
 
+	if t.Zoom.BlockTimer != nil {
+		return fmt.Errorf("Zoom data already set")
+	}
 	t.Zoom.BlockTimer = time.NewTimer(5 * time.Second)
 	go t.ZoomPOST()
 
 	return nil
 }
 func (t *Tabula) GetLastAppend() string {
-
 	text := t.ToText()
 	last_index := strings.LastIndex(strings.TrimRight(text, " \n"), " ")
 	return text[last_index+1:]
@@ -72,6 +75,8 @@ func (t *Tabula) GetLastAppend() string {
 func (t *Tabula) ZoomPOST() {
 	<-t.Zoom.BlockTimer.C
 	if t.Zoom.Block == "" {
+		log.Println("Block empty, re run")
+		t.Zoom.BlockTimer = time.NewTimer(5 * time.Second)
 		go t.ZoomPOST()
 		return
 	}
@@ -81,6 +86,7 @@ func (t *Tabula) ZoomPOST() {
 	target := t.Zoom.Token + "&lang=sv-SE" + "&seq=" + step
 	msg := bytes.NewBuffer([]byte(t.Zoom.Block))
 	resp, err := http.Post(target, "text/plain", msg)
+	log.Println("POST sent")
 	if err != nil {
 		log.Println("ZoomPOST err", err)
 	}
@@ -98,5 +104,7 @@ func (t *Tabula) ZoomPOST() {
 }
 
 func (t *Tabula) SendZoomCC(text string) {
+	re := regexp.MustCompile(`[\n]{2,}`)
+	text = re.ReplaceAllString(text, " ")
 	t.Zoom.Block += text
 }
