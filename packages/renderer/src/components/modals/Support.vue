@@ -346,6 +346,7 @@ export default {
             this.$bvModal.hide('addAbb')
             document.removeEventListener('keydown', this.preventDefaults)
             EventBus.$emit('modalClosed')
+            EventBus.$emit('abbModalClosed')
             EventBus.$emit('closeNav')
             EventBus.$emit('refocus', false)
         },
