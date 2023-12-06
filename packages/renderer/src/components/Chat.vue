@@ -1,5 +1,5 @@
 <template>
-  <b-sidebar ref="chat" title="Distanstolkning" v-model="show" right z-index=800 :header-class="{ navOpen: nav }">
+  <b-sidebar ref="chat" title="Distanstolkning" v-model="show" right z-index=800 :header-class="{ navOpen: nav }" no-close-on-esc>
 
    <!-- <div style="height:15%">
       <div class="sidebar-field">
@@ -38,7 +38,7 @@
         </div>
         <div class="d-flex bg-dark text-light align-items-center px-3 py-2">
 
-          <b-form-input @focus="focused = true" @blur="focused = false" @keydown.tab.prevent="changeTarget" v-model="form.message" ref="input" autofocus placeholder="Skriv ett meddelande..."></b-form-input>
+          <b-form-input @focus="focused = true" @blur="focused = false" @keydown.esc.prevent="hideNav" @keydown.tab.prevent="changeTarget" v-model="form.message" ref="input" autofocus placeholder="Skriv ett meddelande..."></b-form-input>
           <b-button type="submit" size="sm">Skicka</b-button>
         </div>
       </b-form>
@@ -60,9 +60,9 @@ export default {
       focused: false,
       updateInterval: null,
       form: {
-        index: 1,
+        index: 0,
         message: "",
-        to: "interpreters",
+        to: null,
       },
       interpreters: [],
       users: [],
@@ -121,9 +121,11 @@ export default {
     addEventListeners() {
       this.$refs.chat.$on("shown", this.onShow)
       this.$refs.chat.$on("hidden", this.onHide)
-      EventBus.$on("abbModalClosed", this.focus)
       EventBus.$on("RXChat", this.recv)
       EventBus.$on("toggleChat", this.toggleChat)
+      EventBus.$on("showChat", this.showChat)
+      EventBus.$on("hideChat", this.hideChat)
+      EventBus.$on("focusChat", this.focus)
       EventBus.$on("clientListUpdated", this.updateClients)
       EventBus.$on("clearChat", this.clearMessages)
       EventBus.$on("recvClientId", (id) => { this.id = id })
@@ -132,14 +134,26 @@ export default {
       this.$refs.chat.$off("shown");
       this.$refs.chat.$off("hidden");
       EventBus.$off("RXChat");
-      EventBus.$off("abbModalClosed")
       EventBus.$off("recvClientId")
       EventBus.$off("clientListUpdated")
       EventBus.$off("toggleChat");
+      EventBus.$off("showChat")
+      EventBus.$off("hideChat")
+      EventBus.$off("focusChat");
       EventBus.$off("clearChat")
+    },
+    hideNav() {
+      console.log("hidenav")
+      EventBus.$emit("closeNav")
     },
     toggleChat() {
       this.show = !this.show;
+    },
+    showChat() {
+      this.show = true
+    },
+    hideChat() {
+      this.show = false
     },
     onShow() {
       this.$store.commit('setModalOpen', true)
@@ -156,6 +170,8 @@ export default {
       EventBus.$emit("refocus", false)
     },
     focus() {
+      console.log("Focus chat")
+      this.show = true
       this.$nextTick( () => {
         this.$refs.lastMessage.scrollIntoView();
       });

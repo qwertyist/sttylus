@@ -408,6 +408,7 @@ export default {
         editor.scrollTop = editor.scrollHeight;
       },
         focus(reload) {
+          console.log("focus text")
           if(reload) {
             Text.initText()
             let settings = Text.loadTextSettings()

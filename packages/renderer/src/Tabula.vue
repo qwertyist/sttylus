@@ -81,8 +81,7 @@ export default {
         }
         if (e.key == 'F10') {
           e.preventDefault()
-          this.showChat = !this.showChat
-          EventBus.$emit("toggleChat", "")
+          this.toggleFocus()
         }
 
           if (e.key == 'F5') {
@@ -101,7 +100,9 @@ export default {
           }
       },
       openSettings() {
-          this.showChat = false
+        if (this.showChat){
+          EventBus.$emit("hideChat")
+        }
           if (this.view == 'tabula') {
               this.$store.commit('setModalOpen', true)
               EventBus.$emit('showSettings')
@@ -122,6 +123,9 @@ export default {
           }
       },
       openTextView() {
+        if(this.showChat) {
+          EventBus.$emit("showChat")
+        }
           if (this.view == 'settings') {
               api.saveSettings(null)
                   .then(() => {
@@ -151,29 +155,42 @@ export default {
               })
       },
       focusText() {
+        this.focused = "text"
         EventBus.$emit("refocus")
       },
       focusChat() {
-        EventBus.$emit("abbModalClosed")
+        this.focused = "chat"
+        EventBus.$emit("focusChat")
       },
       chatFocused() {
         this.focused = "chat"
       },
-      toggleCollab() {
-        if(this.showChat) {
-          console.log("this.focused", this.focused)
+      toggleFocus() {
+        console.log("this.showChat", this.showchat)
+        if (this.showChat) {
           if (this.focused == "text") {
-            this.focused = "chat"
             this.focusChat()
           } else if (this.focused == "chat") {
-            this.focused = "text"
-            EventBus.$emit("sendReadySignal")
+            this.focusText()
+          } else {
             this.focusText()
           }
         } else {
-          EventBus.$emit("sendReadySignal")
+          this.showChat = "true"
+          EventBus.$emit("focusChat")
         }
       },
+      toggleCollab() {
+          EventBus.$emit("sendReadySignal")
+      },
+      abbModalClosed() {
+        console.log(this.focused)
+        if (this.focused == "text") {
+          this.focusText()
+        } else if (this.focused == "chat") {
+          this.focusChat()
+        }
+      }
     },
     mounted() {
         //TEMP
@@ -185,6 +202,7 @@ export default {
       EventBus.$on('reloadEditor', this.reload)
       EventBus.$on('openSettings', this.openSettings)
       EventBus.$on('openTextView', this.openTextView)
+      EventBus.$on("abbModalClosed", this.abbModalClosed)
       EventBus.$on("toggleCollab", this.toggleCollab)
       EventBus.$on("chatFocused", this.chatFocused);
       EventBus.$on("chatOpened", () => {
