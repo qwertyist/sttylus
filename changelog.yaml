@@ -1,4 +1,12 @@
 changelog:
+  - date: 2023-12-07T10:00:00.000Z
+    changes:
+    - id: 0
+      type: version
+      description: VERSION 1.8.2
+    - id: 1
+      type: minor
+      description: Återfokusera efter att dialogrutorna för Stödtolkning och Lägg till förkortning stängts
   - date: 2023-12-06T10:00:00.000Z
     changes:
       - id: 0
@@ -6,10 +14,10 @@ changelog:
         description: VERSION 1.8.1
       - id: 1
         type: update
-        description: <key>F10</key> öppnar chatten, och är chatten öppen växlar knappen fokus mellan chatten och textfältet.
+        description: <kbd>F10</kbd> öppnar chatten, och är chatten öppen växlar knappen fokus mellan chatten och textfältet.
       - id: 2
         type: update
-        description: <key>F3</key> signalerar byte till kollegan, oavsett fokuserat element.
+        description: <kbd>F3</kbd> signalerar byte till kollegan, oavsett fokuserat element.
   - date: 2023-12-06T10:00:00.000Z
     changes:
       - id: 0
@@ -26,13 +34,13 @@ changelog:
         description: Efter att ha skapat/sparat ett manuskript så töms textfältet inför att du påbörjar ditt nästa dokument.
       - id: 4
         type: update
-        description: <key>F1</key> "slår upp" förkortningen för den markerade frasen (ett eller flera ord).
+        description: <kbd>F1</kbd> "slår upp" förkortningen för den markerade frasen (ett eller flera ord).
       - id: 5
         type: minor
         description: Inaktiverat funktionen "ord som saknar förkortningar".
       - id: 6
         type: update
-        description: <key>F3</key> växlar fokus mellan textfältet och chatten. Sänder meddelande om tolkbyte när fokus går till textfältet eller om chatten är dold. 
+        description: <kbd>F3</kbd> växlar fokus mellan textfältet och chatten. Sänder meddelande om tolkbyte när fokus går till textfältet eller om chatten är dold.
   - date: 2023-11-15T14:00:00.000Z
     changes:
       - id: 0
