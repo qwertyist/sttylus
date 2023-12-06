@@ -3,6 +3,17 @@ changelog:
     changes:
       - id: 0
         type: version
+        description: VERSION 1.8.1
+      - id: 1
+        type: update
+        description: <key>F10</key> öppnar chatten, och är chatten öppen växlar knappen fokus mellan chatten och textfältet.
+      - id: 2
+        type: update
+        description: <key>F3</key> signalerar byte till kollegan, oavsett fokuserat element.
+  - date: 2023-12-06T10:00:00.000Z
+    changes:
+      - id: 0
+        type: version
         description: VERSION 1.8.0
       - id: 1
         type: update
