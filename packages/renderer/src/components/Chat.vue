@@ -62,7 +62,7 @@ export default {
       form: {
         index: 0,
         message: "",
-        to: null,
+        to: "interpreters",
       },
       interpreters: [],
       users: [],
