@@ -3,10 +3,13 @@ changelog:
     changes:
     - id: 0
       type: version
-      description: VERSION 1.8.2
+      description: VERSION 1.8.3
     - id: 1
       type: minor
-      description: Återfokusera efter att dialogrutorna för Stödtolkning och Lägg till förkortning stängts
+      description: Återfokusera efter att dialogrutorna för Stödtolkning och Lägg till förkortning stängts. Fokuserar bara chatten om den är öppen.
+    - id: 2
+      type: minor
+      description: Fokusera det viktigaste fältet när dialogrutor öppnas. T.ex. fältet för sessions-ID när "Distanstolkning" visas.
   - date: 2023-12-06T10:00:00.000Z
     changes:
       - id: 0
