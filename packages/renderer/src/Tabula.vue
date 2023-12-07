@@ -187,7 +187,7 @@ export default {
         console.log(this.focused)
         if (this.focused == "text") {
           this.focusText()
-        } else if (this.focused == "chat") {
+        } else if (this.showChat && this.focused == "chat") {
           this.focusChat()
         }
       }
