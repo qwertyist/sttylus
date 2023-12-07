@@ -16,6 +16,7 @@
                     v-model="form.name"
                     id="list-name-input"
                     required
+                    autofocus
                     :max-length="20"
                     placeholder="Ge förkortningslistan ett namn..."
                 />

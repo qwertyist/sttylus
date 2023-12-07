@@ -223,6 +223,7 @@
                                 >
                                     <b-form-input
                                         v-model="session.id"
+                                        autofocus
                                         placeholder="Ange sessionens ID-nummer"
                                         @keydown.enter="
                                             joinRemoteSession(session.id)

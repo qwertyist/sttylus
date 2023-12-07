@@ -13,7 +13,7 @@
                 <b-form-input
                     required
                     v-model="form.title"
-                    autofocud
+                    autofocus
                     placeholder="Titel..."
                     type="text"
                 />
