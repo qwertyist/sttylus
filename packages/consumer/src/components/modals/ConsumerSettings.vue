@@ -95,6 +95,7 @@
       >
           <b-form
             style="height: 50vh"
+            @submit.prevent=""
           >
           Namn som visas i distanstolkningar:
           <b-row>
@@ -216,7 +217,9 @@ export default {
       EventBus.$emit("toggleQRCode");
     },
     updateName() {
+      if(this.name != "") {
         this.$store.commit("setName", this.name)
+      }
     },
     increaseTextSize() {
       this.fontSettings.size += 4;

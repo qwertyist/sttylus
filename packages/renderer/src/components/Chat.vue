@@ -16,7 +16,7 @@
       </div>
     </div>
    -->
-    <div @click="onFocus" style="height: 100%">
+   <div :class="{ chatFocused: focused, textFocused: !focused }" @click="onFocus" style="height: 100%">
       <div class="sidebar-field">
           <b-icon icon="chat-dots-fill" />
         <span class="float-right">
@@ -244,6 +244,14 @@ export default {
   font-size: 1.1rem;
   font-weight: bold;
   padding: 0.5rem 1rem;
+}
+
+.chatFocused {
+  border-left: 4px solid green;
+}
+
+.textFocused {
+  border-left: 4px solid red;
 }
 
 .navOpen {

@@ -13,12 +13,12 @@
     <b-row>
       <b-form @submit.prevent="send" autocomplete="off">
         <div v-if="name == ''" class="d-flex align-items-center px-3 py-2">
-          <b-form-input v-model="form.name" ref="input" autofocus placeholder="Välj ett namn för att chatta"></b-form-input>
-          <b-button type="submit" size="sm">OK</b-button>
+          <b-form-input class="enterName" v-model="form.name" ref="input" autofocus placeholder="Välj ett namn för att chatta"></b-form-input>
+          <b-button type="submit" size="md">Välj</b-button>
         </div>
         <div v-else class="d-flex bg-dark text-light align-items-center px-3 py-2">
           <b-form-input v-model="form.message" ref="input" autofocus placeholder="Skriv ett meddelande..."></b-form-input>
-          <b-button type="submit" size="sm">Skicka</b-button>
+          <b-button type="submit" size="md">Skicka</b-button>
         </div>
       </b-form>
     </b-row>
@@ -107,5 +107,9 @@ export default {
 }
 .bg-grey {
   background-color: var(--grey);
+}
+
+.enterName {
+  border: 3px solid red !important;
 }
 </style>
