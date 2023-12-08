@@ -1,4 +1,15 @@
 changelog:
+  - date: 2023-12-08T10:00:00.000Z
+    changes:
+    - id: 0
+      type: version
+      description: VERSION 1.8.4
+    - id: 1
+      type: minor
+      description: Chatten vänstra kant blir grön när chatten är markerad eller röd om textfältet eller något annat är markerat. Så kanske det blir lite tydligare om man håller på och fipplar och multitaskar mellan olika fönster.
+    - id: 2
+      type: minor
+      description: Chatten vänstra kant blir grön när chatten är markerad eller röd om textfältet eller något annat är markerat. Så kanske det blir lite tydligare om man håller på och fipplar och multitaskar mellan olika fönster.
   - date: 2023-12-07T10:00:00.000Z
     changes:
     - id: 0
