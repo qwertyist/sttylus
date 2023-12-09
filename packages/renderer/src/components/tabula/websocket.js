@@ -189,6 +189,7 @@ export default class wsConnection {
             }
             console.log('Client connected', rx.id)
             EventBus.$emit('clientConnected', rx)
+            this.getClients()
             return
           }
           console.log('Received connection id:', rx.id)
@@ -201,6 +202,7 @@ export default class wsConnection {
         case this.mt.LeaveSession:
           console.log('LeaveSession message', rx)
           EventBus.$emit('clientDisconnected', rx)
+          this.getClients()
           break
         case this.mt.SessionData:
           console.log('SessionData message:', rx)
@@ -216,7 +218,8 @@ export default class wsConnection {
           EventBus.$emit('passwordMessage', rx.msg)
           break
         case this.mt.GetClients:
-          store.commit('updateClients', rx.clients)
+          console.log('GetClients', rx.data)
+          store.commit('updateClients', rx.data)
           break
         case this.mt.RXDelta:
           //console.log("RXDelta (version: ", rx.body.version, "):", rx.body.delta, rx.body.index)
@@ -367,7 +370,7 @@ export default class wsConnection {
         id: this.id,
       })
       self.websocket.send(getClients)
-    }, 250)
+    }, 500)
   }
   leavesession() {
     self.websocket.send(JSON.stringify({ type: this.mt.LeaveSession }))

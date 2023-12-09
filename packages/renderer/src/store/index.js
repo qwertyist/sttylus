@@ -332,36 +332,14 @@ export const store = new Vuex.Store({
     setSessionPassword(state, password) {
       state.session.password = password
     },
-    clientConnected(state, who) {
-      console.log('add client to store:', who)
-      let c = {
-        id: who.id,
-        interpreter: who.msg == 'interpreter' ? true : false,
-      }
-      state.clients.set(who.id, c)
-      EventBus.$emit('clientListUpdated')
-    },
-    clientDisconnected(state, who) {
-      console.log('Client disconnected:', who)
-      state.clients.delete(who.id)
-      EventBus.$emit('clientListUpdated', who)
-    },
     clearClients(state) {
-      state.clients = null
-      state.clients = new Map()
+      state.clients = 0
+      console.log('Store client list emptied')
       EventBus.$emit('clientListUpdated', null)
     },
     updateClients(state, clients) {
-      state.clients = null
-      state.clients = new Map()
-      clients.forEach((c) => {
-        state.clients.set(c.id, {
-          id: c.id,
-          name: c.name,
-          interpreter: c.interpreter,
-        })
-        console.log(c)
-      })
+      console.log('Store client list updated')
+      state.clients = clients
       EventBus.$emit('clientListUpdated', null)
     },
     storeSettings(state) {

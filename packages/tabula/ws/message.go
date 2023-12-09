@@ -10,6 +10,7 @@ type TXMessage struct {
 	Type     PoolMessage  `json:"type"`
 	Chat     *ChatMessage `json:"chat,omitempty"`
 	Msg      string       `json:"msg,omitempty"`
+	Data     int          `json:"msg,omitempy`
 	Password string       `json:"password,omitempty"`
 	Abb      *SharedAbb   `json:"abb,omitempty"`
 	Body     *struct {

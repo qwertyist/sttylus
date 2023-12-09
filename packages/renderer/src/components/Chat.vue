@@ -126,7 +126,6 @@ export default {
       EventBus.$on("showChat", this.showChat)
       EventBus.$on("hideChat", this.hideChat)
       EventBus.$on("focusChat", this.focus)
-      EventBus.$on("clientListUpdated", this.updateClients)
       EventBus.$on("clearChat", this.clearMessages)
       EventBus.$on("recvClientId", (id) => { this.id = id })
     },
@@ -135,7 +134,6 @@ export default {
       this.$refs.chat.$off("hidden");
       EventBus.$off("RXChat");
       EventBus.$off("recvClientId")
-      EventBus.$off("clientListUpdated")
       EventBus.$off("toggleChat");
       EventBus.$off("showChat")
       EventBus.$off("hideChat")
@@ -177,19 +175,6 @@ export default {
       });
       this.$nextTick(() => {
         setTimeout(() => this.$refs.input.focus(), 150);
-      })
-    },
-    updateClients() {
-      this.users = []
-      this.interpreters = []
-      this.$store.state.clients.forEach(c => {
-        if (c.interpreter) {
-          this.interpreters.push(c)
-        }
-        if (!c.interpreter) {
-          this.users.push(c)
-        }
-
       })
     },
     changeTarget() {

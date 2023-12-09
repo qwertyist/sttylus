@@ -210,7 +210,6 @@ export default {
             this.$toast.info(msg, tries)
         },
         clientConnected(rx) {
-            this.$store.commit("clientConnected", rx)
             switch (rx.msg) {
                 case 'interpreter':
                     this.$toast.success('En tolk anslöt')
@@ -223,7 +222,6 @@ export default {
             }
         },
         clientDisconnected(rx) {
-            this.$store.commit("clientDisconnected", rx)
             switch (rx.msg) {
                 case 'interpreter':
                     this.$toast.success('En tolk kopplade ner')

@@ -24,6 +24,7 @@ type Message struct {
 	Type     PoolMessage  `json:"type"`
 	Chat     *ChatMessage `json:"chat,omitempty"`
 	Msg      string       `json:"msg,omitempty"`
+	Data     int          `json:"data,omitempty"`
 	Password string       `json:"password,omitempty"`
 	Abb      *SharedAbb   `json:"abb,omitempty"`
 	Body     struct {
@@ -170,20 +171,9 @@ func (c *Client) messageHandler(msg Message) (*Message, bool) {
 	case RetrieveDoc:
 		return nil, false
 	case GetClients:
-		tx := TXMessage{Type: msg.Type}
-		for client := range c.Pool.Clients {
-			tmp := Client{Name: client.Name,
-				Interpreter: client.Interpreter,
-				ID:          client.ID,
-			}
-			tx.Clients = append(msg.Clients, tmp)
-		}
-		log.Println(len(tx.Clients))
-		err := c.sendTX(tx)
-		if err != nil {
-			log.Println("GetClients", err)
-		}
-		return nil, false
+		msg.Data = len(c.Pool.Clients)
+		c.send(msg)
+		return &msg, true
 	case TXChat:
 		c.Name = msg.Chat.Name
 		c.sendChat(msg.Chat)
