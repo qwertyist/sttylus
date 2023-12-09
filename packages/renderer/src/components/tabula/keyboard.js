@@ -147,6 +147,10 @@ export default class keyboard extends Keyboard {
         if (caps && abb.length > 1) {
           word = match.toUpperCase()
         }
+        if (match.charAt(0) == '_') {
+          console.log('force lowercase')
+          word = match.slice(1).toLowerCase()
+        }
         EventBus.$emit('sendCC', word + abbreviator)
         this.insertAbbreviation(index, abb, abbreviator, word, quill)
         setTimeout(() => quill.setSelection(quill.getSelection().index, 0), 20)
