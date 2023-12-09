@@ -1,4 +1,12 @@
 changelog:
+  - date: 2023-12-09T10:00:00.000Z
+    changes:
+    - id: 0
+      type: version
+      description: VERSION 1.8.5
+    - id: 1
+      type: minor
+      description: Tvinga gemener i förkortningar genom att lägga till ett understreck _ i början av förkortingen.
   - date: 2023-12-08T10:00:00.000Z
     changes:
     - id: 0
