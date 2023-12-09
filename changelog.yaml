@@ -1,4 +1,12 @@
 changelog:
+  - date: 2023-12-10T10:00:00.000Z
+    changes:
+    - id: 0
+      type: version
+      description: VERSION 1.8.6
+    - id: 1
+      type: update
+      description: Indikatorn för antal anslutna till distanstolkningen beter sig som den ska.
   - date: 2023-12-09T10:00:00.000Z
     changes:
     - id: 0
