@@ -130,12 +130,6 @@ export default {
               api.saveSettings(null)
                   .then(() => {
                       this.cacheAbbs()
-                      this.view = 'tabula'
-                      this.showNav = true
-                      this.$store.commit('setModalOpen', false)
-                      EventBus.$emit('closeManuscriptEditor')
-                      EventBus.$emit('openTextView')
-                      EventBus.$emit('refocus', true)
                   })
                   .catch((err) => {
                       console.error("couldn't save settings", err)
@@ -143,7 +137,15 @@ export default {
                           'Dina inställningar kunde inte sparas'
                       )
                   })
+
+                      this.view = 'tabula'
+                      this.showNav = true
+                      this.$store.commit('setModalOpen', false)
+                      EventBus.$emit('closeManuscriptEditor')
+                      EventBus.$emit('openTextView')
+                      EventBus.$emit('refocus', true)
           }
+
       },
       cacheAbbs() {
           api.cacheAbbs()
