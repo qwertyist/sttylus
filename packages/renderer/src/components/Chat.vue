@@ -16,11 +16,11 @@
       </div>
     </div>
    -->
-   <div :class="{ chatFocused: focused, textFocused: !focused }" @click="onFocus" style="height: 100%">
+   <div :class="{ chatFocused: focused, textFocused: !focused }" @click="onFocus" style="height: 95%">
       <div class="sidebar-field">
           <b-icon icon="chat-dots-fill" />
         <span class="float-right">
-          Chatt
+          Chatt &mdash; {{ time }}
         </span>
       </div>
       <b-list-group v-for="(msg, i) in messages" :key="msg.id + '_' + i">
@@ -58,6 +58,8 @@ export default {
       unread: 0,
       show: false,
       focused: false,
+      time: "16:14",
+      timerID: null,
       updateInterval: null,
       form: {
         index: 0,
@@ -95,6 +97,8 @@ export default {
     }
   },
   mounted() {
+    this.timerID = setInterval(this.updateTime, 1000);
+    this.updateTime();
     this.updateInterval = setInterval(
         () => this.update()
     ,100);
@@ -103,6 +107,7 @@ export default {
   },
   beforeDestroy() {
     clearInterval(this.updateInterval)
+    clearInterval(this.timerID)
     this.removeEventListeners();
   },
   methods: {
@@ -219,6 +224,17 @@ export default {
     },
     clearMessages() {
       this.messages = []
+    },
+    updateTime() {
+      var cd = new Date();
+      this.time = this.zeroPadding(cd.getHours(), 2) + ':' + this.zeroPadding(cd.getMinutes(), 2) + ':' + this.zeroPadding(cd.getSeconds(), 2);
+    },
+    zeroPadding(num, digit) {
+      var zero = '';
+      for(var i = 0; i < digit; i++) {
+          zero += '0';
+      }
+      return (zero + num).slice(-digit);
     },
   }
 }
