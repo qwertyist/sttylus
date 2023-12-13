@@ -80,6 +80,13 @@ export default {
           EventBus.$emit("toggleCollab", "")
         }
         if (e.key == 'F10') {
+          if (e.shiftKey) {
+            e.preventDefault()
+            console.log("Close chat")
+            EventBus.$emit('hideChat')
+            this.focusText()
+            return
+          }
           e.preventDefault()
           this.toggleFocus()
         }
@@ -184,7 +191,7 @@ export default {
             this.focusText()
           }
         } else {
-          this.showChat = "true"
+          this.showChat = true
           EventBus.$emit("focusChat")
         }
       },
