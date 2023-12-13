@@ -1,4 +1,24 @@
 changelog:
+  - date: 2023-12-13T10:00:00.000Z
+    changes:
+    - id: 0
+      type: version
+      description: VERSION 1.8.8
+    - id: 1
+      type: minor
+      description: Chatten har fått lite kosmetiska ingrepp, bl.a. hur scrollning fungerar och att meddelandet är fetat istället för avsändaren. 
+    - id: 2
+      type: minor
+      description: Listen som indikerar om textfältet är markerat eller inte är synligare (12px istället för 4px)
+    - id: 3
+      type: fix
+      description: Försökt ringa in och åtgärda alla orsaker till att chatten tappar markören/fokus, t.ex. av att kollegan skriver.
+    - id: 4
+      type: update
+      description: Förkortningar med . i början av frasen kan användas om man vill att frasen skrivs ut exakt så som den är inlagd. För förkortningen <pre>eleg=.eLegitimation</pre> gäller då att ordet matas ut exakt så, oavsett om man skulle skriva eleg, Eleg eller ELEG. Kan också användas i ämneslistor för att släcka ett ord enligt idé från Linda Fransson. Om man t.ex. blir galen på nån enskild förkortning, typ att <pre>of=ordförande</pre> så kan man t.ex. i en ämneslista lägga in <pre>of=.of</pre> så matas inte ordet ut, utan att behöva ta bort ursprungsförkortningen. En sån där bra fixa-i-farten-lösning kan tänkas.
+    - id: 2
+      type: minor
+      description: Längst upp i chatten visas tiden med en liten s.k. digital klocka.
   - date: 2023-12-12T10:00:00.000Z
     changes:
     - id: 0
