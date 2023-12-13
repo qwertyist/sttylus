@@ -141,15 +141,19 @@ export default class keyboard extends Keyboard {
         .catch(() => {})
       if (match) {
         let word = match
-        if (title) {
-          word = match.charAt(0).toUpperCase() + match.slice(1)
-        }
-        if (caps && abb.length > 1) {
-          word = match.toUpperCase()
-        }
-        if (match.charAt(0) == '_') {
-          console.log('force lowercase')
-          word = match.slice(1).toLowerCase()
+
+        if (match.charAt(0) == '.') {
+            word = match.slice(1)
+        } else {
+          if (title) {
+            word = match.charAt(0).toUpperCase() + match.slice(1)
+          }
+          if (caps && abb.length > 1) {
+            word = match.toUpperCase()
+          }
+          if (match.charAt(0) == '_') {
+            word = match.slice(1).toLowerCase()
+          }
         }
         EventBus.$emit('sendCC', word + abbreviator)
         this.insertAbbreviation(index, abb, abbreviator, word, quill)
