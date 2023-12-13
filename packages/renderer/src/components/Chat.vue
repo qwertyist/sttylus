@@ -16,19 +16,21 @@
       </div>
     </div>
    -->
-   <div :class="{ chatFocused: focused, textFocused: !focused }" @click="onFocus" style="height: 95%">
+   <div :class="{ chatFocused: focused, textFocused: !focused }" @click="onFocus" style="height: 100%; overflow-y:hidden;">
       <div class="sidebar-field">
           <b-icon icon="chat-dots-fill" />
         <span class="float-right">
           Chatt &mdash; {{ time }}
         </span>
       </div>
+     <div style="height: 93%; overflow-y: scroll;">
       <b-list-group v-for="(msg, i) in messages" :key="msg.id + '_' + i">
         <b-list-group-item style="white-space: pre-wrap">
-          <small>{{ msg.timestamp }}</small> <b>{{ msg.name }}</b>: {{ msg.message }}
+          <small><i>[{{ msg.timestamp }}]</i> &ndash; {{ msg.name }}:</small> <b>{{ msg.message }}</b>
         </b-list-group-item>
       </b-list-group>
       <b-list-group-item style="background-color: #ddd;" ref="lastMessage"></b-list-group-item>
+     </div>
     </div>
     <template #footer="{}">
       <b-form @click="onFocus" @submit.prevent="send" autocomplete="off">
@@ -37,7 +39,6 @@
           <b-form-select v-model="form.to" :options="targets"></b-form-select>
         </div>
         <div class="d-flex bg-dark text-light align-items-center px-3 py-2">
-
           <b-form-input @focus="focused = true" @blur="focused = false" @keydown.esc.prevent="hideNav" @keydown.tab.prevent="changeTarget" v-model="form.message" ref="input" autofocus placeholder="Skriv ett meddelande..."></b-form-input>
           <b-button type="submit" size="sm">Skicka</b-button>
         </div>
@@ -73,7 +74,7 @@ export default {
   computed: {
     name: function() {
       let name = this.$store.state.userData.name.split()[0]
-      return "Tolk " + name
+      return name
     },
     targets: function () {
       let targets = [
@@ -86,13 +87,10 @@ export default {
   },
   watch: {
     focused: (newVal, oldVal) => {
-      console.log("newval: ", newVal)
+      if (oldVal == newVal) return;
       if (newVal == true) {
         EventBus.$emit("chatFocused")
         console.log("Chat.Vue - chat focused")
-      } else {
-        EventBus.$emit("chatBlurred")
-        console.log("Chat.Vue - chat blurred")
       }
     }
   },
@@ -248,11 +246,11 @@ export default {
 }
 
 .chatFocused {
-  border-left: 4px solid green;
+  border-left: 12px solid green;
 }
 
 .textFocused {
-  border-left: 4px solid red;
+  border-left: 12px solid red;
 }
 
 .navOpen {

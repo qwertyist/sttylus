@@ -159,19 +159,25 @@ export default {
       focusText() {
         this.focused = "text"
         EventBus.$emit("refocus")
+        this.$store.commit("setFocus", "text")
       },
       focusChat() {
         this.focused = "chat"
         EventBus.$emit("focusChat")
+        this.$store.commit("setFocus", "chat")
       },
       chatFocused() {
         this.focused = "chat"
+      },
+      chatBlurred() {
+        this.focused = "text"
       },
       toggleFocus() {
         console.log("this.showChat", this.showchat)
         if (this.showChat) {
           if (this.focused == "text") {
             this.focusChat()
+
           } else if (this.focused == "chat") {
             this.focusText()
           } else {
@@ -183,7 +189,7 @@ export default {
         }
       },
       toggleCollab() {
-          EventBus.$emit("sendReadySignal")
+        EventBus.$emit("sendReadySignal")
       },
       abbModalClosed() {
         console.log(this.focused)
@@ -207,6 +213,7 @@ export default {
       EventBus.$on("abbModalClosed", this.abbModalClosed)
       EventBus.$on("toggleCollab", this.toggleCollab)
       EventBus.$on("chatFocused", this.chatFocused);
+      EventBus.$on("chatBlurred", this.chatBlurred);
       EventBus.$on("chatOpened", () => {
         this.showChat = true })
       EventBus.$on("chatClosed", () => {
@@ -243,6 +250,7 @@ export default {
       EventBus.$off('chatHidden')
       EventBus.$off('openSettings')
       EventBus.$off('openTextView')
+      EventBus.$off('abbModalClosed')
     },
 }
 </script>

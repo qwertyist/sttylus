@@ -7,7 +7,6 @@
         hide-header
         hide-backdrop
         no-fade
-        return-focus=".ql-editor"
         @show="showModal"
         @hide="closeModal"
         ref="addabbmodal"
@@ -140,7 +139,6 @@ export default {
             this.$store.commit('setModalOpen', true)
             EventBus.$emit('modalOpened')
             this.updateLists()
-            console.log(this.sharedList)
             this.form.word = this.$store.state.selectedWord
             this.form.selected = this.$store.state.targetList.id
             this.index = this.$store.state.targetList.index
@@ -155,7 +153,6 @@ export default {
             this.$bvModal.hide('addAbb')
             EventBus.$emit('closeNav')
             EventBus.$emit('abbModalClosed')
-            EventBus.$emit('refocus', false)
 
             this.form.abb = ''
             this.form.word = ''

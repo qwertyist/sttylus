@@ -39,6 +39,7 @@ export const store = new Vuex.Store({
     lastLogin: {},
     lastSync: null,
     doc: '',
+    focus: 'text',
     modalOpen: false,
     parsedDoc: '',
     stagedNominations: [],
@@ -193,7 +194,13 @@ export const store = new Vuex.Store({
       state.licenseKey = data.license_key
     },
     setModalOpen(state, open) {
+      if (open == true) {
+        state.focus = 'modal'
+      }
       state.modalOpen = open
+    },
+    setFocus(state, focus) {
+      state.focus = focus
     },
     setSelectedStandard(state, list) {
       state.settings.selectedLists.standard = list
@@ -441,6 +448,9 @@ export const store = new Vuex.Store({
     },
     getUserId(state) {
       return state.userData.id
+    },
+    getFocus(state) {
+      return state.focus
     },
     getModalOpen(state) {
       return state.modalOpen

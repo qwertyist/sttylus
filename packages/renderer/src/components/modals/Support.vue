@@ -348,7 +348,6 @@ export default {
             EventBus.$emit('modalClosed')
             EventBus.$emit('abbModalClosed')
             EventBus.$emit('closeNav')
-            EventBus.$emit('refocus', false)
         },
         onSubmitSharedList() {
             if (this.form.sharedList != '' && this.selectedBaseList == null) {

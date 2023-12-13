@@ -191,6 +191,7 @@ export default {
         },
         websocketFailed(err) {
             this.$toast.error('Anslutningen misslyckades')
+            console.error("websocketFailed:", err)
             if (this.websocket) {
                 this.websocket = null
             }
@@ -243,7 +244,7 @@ export default {
             this.websocket.setSessionPassword(pw)
         },
         recvReadySignal() {
-            this.$toast.info('Kollega redo att ta över')
+            this.$toast.info('Kollega redo för byte')
         },
         sendReadySignal() {
             if (this.chat) {
@@ -253,7 +254,7 @@ export default {
                 this.websocket.sendReadySignal()
             }
         },
-        startPresentation(child) {
+        startPresentation() {
             this.presentation = true
             console.log('emit to child')
             nw.Window.getAll((windowList) => {
@@ -377,7 +378,7 @@ export default {
                 if (abb.delete) {
                     this.$toast.info('"' + abb.abb + '" togs bort')
                     api.deleteAbb(baseListId, abb)
-                        .then((resp) => {
+                        .then(() => {
                             console.log('other user deleted abb')
                             api.abbreviate(abb.toLowerCase())
                                 .then((resp) => {
@@ -427,7 +428,7 @@ export default {
                 this.quill.version = 0
             }
         },
-        newline(scroll) {},
+        newline() {},
         initializeEditor() {
             this.setupEditor()
             this.$emit('ready', this.quill)

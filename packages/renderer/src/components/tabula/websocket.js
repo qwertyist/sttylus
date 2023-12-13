@@ -226,7 +226,9 @@ export default class wsConnection {
           //console.log("local version:", this.quill.version)
           if (rx.body.version > this.quill.version) {
             this.quill.updateContents(rx.body.delta, 'collab')
-            if (!store.getters.getModalOpen) {
+            if (
+              (!store.getters.getModalOpen, store.getters.getFocus == 'text')
+            ) {
               this.quill.setSelection(rx.body.index, 0, 'collab')
             }
             this.quill.version = rx.body.version
