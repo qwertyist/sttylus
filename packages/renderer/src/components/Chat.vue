@@ -112,9 +112,11 @@ export default {
     onFocus() {
       console.log("chat focused")
       this.focus()
+      this.$store.commit("setFocus","chat")
     },
     onBlur() {
       console.log("chat blurred")
+      this.$store.commit("setFocus","text")
     },
     update() {
       if(this.focused) {
@@ -171,7 +173,6 @@ export default {
       EventBus.$emit("refocus", false)
     },
     focus() {
-      console.log("Focus chat")
       this.show = true
       this.$nextTick( () => {
         this.$refs.lastMessage.scrollIntoView();

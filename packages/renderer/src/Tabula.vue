@@ -1,3 +1,7 @@
+// TODO:
+// // TODO:
+// Registrera även musklick i state
+// Registrera även musklick i state
 <template>
     <div id="app">
         <Navigation
@@ -130,6 +134,7 @@ export default {
           }
       },
       openTextView() {
+        this.$store.commit("setFocus","text")
         if(this.showChat) {
           EventBus.$emit("showChat")
         }
