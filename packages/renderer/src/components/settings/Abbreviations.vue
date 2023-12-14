@@ -636,7 +636,6 @@ export default {
                     return
                 }
 
-                this.viewList(this.standardLists[0])
             })
         },
         abbProvider(ctx, callback) {
