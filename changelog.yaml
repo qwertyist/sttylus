@@ -1,4 +1,18 @@
 changelog:
+  - date: 2023-12-14T10:00:00.000Z
+    changes:
+    - id: 0
+      type: version
+      description: VERSION 1.8.9
+    - id: 1
+      type: minor
+      description: <kbd>Shift+F10</kbd> stänger chatten.
+    - id: 2
+      type: fix
+      description: Förkortningsvyn stannar kvar i samma lista efter att man tagit bort en förkortning.
+    - id: 3
+      type: fix
+      description: Ännu några till dumheter med chatt/text-fokus igentäppta.
   - date: 2023-12-13T10:00:00.000Z
     changes:
     - id: 0
@@ -6,7 +20,7 @@ changelog:
       description: VERSION 1.8.8
     - id: 1
       type: minor
-      description: Chatten har fått lite kosmetiska ingrepp, bl.a. hur scrollning fungerar och att meddelandet är fetat istället för avsändaren. 
+      description: Chatten har fått lite kosmetiska ingrepp, bl.a. hur scrollning fungerar och att meddelandet är fetat istället för avsändaren.
     - id: 2
       type: minor
       description: Listen som indikerar om textfältet är markerat eller inte är synligare (12px istället för 4px)

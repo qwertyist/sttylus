@@ -1,6 +1,6 @@
 {
   "name": "sttylus",
-  "version": "1.8.8",
+  "version": "1.8.9",
   "main": "dist/main/index.cjs",
   "author": "David Johansson",
   "license": "MIT",
