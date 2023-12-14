@@ -414,6 +414,7 @@ export default {
             this.settings.font = settings.font
           }
           let editor = document.querySelector('.ql-editor')
+          this.$store.commit("setFocus", "text")
           setTimeout(() => {
               editor.focus()
               this.quill.focus()

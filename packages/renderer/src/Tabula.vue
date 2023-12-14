@@ -1,7 +1,6 @@
 // TODO:
 // // TODO:
 // Registrera även musklick i state
-// Registrera även musklick i state
 <template>
     <div id="app">
         <Navigation
@@ -227,11 +226,15 @@ export default {
       EventBus.$on("chatFocused", this.chatFocused);
       EventBus.$on("chatBlurred", this.chatBlurred);
       EventBus.$on("chatOpened", () => {
-        this.showChat = true })
+        this.showChat = true
+        this.$store.commit("setFocus", "chat")
+      })
       EventBus.$on("chatClosed", () => {
         this.showChat = false })
+        this.$store.commit("setFocus", "text")
       EventBus.$on('chatHidden', () => {
           this.showChat = false
+        this.$store.commit("setFocus", "text")
       })
       EventBus.$on('toggleNav', () => {
           if (this.view != 'settings') {
