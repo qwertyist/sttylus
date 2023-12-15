@@ -109,7 +109,6 @@ export default {
     addEventListeners() {
       EventBus.$on("clientListUpdated", () => {
         this.connectedClients = this.$store.state.clients - 1
-        console.log("clientListUpdated", this.connectedClients)
       })
     },
     removeEventListeners() {

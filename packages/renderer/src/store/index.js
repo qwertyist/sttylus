@@ -341,11 +341,9 @@ export const store = new Vuex.Store({
     },
     clearClients(state) {
       state.clients = 0
-      console.log('Store client list emptied')
       EventBus.$emit('clientListUpdated', null)
     },
     updateClients(state, clients) {
-      console.log('Store client list updated')
       state.clients = clients
       EventBus.$emit('clientListUpdated', null)
     },

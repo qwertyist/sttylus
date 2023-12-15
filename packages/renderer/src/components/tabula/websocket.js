@@ -117,7 +117,7 @@ export default class wsConnection {
   }
 
   close() {
-    console.log('close')
+    EventBus.$emit('myClientId', '')
     self.websocket.close()
     self.websocket = null
   }
@@ -193,8 +193,8 @@ export default class wsConnection {
             return
           }
           console.log('Received connection id:', rx.id)
+          EventBus.$emit('myClientId', rx.id)
           this.id = rx.id
-          EventBus.$emit('recvClientId', rx.id)
           if (!this.id) {
             console.error('Websocket connection needs ID!')
           }
@@ -218,7 +218,6 @@ export default class wsConnection {
           EventBus.$emit('passwordMessage', rx.msg)
           break
         case this.mt.GetClients:
-          console.log('GetClients', rx.data)
           store.commit('updateClients', rx.data)
           break
         case this.mt.RXDelta:

@@ -25,8 +25,8 @@
       </div>
      <div style="height: 93%; overflow-y: scroll;">
       <b-list-group v-for="(msg, i) in messages" :key="msg.id + '_' + i">
-        <b-list-group-item style="white-space: pre-wrap">
-          <small><i>[{{ msg.timestamp }}]</i> &ndash; {{ msg.name }}:</small> <b>{{ msg.message }}</b>
+        <b-list-group-item style="white-space: pre-wrap" :class="{bgOther: !msg.me}">
+            <small><i>[{{ msg.timestamp }}]</i> &ndash; {{ msg.name }}:</small> <b>{{ msg.message }}</b>
         </b-list-group-item>
       </b-list-group>
       <b-list-group-item style="background-color: #ddd;" ref="lastMessage"></b-list-group-item>
@@ -132,7 +132,7 @@ export default {
       EventBus.$on("hideChat", this.hideChat)
       EventBus.$on("focusChat", this.focus)
       EventBus.$on("clearChat", this.clearMessages)
-      EventBus.$on("recvClientId", (id) => { this.id = id })
+      EventBus.$on("myClientId", (id) => { console.log("myClientId:", id); this.id = id })
     },
     removeEventListeners() {
       this.$refs.chat.$off("shown");
@@ -198,6 +198,8 @@ export default {
     },
     recv(msg) {
       console.log("recv:", msg)
+      console.log(this.id)
+      let me = msg.id == this.id
       let now = new Date()
        let timestamp = now.toLocaleTimeString().slice(0,5);
       if (msg.chat.message == undefined) {
@@ -209,7 +211,8 @@ export default {
           timestamp: timestamp,
           id: msg.id,
           name: msg.chat.name,
-          message: msg.chat.message
+          message: msg.chat.message,
+          me: me
         }
       )
       if(this.show) {
@@ -259,5 +262,8 @@ export default {
 }
 .bg-grey {
   background-color: var(--grey);
+}
+.bgOther {
+  background-color: #d5e6e6
 }
 </style>
