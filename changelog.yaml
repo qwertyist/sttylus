@@ -1,4 +1,18 @@
 changelog:
+  - date: 2023-12-15T10:00:00.000Z
+    changes:
+    - id: 0
+      type: version
+      description: VERSION 1.8.9
+    - id: 1
+      type: update
+      description: Chatten färgar meddelanden från andra tolkar/användare med grön bakgrund.
+    - id: 2
+      type: fix
+      description: Programmet beter sig likadant när tolken använder musen för att byta fält som när F10 används.
+    - id: 3
+      type: minor
+      description: Listan på tangentbordsgenvägar i "Snabbkommandon" är uppdaterad.
   - date: 2023-12-14T10:00:00.000Z
     changes:
     - id: 0
@@ -90,7 +104,7 @@ changelog:
       - id: 2
         type: update
         description: <kbd>F3</kbd> signalerar byte till kollegan, oavsett fokuserat element.
-  - date: 2023-12-06T10:00:00.000Z
+  - date: 2023-12-05T10:00:00.000Z
     changes:
       - id: 0
         type: version
