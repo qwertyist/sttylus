@@ -3,7 +3,7 @@ changelog:
     changes:
     - id: 0
       type: version
-      description: VERSION 1.8.9
+      description: VERSION 1.8.10
     - id: 1
       type: update
       description: Chatten färgar meddelanden från andra tolkar/användare med grön bakgrund.
