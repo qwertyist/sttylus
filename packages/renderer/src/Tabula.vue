@@ -1,6 +1,3 @@
-// TODO:
-// // TODO:
-// Registrera även musklick i state
 <template>
     <div id="app">
         <Navigation
@@ -9,7 +6,7 @@
             v-show="showNav"
             id="navigation"
         />
-        <div @dblclick="dbclick">
+        <div @dblclick="dbclick()" @click="focusText()">
             <Settings v-show="view == 'settings'" />
             <TextView
                 v-show="view == 'tabula'"
