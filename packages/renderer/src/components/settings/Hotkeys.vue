@@ -46,7 +46,8 @@ export default {
                 { whichKey: 'F6', command: 'Gör texten mindre' },
                 { whichKey: 'F7', command: 'Gör texten större' },
                 { whichKey: 'F8', command: 'Växla textfärg' },
-                { whichKey: 'F10', command: 'Visa/dölj chatt' },
+                { whichKey: 'F10', command: 'Visa chatt/Växla fokus mellan text och chatt' },
+                { whichKey: 'SHIFT+F10', command: 'Dölj chatt' },
                 { whichKey: 'F11', command: 'Växla helskärm' },
             ],
             hotkeys: [
@@ -64,7 +65,7 @@ export default {
                 },
                 {
                     whichKey: 'TAB',
-                    command: 'Avbryt frammatning av förkortning',
+                    command: 'Avbryt frammatning av förkortning. Andra nedslaget infogar ett mellanslag.',
                 },
                 {
                     whichKey: 'SHIFT+ENTER',
