@@ -2,7 +2,6 @@
     <div>
         <b-modal
             id="removeList"
-            scrollable
             :title="listAction"
             hide-footer
             ref="remove-list-modal"
@@ -16,6 +15,7 @@
                 </b-badge>
                 med {{ list.counter }} förkortningar
                 <hr />
+                <!--
                 <div
                     class="abbsForRemoval"
                     style="
@@ -34,7 +34,8 @@
                         </b-list-group-item>
                     </b-list-group>
                 </div>
-                <b-button variant="primary" @click="closeModal">
+                -->
+                <b-button variant="primary" @click="closeModal()">
                     Avbryt
                 </b-button>
                 <template v-if="list.type < 3">
@@ -72,7 +73,9 @@ export default {
         },
     },
     methods: {
-        closeModal() {},
+        closeModal() {
+          this.$bvModal.hide('removeList')
+        },
         onSubmit(evt) {
             evt.preventDefault()
             if (this.list.type < 3) {

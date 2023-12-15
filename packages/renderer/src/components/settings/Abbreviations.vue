@@ -355,7 +355,7 @@ export default {
     },
     mounted() {
         this.userAbbs = new Map()
-        this.getLists()
+        this.getLists(true)
         this.selectedAddons = this.$store.state.settings.selectedLists.addon
 
         if (!Array.isArray(this.selectedAddons)) {
@@ -363,6 +363,7 @@ export default {
             this.$store.commit('setSelectedAddons', this.selectedAddons)
         }
 
+      //
         //window.addEventListener("scroll", this.onScrollAbbs);
         EventBus.$on("resetStore", () => {
             this.$nextTick(() => {
@@ -485,7 +486,7 @@ export default {
         flushSelectedLists(list) {
             this.$store.commit('unsetSelectedAddon', list)
             this.toggleSelectAddon()
-            this.getLists()
+            this.getLists(true)
         },
         editAbb(abb) {
             this.editing = abb.id
@@ -595,7 +596,7 @@ export default {
         });
         */
         },
-        getLists() {
+        getLists(redraw) {
             api.getUserLists().then((resp) => {
                 if (resp.data == null) {
                     return
@@ -627,6 +628,9 @@ export default {
                         }
                     })
                 }
+              if(redraw) {
+                this.viewList(this.standardLists[0])
+              }
 
                 if (
                     this.addonLists.length == 0 &&
