@@ -14,7 +14,7 @@
         <b-row>
             <b-form
                 inline
-                @submit.prevent="onSubmit"
+                @keydown.enter="onSubmit"
                 @keydown.113="nextList"
                 autocomplete="off"
             >
@@ -176,7 +176,8 @@ export default {
                     console.error('Couldnt get addAbb lists:', err)
                 })
         },
-        onSubmit() {
+        onSubmit(e) {
+          e.preventDefault()
             let targetListId = null
             if (this.form.abb === '' || this.form.word === '') {
                 this.$store.commit('setSelectedWord', '')
@@ -195,6 +196,8 @@ export default {
                 creator: this.$store.state.userData.id,
                 targetListId,
             }
+
+            this.$bvModal.hide("addAbb")
             api.createAbb(targetListId, {
                 abb: data.abb,
                 word: data.word,
@@ -205,6 +208,10 @@ export default {
                     EventBus.$emit('getAbbCache', data)
                     this.$store.commit('setSelectedWord', '')
                     this.$bvModal.hide('addAbb')
+                    if(e.shiftKey) {
+                      this.$store.commit('setSelectedWord', data.word)
+                      this.$bvModal.show('addAbb')
+                    }
                 })
                 .catch((err) => {
                     console.log('Failed creating abbreviation:', err)

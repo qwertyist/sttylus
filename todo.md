@@ -1,16 +1,11 @@
 TODO <===
-- [ ] anslutna
-    - [ ] hämta antal anslutna klienter som första meddelande
-    - [ ] räkna in halva ner- och uppkopplingar
 - [ ] boltdb:
     - [ ] .db per användare.
 - [-] QoL:
   - [ ] marginalinställningar
   - [ ] visa alltid hela rader (anpassa textstorlek efter vy)
   - [ ] fokuser alltid nedersta raden
-- [-] förkortningar:
-  - [ ] förhandsgranska förkortning
-  - [ ] tvinga gemener/versaler i förkortning
+- [ ] förkortningar:
   - [ ] senaste användning av förkortning
 - [-] manuskript:
   - [ ] knyt till ordlista
@@ -35,12 +30,6 @@ TODO <===
   - [ ] Bjud in kollegor
   - [ ] Återkommande bokningar
   - [X] Säkerställ unikhet i bokningsnummer
-- [X] Lösenordsskydda Distanstolkningar
-- [X] visa två rader text
-- [X] kortkommando dölja/visa menyrad
-  - [X] sortera ämneslistor:
-    - [X] visa prioordning för ämneslistor
-    - [X] flytta upp ämneslista
 
 Distanstolkningar
 ================

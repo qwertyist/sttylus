@@ -34,6 +34,4 @@ type List struct {
 	Deleted time.Time `json:"deleted"`
 }
 
-type AbbsInList map[string][]string 
-	
-
+type AbbsInList map[string][]string
