@@ -5,6 +5,7 @@ import {
   BIconPlusSquareFill,
   BInputGroup,
   ButtonPlugin,
+  FormCheckboxPlugin,
   FormInputPlugin,
   FormPlugin,
   FormSelectPlugin,
@@ -23,6 +24,7 @@ export default {
     app.component('BInputGroup', BInputGroup)
     app.use(BadgePlugin)
     app.use(ButtonPlugin)
+    app.use(FormCheckboxPlugin)
     app.use(FormPlugin)
     app.use(FormInputPlugin)
     app.use(FormSelectPlugin)

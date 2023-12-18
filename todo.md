@@ -31,8 +31,6 @@ TODO <===
   - [ ] Återkommande bokningar
   - [X] Säkerställ unikhet i bokningsnummer
 
-Distanstolkningar
-================
 
 ISMS
 ====

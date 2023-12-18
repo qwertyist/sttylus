@@ -2,6 +2,7 @@
    <div @dblclick="doubleClickHandler" class="quillWrapper" :style="wrapper">
       <slot name="toolbar"></slot>
       <div
+        v-show="!captions"
         ref="quillContainer"
         id="quill-container"
         :class="{ 'ql-container': true }"
@@ -9,7 +10,9 @@
 
         spellcheck="false"
       ></div>
+      <Captions v-if="captions" :id="id" />
     </div>
+
 </template>
 <script>
 import EventBus from "../eventbus";
@@ -23,8 +26,10 @@ export default {
   },
   data() {
     return {
+      id: "",
       quill: null,
       websocket: null,
+      captions: false,
       password: "",
       name: "",
       capitalize: true,
@@ -123,6 +128,7 @@ export default {
       EventBus.$on("websocketReconnecting", this.websocketReconnecting)
 
       EventBus.$on("TXChat", this.sendChat)
+      EventBus.$on("toggleCaptions", this.toggleCaptions)
 
     },
     removeEventListeners() {
@@ -146,11 +152,13 @@ export default {
       EventBus.$off("websocketReconnecting")
 
       EventBus.$off("TXChat")
+      EventBus.$off("toggleCaptions")
     },
     doubleClickHandler() {
       this.$bvModal.show("consumerSettings")
     },
     joinSession(id) {
+      this.id = id
       this.clear()
       if (id == "local") {
         let uri = window.location.href.split("http://")[1]
@@ -201,7 +209,9 @@ export default {
     enterPassword() {
       this.$bvModal.show("login")
     },
-
+    toggleCaptions(val) {
+      this.captions = val
+    },
     sendChat(data) {
       this.websocket.sendChat(data)
     },

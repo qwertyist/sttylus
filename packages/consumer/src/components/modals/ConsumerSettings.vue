@@ -115,7 +115,16 @@
             <b-button @click="toggleQRCode()" size="md" >Visa QR-kod</b-button>
           </b-col>
         </b-row>
-          </b-form>
+        <hr />
+          <b-row>
+            <b-col cols=4>
+              Visa skrivtolkinng som undertext
+            </b-col>
+            <b-col>
+              <b-checkbox v-model="captions"></b-checkbox>
+            </b-col>
+          </b-row>
+        </b-form>
       </b-tab>
     </b-tabs>
     </b-modal>
@@ -134,6 +143,7 @@ export default {
     return {
       modalOpen: false,
       name: "",
+      captions: false,
       orientation: "PORTRAIT",
       example_full:
         "<em>Såhär</em> ser <b>texten</b> ut...<br /> Dina inställningar lagras till nästa distanstolkning.",
@@ -179,6 +189,15 @@ export default {
         ],
       },
     };
+  },
+  watch: {
+    captions() {
+      if(this.captions == true) {
+        EventBus.$emit("toggleCaptions", true)
+      } else {
+        EventBus.$emit("toggleCaptions", false)
+      }
+    }
   },
   computed: {
     isMobile() {
