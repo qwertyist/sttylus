@@ -6,9 +6,10 @@
             v-show="showNav"
             id="navigation"
         />
-        <div @dblclick="dbclick()" @click="focusText()">
+        <div @dblclick="dbclick()" >
             <Settings v-show="view == 'settings'" />
             <TextView
+                @click="focusText()"
                 v-show="view == 'tabula'"
                 :key="editorKey"
                 :nav="showNav"

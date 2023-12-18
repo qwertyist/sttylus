@@ -1,4 +1,15 @@
 changelog:
+  - date: 2023-12-16T10:00:00.000Z
+    changes:
+    - id: 0
+      type: version
+      description: VERSION 1.8.11
+    - id: 1
+      type: minor
+      description: Rutan för "Lägg till förkortning" stänger betydligt snabbare.
+    - id: 2
+      type: minor
+      description: <kbd>Shift+Enter</kbd> skapar förkortningen och öppnar modalen igen med samma fras i högra textrutan. Bra om man t.ex. sitter och lägger in förkortningar för en fras med alla tänkbara böjningar.
   - date: 2023-12-15T10:00:00.000Z
     changes:
     - id: 0
