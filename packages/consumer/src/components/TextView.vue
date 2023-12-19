@@ -18,6 +18,7 @@
 import EventBus from "../eventbus";
 import Quill from "quill";
 import Preview from "./tabula/preview";
+import Protype from "./tabula/protype";
 import Text from "./tabula/text"
 import wsConnection from "./tabula/websocket";
 export default {
