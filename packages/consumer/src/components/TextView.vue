@@ -283,6 +283,7 @@ export default {
       };
 
       Quill.register("formats/preview", Preview, true);
+      Quill.register("formats/protype", Protype, true);
       //    Quill.register("modules/keyboard", keyboard, true);
       this.quill = new Quill(this.$refs.quillContainer, editorConfig);
 
