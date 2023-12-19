@@ -1,4 +1,12 @@
 changelog:
+  - date: 2023-12-19T10:00:00.000Z
+    changes:
+    - id: 0
+      type: version
+      description: VERSION 1.8.12
+    - id: 1
+      type: update
+      description: Infoga Protype-klubban med <kbd>CTRL+K</kbd> 
   - date: 2023-12-16T10:00:00.000Z
     changes:
     - id: 0

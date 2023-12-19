@@ -20,6 +20,7 @@ import EventBus from '../eventbus'
 import Quill from 'quill'
 import keyboard from './tabula/keyboard'
 import Preview from './tabula/preview'
+import Protype from './tabula/protype'
 import AddAbbreviation from './modals/AddAbbreviation.vue'
 import Text from './tabula/text.js'
 import wsConnection from './tabula/websocket'
@@ -462,6 +463,7 @@ export default {
 
             Quill.register('modules/keyboard', keyboard, true)
             Quill.register('formats/preview', Preview, true)
+            Quill.register('formats/protype', Protype, true)
             //    Quill.register("modules/keyboard", keyboard, true);
             this.quill = new Quill(this.$refs.quillContainer, editorConfig)
 

@@ -73,6 +73,11 @@ export default {
                         'Infoga ny rad med utan att versalera nästa ord'
                 },
                 {
+                    whichKey: 'CTRL+K',
+                    command:
+                        'Infoga Protype-klubban vid markören'
+                },
+                {
                     whichKey: 'PIL HÖGER →',
                     command:
                         'Mata fram ord ur aktiverat manuskript vid sista ordet',

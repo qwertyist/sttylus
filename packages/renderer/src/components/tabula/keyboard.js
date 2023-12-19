@@ -143,7 +143,7 @@ export default class keyboard extends Keyboard {
         let word = match
 
         if (match.charAt(0) == '.') {
-            word = match.slice(1)
+          word = match.slice(1)
         } else {
           if (title) {
             word = match.charAt(0).toUpperCase() + match.slice(1)
@@ -756,7 +756,16 @@ export default class keyboard extends Keyboard {
         return this.manuscriptEditor ? true : false
       },
     })
-    //
+    // CTRL+K
+    this.addBinding({
+      key: 75,
+      ctrlKey: true,
+      handler: function (range, _context) {
+        this.quill.insertEmbed(range.index, 'protype', 'A')
+        this.quill.setSelection(range.index + 1)
+        return false
+      },
+    })
     //CTRL+1
     this.addBinding({
       key: 49,
