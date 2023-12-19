@@ -40,6 +40,7 @@ export const store = new Vuex.Store({
     lastSync: null,
     doc: '',
     focus: 'text',
+    lastFocus: 'text',
     modalOpen: false,
     parsedDoc: '',
     stagedNominations: [],
@@ -195,8 +196,12 @@ export const store = new Vuex.Store({
     },
     setModalOpen(state, open) {
       if (open == true) {
+        state.lastFocus = state.focus
         state.focus = 'modal'
+      } else {
+        state.focus = state.lastFocus
       }
+
       state.modalOpen = open
     },
     setFocus(state, focus) {

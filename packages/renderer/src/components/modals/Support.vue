@@ -345,6 +345,7 @@ export default {
             EventBus.$off('sharedAbbEvent')
             this.$bvModal.hide('addAbb')
             document.removeEventListener('keydown', this.preventDefaults)
+            this.$store.commit('setModalOpen', true)
             EventBus.$emit('modalClosed')
             EventBus.$emit('abbModalClosed')
             EventBus.$emit('closeNav')
