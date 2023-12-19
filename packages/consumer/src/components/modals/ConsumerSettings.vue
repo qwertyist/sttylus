@@ -118,7 +118,7 @@
         <hr />
           <b-row>
             <b-col cols=4>
-              Visa skrivtolkinng som undertext
+              Visa skrivtolkning som undertext
             </b-col>
             <b-col>
               <b-checkbox v-model="captions"></b-checkbox>

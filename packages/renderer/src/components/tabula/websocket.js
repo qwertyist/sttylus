@@ -226,7 +226,8 @@ export default class wsConnection {
           if (rx.body.version > this.quill.version) {
             this.quill.updateContents(rx.body.delta, 'collab')
             if (
-              (!store.getters.getModalOpen, store.getters.getFocus == 'text')
+              !store.getters.getModalOpen &&
+              store.getters.getFocus == 'text'
             ) {
               this.quill.setSelection(rx.body.index, 0, 'collab')
             }
