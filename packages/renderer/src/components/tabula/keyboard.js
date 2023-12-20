@@ -73,7 +73,7 @@ export default class keyboard extends Keyboard {
       if (e.key.length == 1) {
         if (this.capitalizeNext) {
           if (!e.ctrlKey && !e.altKey) {
-            let match = e.key.match(/\p{Letter}|\p{Number}+/gu)
+            let match = e.key.match(/\p{Letter}|\p{Number}|"+/gu)
             if (match) {
               let letter = match[0].toUpperCase()
               e.preventDefault()
