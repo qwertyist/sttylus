@@ -1,4 +1,12 @@
 changelog:
+  - date: 2023-12-20T10:00:00.000Z
+    changes:
+    - id: 0
+      type: version
+      description: VERSION 1.8.13
+    - id: 1
+      type: minor
+      description: Det blir inte stor bokstav efter citationstecken.
   - date: 2023-12-19T10:00:00.000Z
     changes:
     - id: 0
