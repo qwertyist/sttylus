@@ -342,7 +342,14 @@ export default {
             },
         },
         orderedAddonLists() {
-          return this.addonLists.sort((a, b) => this.selectedAddons.indexOf(b.id) - this.selectedAddons.indexOf(a.id));
+          const selected = this.addonLists.filter(list => this.selectedAddons.indexOf(list.id) !== -1)
+          const orderedSelected = selected.sort((a, b) => this.selectedAddons.indexOf(b.id) - this.selectedAddons.indexOf(a.id));
+          const rest = this.addonLists.filter(list => this.selectedAddons.indexOf(list.id) === -1)
+          const sorted = rest.sort((a,b) => {
+            return a.name.localeCompare(b.name)
+          })
+          return orderedSelected.concat(sorted)
+          // return this.addonLists.sort((a, b) => this.selectedAddons.indexOf(b.id) - this.selectedAddons.indexOf(a.id));
         },
     },
     watch: {
