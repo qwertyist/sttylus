@@ -46,7 +46,7 @@ type userService struct {
 	mode       string
 }
 
-//NewUserService returns a userService connected to the repo db
+// NewUserService returns a userService connected to the repo db
 func NewUserService(repo UserRepository, mode string, abbService abbreviation.AbbService, docService document.DocService) UserService {
 	Defaults.Settings.Font.Family = "Times New Roman"
 	Defaults.Settings.Font.Size = 32
@@ -68,7 +68,7 @@ func NewUserService(repo UserRepository, mode string, abbService abbreviation.Ab
 	}
 }
 
-//GetUsers returns a list of User IDs
+// GetUsers returns a list of User IDs
 func GetUsers(s UserService) ([]string, error) {
 	var userIDs []string
 	uu, err := s.GetUsers()
@@ -122,7 +122,7 @@ func (s *userService) GetUserByEmail(email string) (*User, error) {
 		log.Panic("user.GetUserByEmail (local):", err)
 		return nil, err
 	}
-	log.Println(s.mode)
+	//log.Println(s.mode)
 	if user == nil {
 		log.Println("No user found, try online")
 		if s.mode == "desktop" {
@@ -136,13 +136,13 @@ func (s *userService) GetUserByEmail(email string) (*User, error) {
 			if err != nil {
 				log.Panic("user.GetUserByEmail (remote):", err)
 			}
-			log.Println(string(body))
+			//log.Println(string(body))
 			if string(body) == "login" {
 				return &User{}, nil
 			}
 			return nil, nil
 		}
-		log.Println(" online")
+		//log.Println(" online")
 		return nil, fmt.Errorf("No user with that email")
 	}
 	return user, nil

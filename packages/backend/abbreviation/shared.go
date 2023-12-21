@@ -89,7 +89,6 @@ func (h *abbHandler) RemoveSharedAbb(w http.ResponseWriter, r *http.Request) {
 	listid := vars["id"]
 	abb := vars["abb"]
 
-	log.Println(listid, abb)
 	err := h.abbService.RemoveSharedAbb(listid, abb)
 	if err != nil {
 		log.Println(err)

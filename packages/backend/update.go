@@ -8,7 +8,7 @@ import (
 )
 
 func doUpdate(url string) error {
-	log.Println("Updating from:", url)
+	//log.Println("Updating from:", url)
 	resp, err := http.Get(url)
 	if err != nil {
 		log.Fatal(err)

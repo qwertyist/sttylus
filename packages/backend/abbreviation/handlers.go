@@ -12,7 +12,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
-//AbbHandler interface for all rest api methods
+// AbbHandler interface for all rest api methods
 type AbbHandler interface {
 	Abbreviate(w http.ResponseWriter, r *http.Request)
 	Lookup(w http.ResponseWriter, r *http.Request)
@@ -64,14 +64,14 @@ type abbHandler struct {
 	abbService AbbService
 }
 
-//NewAbbHandler returns handlers connected to the given abbservice
+// NewAbbHandler returns handlers connected to the given abbservice
 func NewAbbHandler(abbService AbbService) AbbHandler {
 	return &abbHandler{
 		abbService,
 	}
 }
 
-//Endpoints returns the gorilla mux router with handlers
+// Endpoints returns the gorilla mux router with handlers
 func Endpoints(r *mux.Router, h AbbHandler) {
 	r.HandleFunc("/abbs/abbreviate/", h.Abbreviate).Methods("GET")
 	r.HandleFunc("/abbs/abbreviate/{abb}", h.Abbreviate).Methods("GET")
@@ -800,7 +800,7 @@ func (h *abbHandler) ImportProType(w http.ResponseWriter, r *http.Request) {
 func (h *abbHandler) GetPublicList(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	short_id := vars["short_id"]
-	log.Println("short_id:", short_id)
+	//log.Println("short_id:", short_id)
 	publicList, err := h.abbService.GetPublicList(short_id)
 
 	if err != nil {
@@ -850,7 +850,7 @@ func (h *abbHandler) CreatePublicList(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id := vars["id"]
 	var list List
-	log.Println(id)
+	//log.Println(id)
 	decoder := json.NewDecoder(r.Body)
 
 	err := decoder.Decode(&list)

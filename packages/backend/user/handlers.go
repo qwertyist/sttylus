@@ -36,7 +36,7 @@ type userHandler struct {
 	mode        string
 }
 
-//NewUserHandler is...
+// NewUserHandler is...
 func NewUserHandler(userService UserService, mode string) UserHandler {
 	return &userHandler{
 		userService,
@@ -44,7 +44,7 @@ func NewUserHandler(userService UserService, mode string) UserHandler {
 	}
 }
 
-//Endpoints adds User methods to the API router
+// Endpoints adds User methods to the API router
 func Endpoints(r *mux.Router, h UserHandler) {
 	r.HandleFunc("/user", h.CreateUser).Methods("POST")
 	r.HandleFunc("/users", h.GetUsers).Methods("GET")
@@ -273,7 +273,7 @@ func (h *userHandler) Auth(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("ERROR"))
 	}
 
-	log.Println("handlers|Auth:", auth)
+	//log.Println("handlers|Auth:", auth)
 	w.Write([]byte("OKAY"))
 }
 
@@ -372,7 +372,7 @@ func (h *userHandler) UpdateSettings(w http.ResponseWriter, r *http.Request) {
 	var settings *Settings
 	decoder := json.NewDecoder(r.Body)
 	err := decoder.Decode(&settings)
-	log.Println(settings)
+	//log.Println(settings)
 	if err != nil {
 		log.Printf("handlers|UpdateSettings got a faulty body: %q\n", err)
 

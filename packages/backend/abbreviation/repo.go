@@ -2,7 +2,7 @@ package abbreviation
 
 import "log"
 
-//AbbRepository is
+// AbbRepository is
 type AbbRepository interface {
 	GetAbb(listID string, abb string) (*Abbreviation, error)
 	GetAbbs(listID string) ([]*Abbreviation, error)
@@ -25,7 +25,7 @@ type AbbRepository interface {
 
 func (s *abbService) TouchAllAbbs(userIDs []string) {
 	var ll []*List
-	counter := 0
+	//counter := 0
 	for _, u := range userIDs {
 		log.Println("User ID: ", u)
 		lists, err := s.GetUserLists(u)
@@ -34,7 +34,7 @@ func (s *abbService) TouchAllAbbs(userIDs []string) {
 			return
 		}
 		for _, l := range lists {
-			log.Println("List name:", l.Name)
+			//log.Println("List name:", l.Name)
 			ll = append(ll, l)
 			abbs, _ := s.GetAbbs(l.ID)
 			for _, abb := range abbs {
@@ -42,6 +42,6 @@ func (s *abbService) TouchAllAbbs(userIDs []string) {
 			}
 		}
 	}
-	log.Println("Total number of lists:", len(ll))
-	log.Println("Total number of abbs:", counter)
+	//log.Println("Total number of lists:", len(ll))
+	//log.Println("Total number of abbs:", counter)
 }

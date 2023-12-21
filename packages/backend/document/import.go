@@ -1,7 +1,6 @@
 package document
 
 import (
-	"log"
 	"os"
 	"regexp"
 
@@ -15,6 +14,6 @@ func (s *docService) ImportDoc(file *os.File) (string, error) {
 	}
 	re := regexp.MustCompile(`\r?\n`)
 	parsed := re.ReplaceAllString(doc, "<br />")
-	log.Println(parsed)
+	//log.Println(parsed)
 	return parsed, err
 }

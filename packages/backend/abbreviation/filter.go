@@ -2,7 +2,6 @@ package abbreviation
 
 import (
 	"encoding/json"
-	"log"
 	"net/http"
 	"sort"
 
@@ -65,7 +64,7 @@ func (h *abbHandler) FilterAbbs(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("couldn't get abbs for list" + ctx.ListID))
 		return
 	}
-	log.Println(ctx)
+	//log.Println(ctx)
 
 	switch ctx.SortBy {
 	case "abb":
@@ -94,7 +93,7 @@ func (h *abbHandler) FilterAbbs(w http.ResponseWriter, r *http.Request) {
 		break
 	}
 
-	log.Println(ctx.Filter)
+	//log.Println(ctx.Filter)
 
 	if ctx.Filter != "" {
 		abbs = fuzzyFind(ctx.Filter, abbs)
