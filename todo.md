@@ -2,6 +2,7 @@ TODO <===
 - [X] ämneslistor i bokstavsordning
 - [X] uppdatera antal förkortningar
 - [X] gå ner i texten efter stängd dialogruta vid stor textmängd
+- [X] Gå till slutet av texten när man stänger dialogrutan för distanstolkningar
 
 - [ ] boltdb:
     - [ ] .db per användare.

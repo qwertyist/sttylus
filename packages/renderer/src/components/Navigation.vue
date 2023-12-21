@@ -15,13 +15,13 @@
         -->
         <!-- Right aligned nav items -->
 
-        <b-navbar-nav class="ml-auto nav-fill">
+        <b-navbar-nav class="ml-auto nav-fill sttylus-nav">
+          <b-nav-item v-show="notLogin" @click="showSupport">Stödtolkning <kbd>F1</kbd></b-nav-item>
           <b-nav-item v-show="notLogin" no-key-nav @click="addAbb('')">
-            <b>Skapa förkortning</b>
+            Skapa förkortning <kbd>F2</kbd>
           </b-nav-item>
-          <b-nav-item v-show="notLogin" @click="showSupport">Stödtolkning</b-nav-item>
-          <b-nav-item v-if="!desktop" v-show="textViewOnly" @click="showRemoteSettings">Distanstolkning</b-nav-item>
-         <b-nav-item v-show="inSession" to="#" @click="toggleChat()">
+          <b-nav-item v-if="!desktop" v-show="textViewOnly" @click="showRemoteSettings">Distanstolkning <kbd>F9</kbd></b-nav-item>
+         <b-nav-item v-show="inSession && textViewOnly" to="#" @click="toggleChat()">
             <b-badge>
               <span v-if="connectedClients == 0">Ingen </span>
               <span v-else>
@@ -30,10 +30,11 @@
               <span v-if="connectedClients > 1">anslutna</span>
               <span v-else>ansluten</span>
             </b-badge>
+             <kbd>F10</kbd>
           </b-nav-item>
 
           <b-nav-item v-if="desktop" v-show="notLogin" @click="showLocalSettings">Lokal tolkning</b-nav-item>
-          <b-nav-item v-show="textViewOnly" @click="openSettings">Inställningar</b-nav-item>
+          <b-nav-item v-show="textViewOnly" @click="openSettings">Inställningar <kbd>F5</kbd></b-nav-item>
         </b-navbar-nav>
       </b-collapse>
     </b-navbar>
@@ -216,6 +217,9 @@ export default {
     flex-grow: 0;
     padding: 0;
     overflow-y: visible
+  }
+  .sttylus-nav {
+    font-weight: 700;
   }
 }
 </style>

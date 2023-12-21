@@ -80,6 +80,11 @@ export default {
           e.preventDefault()
           EventBus.$emit("toggleCollab", "")
         }
+        if (e.key == 'F9') {
+          e.preventDefault()
+          this.$bvModal.show('remote')
+        }
+
         if (e.key == 'F10') {
           if (e.shiftKey) {
             e.preventDefault()
@@ -219,6 +224,8 @@ export default {
       EventBus.$on('reloadEditor', this.reload)
       EventBus.$on('openSettings', this.openSettings)
       EventBus.$on('openTextView', this.openTextView)
+      // TODO: Rename
+      EventBus.$on("modalClosed", this.abbModalClosed);
       EventBus.$on("abbModalClosed", this.abbModalClosed)
       EventBus.$on("toggleCollab", this.toggleCollab)
       EventBus.$on("chatFocused", this.chatFocused);

@@ -255,12 +255,7 @@
                                 <b-form @submit.prevent="createRemoteSession">
                                     <div
                                         v-show="inSession == false"
-                                        class="float-right"
                                     >
-                                        <b-form-select
-                                            v-model="broadcast"
-                                            :options="broadcastOptions"
-                                        />
                                         <b-button type="submit">Skapa</b-button>
                                     </div>
                                 </b-form>
