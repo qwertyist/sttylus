@@ -374,6 +374,7 @@ export default {
         EventBus.$on('createdAbb', (abb) => {
             if (abb.targetListId == this.viewedList.id) {
                 this.getAbbs(abb.targetListId)
+                this.getLists(false)
             }
         })
         EventBus.$on('createdList', (list) => {

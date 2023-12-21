@@ -1,4 +1,8 @@
 TODO <===
+- [ ] ämneslistor i bokstavsordning
+- [ ] uppdatera antal förkortningar
+- [ ] gå ner i texten efter stängd dialogruta vid stor textmängd
+
 - [ ] boltdb:
     - [ ] .db per användare.
 - [-] QoL:
