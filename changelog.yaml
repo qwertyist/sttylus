@@ -1,4 +1,18 @@
 changelog:
+  - date: 2023-12-21T10:00:00.000Z
+    changes:
+    - id: 0
+      type: version
+      description: VERSION 1.8.14
+    - id: 1
+      type: minor
+      description: Ännu ett försök att få markören att hamna längst ner i texten när man stängt en dialogruta. När det händer beror det på en fördröjning antingen i webbläsaren eller mellan STTylus och servern som jag inte lyckats identifiera uppkomsten till ännu. Men säger man åt "fokusera längst ner"-funktionen att vänta en stund innan den gör det så funkar den bättre.
+    - id: 2
+      type: fix
+      description: Räknaren för Antal förkortningar uppdateras när man lägger till eller tar bort en förkortning
+    - id: 3
+      type: update
+      description: Ämneslistor sorteras efter bokstavsordning men tar först hänsyn till vald ordning.
   - date: 2023-12-20T10:00:00.000Z
     changes:
     - id: 0
