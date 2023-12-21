@@ -420,7 +420,7 @@ export default {
               editor.focus()
               this.quill.focus()
               this.quill.setSelection(this.quill.getText().length)
-          }, 25)
+          }, 75)
         },
         clear() {
             window.scrollTo(0, 0)
