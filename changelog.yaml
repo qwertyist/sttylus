@@ -1,4 +1,18 @@
 changelog:
+  - date: 2023-12-22T10:00:00.000Z
+    changes:
+    - id: 0
+      type: version
+      description: VERSION 1.9.0
+    - id: 1
+      type: minor
+      description: Snabbknappar är markerade i toppmenyn, <kbd>F9</kbd> öppnar "Distanstolkning".
+    - id: 2
+      type: update
+      description: Uppdaterat Zoom-kopplingen till senaste specifikationen.
+    - id: 3
+      type: minor
+      description: (admin) Backend-loggningen är mer överskådlig och loggar bara sånt som är avvikande.
   - date: 2023-12-21T10:00:00.000Z
     changes:
     - id: 0
@@ -28,7 +42,7 @@ changelog:
       description: VERSION 1.8.12
     - id: 1
       type: update
-      description: Infoga Protype-klubban med <kbd>CTRL+K</kbd> 
+      description: Infoga Protype-klubban med <kbd>CTRL+K</kbd>
   - date: 2023-12-16T10:00:00.000Z
     changes:
     - id: 0
