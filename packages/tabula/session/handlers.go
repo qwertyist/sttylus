@@ -13,6 +13,8 @@ type SessionHandler interface {
 	createSession(w http.ResponseWriter, r *http.Request)
 	getSessions(w http.ResponseWriter, r *http.Request)
 	getSession(w http.ResponseWriter, r *http.Request)
+	joinSession(w http.ResponseWriter, r *http.Request)
+	leaveSession(w http.ResponseWriter, r *http.Request)
 	updateSession(w http.ResponseWriter, r *http.Request)
 	deleteSession(w http.ResponseWriter, r *http.Request)
 	createUser(w http.ResponseWriter, r *http.Request)
@@ -43,6 +45,8 @@ func AddHandlers(r *mux.Router, h SessionHandler) {
 	r.HandleFunc("/session/{id:[0-9]+}", h.deleteSession).Methods("DELETE")
 	r.HandleFunc("/caption/{id:[0-9]+}", h.getCaption).Methods("GET")
 	r.HandleFunc("/task/reset/{token}", h.taskResetSessions).Methods("GET")
+	r.HandleFunc("/join/{userID}/{id}", h.joinSession).Methods("GET")
+	r.HandleFunc("/leave/{userID}/{id}", h.leaveSession).Methods("GET")
 }
 
 func apiHelper(w http.ResponseWriter, r *http.Request) {
@@ -112,6 +116,28 @@ func (h *sessionHandler) getSession(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	respondWithJSON(w, sess)
+}
+
+func (h *sessionHandler) joinSession(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	userID := params["userID"]
+	sessionID := params["id"]
+	s, err := h.Service.JoinSession(sessionID, userID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+	}
+	respondWithJSON(w, s)
+}
+
+func (h *sessionHandler) leaveSession(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	sessionID := params["id"]
+	userID := params["userID"]
+	s, err := h.Service.LeaveSession(sessionID, userID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+	}
+	respondWithJSON(w, s)
 }
 
 func (h *sessionHandler) updateSession(w http.ResponseWriter, r *http.Request) {

@@ -88,6 +88,7 @@
                                   <br/>
                                                     <b-button
                                                         v-if="
+                                                            ownSession(sess) &&
                                                             !sess.public &&
                                                             !inSession
                                                         "
@@ -99,6 +100,21 @@
                                                         size="sm"
                                                         variant="danger"
                                                         >Ta bort</b-button
+                                                    >
+                                                    <b-button
+                                                        v-if="
+                                                            !ownSession(sess) &&
+                                                            !sess.public &&
+                                                            !inSession
+                                                        "
+                                                        @click="
+                                                            leaveRemoteSession(
+                                                                sess.id
+                                                            )
+                                                        "
+                                                        size="sm"
+                                                        variant="warning"
+                                                        >Lämna/dölj</b-button
                                                     >
                               <!--
                                                 <b-button
@@ -563,6 +579,11 @@ export default {
                 return 'Konferenstolkning (GETlivecap)'
             }
         },
+      ownSession(sess) {
+        const userID = this.$store.state.userData.id
+        if (sess.ref == userID) { return true }
+        return false
+      },
         getRecurring(recurring) {
             if (recurring) {
                 return 'ja'
@@ -578,7 +599,6 @@ export default {
                         this.$store.state.userData.id
                 )
                 .then((resp) => {
-                  console.log(resp.data)
                     this.sessions = resp.data
                 })
                 .catch((err) => {
@@ -586,7 +606,6 @@ export default {
                 })
         },
         showModal() {
-            console.log(this.$collabAPI)
             if (this.desktop && this.$store.state.local.connected) {
                 console.log('Already connected to local session')
                 this.localsession = true
@@ -613,16 +632,13 @@ export default {
         createRemoteSession() {
             switch (this.broadcast) {
                 case 'remote':
-                    console.log('Skapa distanstolkning...')
                     this.generatePassword()
-                    console.log("Med lösenord:", this.session.password)
                     axios
                         .post(this.$collabAPI + 'session', {
                             ref: this.$store.state.userData.id,
                             password: this.session.password
                         })
                         .then((resp) => {
-                            console.log('create session', resp.data)
                             this.session.id = resp.data.id
                             this.getSessions()
                             EventBus.$emit('joinRemoteSession', this.session.id, this.session.password)
@@ -658,7 +674,6 @@ export default {
                         this.session.breakout = ''
                         this.session.id = ''
                         this.connected3rdparty = false
-                        console.log('Nollar API Tokens')
                         EventBus.$emit('leaveRemoteSession', end)
                         this.$store.commit('setSessionConnected', false)
                     } else {
@@ -669,7 +684,6 @@ export default {
                 })
         },
         joinRemoteSession(id) {
-            console.log('JoinRemoteSession', id)
             if (id) {
                 this.session.id = id
             }
@@ -684,9 +698,16 @@ export default {
                             this.session.id = ''
                             this.inSession = false
                         } else {
-                            console.log('join a session')
-                            EventBus.$emit('joinRemoteSession', this.session.id)
-                            this.inSession = true
+                          axios.get(this.$collabAPI + "join/" + this.$store.state.userData.id + "/" + this.session.id)
+                          .then(() => {
+                            this.getSessions()
+                          })
+                            .catch(err => {
+                              this.$toast.warning("Kunde inte knyta din användare till bokningen.", err)
+                              console.error("join/", err)
+                            })
+                          EventBus.$emit('joinRemoteSession', this.session.id)
+                          this.inSession = true
                         }
                     })
                     .catch((err) => {
@@ -727,6 +748,15 @@ export default {
                 .catch((err) => {
                     // An error occurred
                 })
+        },
+        leaveRemoteSession(id) {
+          axios.get(this.$collabAPI + "leave/" + this.$store.state.userData.id + "/" + id)
+            .then(() => {
+              this.getSessions()
+            })
+            .catch(err => {
+              this.$toast.warning("Kunde inte koppla användare från bokning. Kontakta administratören", err)
+            })
         },
         disconnectRemoteSession() {
             this.thirdpartyservice = null

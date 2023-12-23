@@ -84,6 +84,7 @@ tasks:
   debug:backend:
     env:
       STTYLUS_PORT: 14411
+      STTYLUS_MODE: webapp
     cmds:
       - cp ../tools/sttylus.db ./offline
       - (cd packages/backend && go build . && mv webapp ../../offline/backend)

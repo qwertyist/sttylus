@@ -14,6 +14,8 @@ type SessionService interface {
 	CreateSession(sess Session) (*Session, error)
 	GetSession(id string) (*Session, error)
 	GetSessions(ids []string) ([]*Session, error)
+	JoinSession(id, userID string) (*Session, error)
+	LeaveSession(id, userID string) (*Session, error)
 	UpdateSession(sess Session) (*Session, error)
 	DeleteSession(id string) (*Session, error)
 	CreateUser(u User) *User
@@ -127,10 +129,12 @@ func (s *sessionService) GetSessions(ids []string) ([]*Session, error) {
 		for _, sess := range s.Sessions {
 			if sess.Ref == id {
 				ss = append(ss, sess)
+				continue
 			}
 			for _, c := range sess.Clients {
 				if c == id {
 					ss = append(ss, sess)
+					continue
 				}
 			}
 			for _, i := range sess.Itprs {
@@ -154,6 +158,29 @@ func (s *sessionService) GetSession(id string) (*Session, error) {
 	}
 
 	return sess, nil
+}
+
+func (s *sessionService) JoinSession(id, userID string) (*Session, error) {
+	target, err := s.GetSession(id)
+	if err != nil {
+		return nil, err
+	}
+	target.Itprs = append(target.Itprs, userID)
+	return target, nil
+}
+
+func (s *sessionService) LeaveSession(id, userID string) (*Session, error) {
+	target, err := s.GetSession(id)
+	if err != nil {
+		return nil, err
+	}
+	for i, v := range target.Itprs {
+		if v == userID {
+			target.Itprs = append(target.Itprs[:i], target.Itprs[i+1:]...)
+			break
+		}
+	}
+	return target, nil
 }
 
 func (s *sessionService) UpdateSession(sess Session) (*Session, error) {

@@ -1,4 +1,12 @@
 changelog:
+  - date: 2023-12-23T10:00:00.000Z
+    changes:
+    - id: 0
+      type: version
+      description: VERSION 1.9.1
+    - id: 1
+      type: update
+      description: När du ansluter till en kollegas tolkning (eller för er det berör permanent återkommande bokningar) så registreras din användare som tolk på bokningen. Bokningen kommer alltså att dyka upp i din lista över tolkningar tills det att den tas bort eller du väljer att lämna/dölja tolkningen. 
   - date: 2023-12-22T10:00:00.000Z
     changes:
     - id: 0
