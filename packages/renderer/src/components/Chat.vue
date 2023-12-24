@@ -26,7 +26,7 @@
      <div style="height: 93%; overflow-y: scroll;">
       <b-list-group v-for="(msg, i) in messages" :key="msg.id + '_' + i">
         <b-list-group-item style="white-space: pre-wrap" :class="{bgOther: !msg.me}">
-            <small><i>[{{ msg.timestamp }}]</i> &ndash; {{ msg.name }}:</small> <b>{{ msg.message }}</b>
+          <small><i>[{{ msg.timestamp }}]</i> &ndash; {{ msg.name }}:</small><span v-if="msg.message == 'killercat'"><img src="../../assets/killercat.gif" /></span><span v-else><b>{{ msg.message }}</b></span>
         </b-list-group-item>
       </b-list-group>
       <b-list-group-item style="background-color: #ddd;" ref="lastMessage"></b-list-group-item>
@@ -197,8 +197,6 @@ export default {
       })
     },
     recv(msg) {
-      console.log("recv:", msg)
-      console.log(this.id)
       let me = msg.id == this.id
       let now = new Date()
        let timestamp = now.toLocaleTimeString().slice(0,5);
@@ -217,8 +215,13 @@ export default {
       )
       if(this.show) {
         this.$nextTick( () => {
-        this.$refs.lastMessage.scrollIntoView();
+          this.$refs.lastMessage.scrollIntoView();
         });
+        if (msg.chat.message=="killercat") {
+          setTimeout(()=> {
+            this.$refs.lastMessage.scrollIntoView();
+          }, 250)
+        }
       } else {
         this.unread++;
         this.$toast.info("Oläst chatmeddelande (" + this.unread +")")

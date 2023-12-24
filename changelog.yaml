@@ -1,4 +1,12 @@
 changelog:
+  - date: 2023-12-24T10:00:00.000Z
+    changes:
+    - id: 0
+      type: version
+      description: VERSION 1.9.2
+    - id: 1
+      type: update
+      description: Skriver man *killercat* till kollegan i chatten så händer det grejer. 
   - date: 2023-12-23T10:00:00.000Z
     changes:
     - id: 0
