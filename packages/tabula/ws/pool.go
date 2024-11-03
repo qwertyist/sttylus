@@ -3,6 +3,7 @@ package ws
 import (
 	"fmt"
 	"log"
+  "sync"
 
 	"github.com/jaevor/go-nanoid"
 	"github.com/qwertyist/tabula/collab"
@@ -15,6 +16,7 @@ type Pool struct {
 	Register   chan *Client
 	Unregister chan *Client
 	Clients    map[*Client]bool
+  mu         sync.Mutex
 	Broadcast  chan Broadcast
 	Tabula     *collab.Tabula
 	Password   string
@@ -36,7 +38,9 @@ func (pool *Pool) Start() {
 	for {
 		select {
 		case client := <-pool.Register:
+      pool.mu.Lock()
 			pool.Clients[client] = true
+      pool.mu.Unlock()
 			id, _ := nanoid.CustomASCII("abcdef1234567890", 8)
 			client.ID = id()
 
@@ -58,8 +62,10 @@ func (pool *Pool) Start() {
 			break
 		case client := <-pool.Unregister:
 			interpreter := client.Interpreter
+      pool.mu.Lock()
 			delete(pool.Clients, client)
 			fmt.Println("Size of connection pool:", len(pool.Clients))
+      pool.mu.Unlock()
 			for c := range pool.Clients {
 				msg := Message{Type: LeaveSession}
 				msg.ID = client.ID

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+  "sync"
 
 	"github.com/gorilla/mux"
 	"github.com/qwertyist/tabula/repo"
@@ -16,6 +17,7 @@ type App struct {
 	Router *mux.Router
 	db     repo.Repository
 	pools  map[string]*ws.Pool
+  mu     sync.Mutex
 }
 
 func (a *App) Initialize(config *envVariables) {
@@ -27,7 +29,9 @@ func (a *App) Initialize(config *envVariables) {
 }
 
 func (a *App) CreatePool(id string) {
+  a.mu.Lock()
 	a.pools[id] = ws.NewPool(id)
+  a.mu.Unlock()
 	go a.pools[id].Start()
 	log.Println("Creating pool for session id:", id)
 }

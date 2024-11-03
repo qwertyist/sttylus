@@ -2,6 +2,7 @@ package collab
 
 import (
 	"fmt"
+  "sync"
 
 	"github.com/fmpwizard/go-quilljs-delta/delta"
 )
@@ -12,6 +13,7 @@ type Tabula struct {
 	Doc     *delta.Delta
 	Ops     map[int]delta.Op
 	Zoom    ZoomCC
+  mu   sync.Mutex
 }
 
 type Delta struct {
@@ -38,10 +40,12 @@ func (t *Tabula) ClearHandler() error {
 
 func (t *Tabula) DeltaHandler(d Delta) (Delta, error) {
 	index := 0
+  t.mu.Lock()
 	for i, op := range d.Delta.Ops {
 		t.Ops[d.Version+i] = op
 		index += op.Length()
 	}
+  t.mu.Unlock()
 	//	log.Println("Index of delta:", index)
 	//	log.Println("Tabula version:", t.Version)
 	t.Version += len(d.Delta.Ops)
