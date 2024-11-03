@@ -86,7 +86,7 @@ tasks:
       STTYLUS_PORT: 14411
       STTYLUS_MODE: webapp
     cmds:
-      - cp ../tools/sttylus.db ./offline
+      - cp ../sttylus.db ./offline
       - (cd packages/backend && go build . && mv webapp ../../offline/backend)
       - cp ./packages/backend/script/protype.py offline/script/
         # - sudo setcap CAP_NET_BIND_SERVICE=+eip ./offline/backend
