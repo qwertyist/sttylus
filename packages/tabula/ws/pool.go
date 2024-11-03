@@ -2,6 +2,7 @@ package ws
 
 import (
 	"fmt"
+  "log"
   "sync"
 
 	"github.com/jaevor/go-nanoid"
@@ -43,7 +44,7 @@ func (pool *Pool) Start() {
 			id, _ := nanoid.CustomASCII("abcdef1234567890", 8)
 			client.ID = id()
 
-			fmt.Println("Size of connection pool: ", len(pool.Clients))
+      log.Printf("%s: Size of connection pool: %d\n", pool.ID, len(pool.Clients))
 			for c := range pool.Clients {
 				msg := Message{Type: JoinSession}
 				if client.Interpreter {
@@ -62,7 +63,7 @@ func (pool *Pool) Start() {
 			interpreter := client.Interpreter
       pool.mu.Lock()
 			delete(pool.Clients, client)
-			fmt.Println("Size of connection pool:", len(pool.Clients))
+      log.Printf("%s: Size of connection pool: %d\n", pool.ID, len(pool.Clients))
       pool.mu.Unlock()
 			for c := range pool.Clients {
 				msg := Message{Type: LeaveSession}
