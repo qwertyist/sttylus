@@ -362,17 +362,15 @@ func (h *abbHandler) GetUserLists(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *abbHandler) CopyStandardList(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	userID := vars["id"]
 
-	l, err := h.abbService.CopyStandardList(userID)
-	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
+	// l, err := h.abbService.CopyStandardList(userID)
+	// if err != nil {
+		// w.WriteHeader(http.StatusInternalServerError)
+		// return 
+// }
 
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(l))
+	w.Write([]byte("OK"))
 
 }
 

@@ -1,4 +1,18 @@
 changelog:
+  - date: 2024-11-03T10:00:00.000Z
+    changes:
+    - id: 0
+      type: version
+      description: VERSION 1.10.0
+    - id: 1
+      type: update
+      description: Distanstolkningsservern loggar en massa intressant (men säker) information.
+    - id: 2
+      type: fix
+      description: Skydd mot "conccurrent writes" till delat minne, något som fick distanstolkningsservern att gå ner 17 oktober.
+    - id: 3
+      type: minor
+      description: Nya konton fastnar inte vid första inloggningen.
   - date: 2023-12-24T10:00:00.000Z
     changes:
     - id: 0

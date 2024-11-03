@@ -154,7 +154,7 @@ tasks:
       VITE_STTYLUS_BACKEND: https://sttylus.se/api2/
     cmds:
       - task: webapp:build
-      - scp -r dist/renderer/assets dist/renderer/index.html qwertyist@sttylus.se:/var/www/html/staging/
+      - scp -r dist/renderer/assets dist/renderer/index.html datajocke@sttylus.se:/var/www/html/staging/
   deploy:staging:
     env:
       STTYLUS_MODE: webapp
