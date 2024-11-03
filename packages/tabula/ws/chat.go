@@ -1,6 +1,6 @@
 package ws
 
-import "log"
+import "fmt"
 
 type ChatMessage struct {
 	To      string `json:"to,omitempty"`
@@ -9,7 +9,7 @@ type ChatMessage struct {
 }
 
 func (c *Client) sendChat(msg *ChatMessage) {
-	log.Println("sending chat msg:", msg.To, msg.Msg)
+	fmt.Println("sending chat msg:", msg.To, msg.Msg)
 	m := Message{ID: c.ID, Type: RXChat, Chat: msg}
 	for to := range c.Pool.Clients {
 		if to == c {
@@ -18,7 +18,7 @@ func (c *Client) sendChat(msg *ChatMessage) {
 		if msg.To == to.ID {
 			//m.Chat.Msg // += "to someone" + msg.To
 
-			log.Println("chat - dm")
+			fmt.Println("chat - dm")
 			to.send(m)
 			continue
 		}
@@ -27,7 +27,7 @@ func (c *Client) sendChat(msg *ChatMessage) {
 				continue
 			}
 
-			log.Println("chat - to all users")
+			fmt.Println("chat - to all users")
 			// m.Chat.Msg // += "to users"
 			to.send(m)
 			continue
@@ -37,7 +37,7 @@ func (c *Client) sendChat(msg *ChatMessage) {
 				continue
 			}
 			// m.Chat.Msg // += "to interpreters"
-			log.Println("chat - to all interpreters")
+			fmt.Println("chat - to all interpreters")
 			to.send(m)
 			continue
 		}

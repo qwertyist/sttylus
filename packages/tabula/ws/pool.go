@@ -2,7 +2,6 @@ package ws
 
 import (
 	"fmt"
-	"log"
   "sync"
 
 	"github.com/jaevor/go-nanoid"
@@ -46,7 +45,6 @@ func (pool *Pool) Start() {
 
 			fmt.Println("Size of connection pool: ", len(pool.Clients))
 			for c := range pool.Clients {
-				log.Println("Client:", c.ID)
 				msg := Message{Type: JoinSession}
 				if client.Interpreter {
 					msg.Msg = "interpreter"

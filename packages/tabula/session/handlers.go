@@ -92,7 +92,6 @@ func (h *sessionHandler) getSessions(w http.ResponseWriter, r *http.Request) {
 	printRequestBody(r)
 	params := mux.Vars(r)
 	id := params["id"]
-	log.Println("get sessions for id:", id)
 	ss, err := h.Service.GetSessions([]string{id})
 	if err != nil {
 		log.Println(err)

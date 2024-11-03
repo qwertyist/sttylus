@@ -80,7 +80,7 @@ func (c *Client) messageHandler(msg Message) (*Message, bool) {
 	case CreateSession:
 		c.Pool.Tabula = collab.NewTabula(id, collab.Delta{Version: msg.Body.Version, Delta: &msg.Body.Delta})
 		c.Pool.Password = msg.Password
-		log.Println("Session created with password:", msg.Password)
+    log.Printf("%s: Session created with password: %s\n", id, msg.Password)
 		if msg.Msg == "started" {
 			c.Pool.Started = true
 		}
@@ -109,32 +109,32 @@ func (c *Client) messageHandler(msg Message) (*Message, bool) {
 			}
 			c.send(m)
 		} else {
-			log.Println("No session exists")
+			log.Println("No session exists", id)
 			m := Message{Type: NoSession}
 			c.send(m)
 			return nil, false
 		}
 		return &msg, true
 	case LeaveSession:
-		log.Println("LeaveSession:", msg)
+    log.Printf("%s: LeaveSession: %s\n", id, msg)
 		return &msg, true
 	case GetInfo:
-		log.Println("Info:", msg)
+    log.Printf("%s: Info: %s\n", id, msg)
 		return &msg, true
 	case SetPassword:
-		log.Println("SetPassword:", msg.Password)
+    log.Printf("%s: SetPassword: %s\n", id, msg)
 		c.Pool.Password = msg.Password
 		return nil, false
 	case SetInfo:
 		err := c.Pool.Tabula.SetZoomData(msg.Zoom)
 		if err != nil {
-			log.Println("SetZoomData err:", err)
+      log.Printf("%s: SetZoomData Err: %s\n", id, err.Error())
 			msg.Msg = err.Error()
 			msg.Zoom.MainStep = -1
 			c.send(msg)
 			return nil, false
 		}
-		log.Println("SetZoomData OK")
+    log.Printf("%s: SetZoomData OK\n", id)
 		c.send(msg)
 		return &msg, true
 	case TXDelta:
@@ -202,17 +202,18 @@ func (c *Client) Read() {
 	for {
 		messageType, p, err := c.Conn.ReadMessage()
 		if messageType >= 1000 {
-			log.Println("Closing somehow...")
+			log.Println("Closing somehow...", c.Pool.ID)
 			return
 		}
 
 		if err != nil {
-			log.Println(err)
+			log.Println(c.Pool.ID, err)
 			return
 		}
 		var msg Message
 		err = json.Unmarshal(p, &msg)
 		if err != nil {
+      log.Println(c.Pool.ID)
 			log.Println("first:", err)
 			log.Println("failed message is:", string(p))
 		}

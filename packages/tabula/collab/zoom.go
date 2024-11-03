@@ -28,7 +28,6 @@ func getZoomStep(token string) int {
 	}
 	d := strings.Index(token, "closedcaption") + len("closedcaption")
 	seq := token[:d] + "/seq/" + token[d:]
-	log.Println(seq)
 	resp, err := http.Get(seq)
 	if err != nil {
 		return -1
@@ -75,20 +74,18 @@ func (t *Tabula) GetLastAppend() string {
 func (t *Tabula) ZoomPOST() {
 	<-t.Zoom.BlockTimer.C
 	if t.Zoom.Block == "" {
-		log.Println("Block empty, re run")
 		t.Zoom.BlockTimer = time.NewTimer(5 * time.Second)
 		go t.ZoomPOST()
 		return
 	}
 	t.Zoom.MainStep++
-	log.Printf("step: %d\ttarget: %s\n", t.Zoom.MainStep, t.Zoom.Block)
+	fmt.Printf("step: %d\ttarget: %s\n", t.Zoom.MainStep, t.Zoom.Block)
 	step := strconv.Itoa(t.Zoom.MainStep)
 	target := t.Zoom.Token + "&lang=sv-SE" + "&seq=" + step
 	msg := bytes.NewBuffer([]byte(t.Zoom.Block))
 	resp, err := http.Post(target, "text/plain", msg)
-	log.Println("POST sent")
 	if err != nil {
-		log.Println("ZoomPOST err", err)
+    log.Printf("%s ZoomPOST err: %v\n", t.ID,err)
 	}
 	t.Zoom.Block = ""
 	if resp.StatusCode != 200 {
