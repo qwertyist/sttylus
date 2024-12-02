@@ -25,8 +25,8 @@
    -->
     <div
       :class="{ chatFocused: focused, textFocused: !focused }"
-      @click="onFocus"
       style="height: 100%; overflow-y: hidden"
+      @click="onFocus"
     >
       <div class="sidebar-field">
         <b-icon icon="chat-dots-fill" />
@@ -48,27 +48,50 @@
           </b-list-group-item>
         </b-list-group>
         <b-list-group-item
-          style="background-color: #ddd"
           ref="lastMessage"
+          style="background-color: #ddd"
         ></b-list-group-item>
       </div>
     </div>
     <template #footer="{}">
       <b-form @click="onFocus" @submit.prevent="send" autocomplete="off">
-        <div class="d-flex align-items-center px-3 py-2">
-          <kbd>TAB</kbd>
-          <b-form-select v-model="form.to" :options="targets"></b-form-select>
+        <div class="px-3 py-2">
+          <b-row class="d-flex align-items-center">
+            <b-col cols="9">
+              <b-dropdown
+                :text="targets[form.index].text"
+                dropup
+                block
+                :variant="targets[form.index].variant"
+                class="m-2"
+              >
+                <b-dropdown-item
+                  v-for="(target, i) in targets"
+                  :key="target.value"
+                  :value="target.value"
+                  :active="form.index == i"
+                  @click="selectTarget(i)"
+                >
+                  {{ target.text }}
+                </b-dropdown-item>
+              </b-dropdown>
+            </b-col>
+            <b-col cols="1">
+              <kbd>TAB</kbd>
+            </b-col>
+          </b-row>
         </div>
+        <!--          <b-form-select v-model="form.to" :options="targets"  style="background-color: red"></b-form-select>-->
         <div class="d-flex bg-dark text-light align-items-center px-3 py-2">
           <b-form-input
+            ref="input"
+            v-model="form.message"
+            autofocus
+            placeholder="Skriv ett meddelande..."
             @focus="focused = true"
             @blur="focused = false"
             @keydown.esc.prevent="hideNav"
             @keydown.tab.prevent="changeTarget"
-            v-model="form.message"
-            ref="input"
-            autofocus
-            placeholder="Skriv ett meddelande..."
           ></b-form-input>
           <b-button type="submit" size="sm">Skicka</b-button>
         </div>
@@ -93,7 +116,7 @@ export default {
       timerID: null,
       updateInterval: null,
       form: {
-        index: 0,
+        index: 1,
         message: '',
         to: 'interpreters',
       },
@@ -108,15 +131,15 @@ export default {
     },
     targets: function () {
       let targets = [
-        { value: null, text: 'Alla anslutna' },
-        { value: 'interpreters', text: 'Alla tolkar' },
-        { value: 'users', text: 'Alla tolkanvändare' },
+        { value: null, text: 'Alla anslutna', variant: 'danger' },
+        { value: 'interpreters', text: 'Alla tolkar', variant: 'primary' },
+        { value: 'users', text: 'Alla tolkanvändare', variant: 'danger' },
       ]
       return targets
     },
   },
   watch: {
-    focused: (newVal, oldVal) => {
+    focused: function (newVal, oldVal) {
       if (oldVal == newVal) return
       if (newVal == true) {
         EventBus.$emit('chatFocused')
@@ -227,6 +250,10 @@ export default {
         this.form.to = this.targets[this.form.index].value
       }
     },
+    selectTarget(i) {
+      this.form.index = i
+      this.form.to = this.targets[this.form.index].value
+    },
     send() {
       this.$nextTick(() => {
         EventBus.$emit('TXChat', {
@@ -311,5 +338,8 @@ export default {
 }
 .bgOther {
   background-color: #d5e6e6;
+}
+.dropdown-menu {
+  height: 8em !important;
 }
 </style>

@@ -1,4 +1,12 @@
 changelog:
+  - date: 2024-12-02T10:00:00.000Z
+    changes:
+    - id: 0
+      type: version
+      description: VERSION 1.10.2
+    - id: 1
+      type: minor
+      description: Mottagarfältet i chatten omarbetas för att bli tydligare om vem som får meddelandet till sig.
   - date: 2024-12-01T10:00:00.000Z
     changes:
     - id: 0

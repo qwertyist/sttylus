@@ -19,7 +19,7 @@ module.exports = {
             'error',
             { argsIgnorePattern: '^_' },
         ],
-        indent: ['error', 4],
+        indent: 'off',
         semi: ['error', 'never'],
     },
     env: {

@@ -54,6 +54,67 @@ export default {
       return this.$store.state.settings.font.background
     },
   },
+  mounted() {
+    //TEMP
+    //this.$bvModal.show("support");
+    //ENDTEMP
+    this.$store.commit('setModalOpen', false)
+    window.addEventListener('keydown', this.hotkeys)
+    EventBus.$on('cacheAbbs', this.cacheAbbs)
+    EventBus.$on('reloadEditor', this.reload)
+    EventBus.$on('openSettings', this.openSettings)
+    EventBus.$on('openTextView', this.openTextView)
+    // TODO: Rename
+    EventBus.$on('modalClosed', this.abbModalClosed)
+    EventBus.$on('abbModalClosed', this.abbModalClosed)
+    EventBus.$on('toggleCollab', this.toggleCollab)
+    EventBus.$on('chatFocused', this.chatFocused)
+    EventBus.$on('chatBlurred', this.chatBlurred)
+    EventBus.$on('chatOpened', () => {
+      this.showChat = true
+      this.$store.commit('setFocus', 'chat')
+    })
+    EventBus.$on('chatClosed', () => {
+      this.focusText()
+      this.showChat = false
+    })
+    this.$store.commit('setFocus', 'text')
+    EventBus.$on('chatHidden', () => {
+      this.showChat = false
+      this.focusText()
+      this.$store.commit('setFocus', 'text')
+    })
+    EventBus.$on('toggleNav', () => {
+      if (this.view != 'settings') {
+        this.showNav = !this.showNav
+      }
+    })
+    EventBus.$on('closeNav', () => {
+      if (this.view != 'settings') {
+        this.showNav = false
+      }
+    })
+
+    this.$nextTick(() => {
+      this.focused = 'text'
+    })
+  },
+  destroyed() {},
+
+  beforeDestroy() {
+    window.removeEventListener('keydown', this.hotkeys)
+    EventBus.$off('toggleCollab')
+    EventBus.$off('chatClosed')
+    EventBus.$off('chatOpened')
+    EventBus.$off('chatFocused')
+    EventBus.$off('reloadEditor')
+    EventBus.$off('toggleNav')
+    EventBus.$off('closeNav')
+    EventBus.$off('chatHidden')
+    EventBus.$off('openSettings')
+    EventBus.$off('openTextView')
+    EventBus.$off('abbModalClosed')
+  },
   methods: {
     dbclick() {
       if (this.view != 'settings') {
@@ -210,67 +271,6 @@ export default {
         this.focusChat()
       }
     },
-  },
-  mounted() {
-    //TEMP
-    //this.$bvModal.show("support");
-    //ENDTEMP
-    this.$store.commit('setModalOpen', false)
-    window.addEventListener('keydown', this.hotkeys)
-    EventBus.$on('cacheAbbs', this.cacheAbbs)
-    EventBus.$on('reloadEditor', this.reload)
-    EventBus.$on('openSettings', this.openSettings)
-    EventBus.$on('openTextView', this.openTextView)
-    // TODO: Rename
-    EventBus.$on('modalClosed', this.abbModalClosed)
-    EventBus.$on('abbModalClosed', this.abbModalClosed)
-    EventBus.$on('toggleCollab', this.toggleCollab)
-    EventBus.$on('chatFocused', this.chatFocused)
-    EventBus.$on('chatBlurred', this.chatBlurred)
-    EventBus.$on('chatOpened', () => {
-      this.showChat = true
-      this.$store.commit('setFocus', 'chat')
-    })
-    EventBus.$on('chatClosed', () => {
-      this.focusText()
-      this.showChat = false
-    })
-    this.$store.commit('setFocus', 'text')
-    EventBus.$on('chatHidden', () => {
-      this.showChat = false
-      this.focusText()
-      this.$store.commit('setFocus', 'text')
-    })
-    EventBus.$on('toggleNav', () => {
-      if (this.view != 'settings') {
-        this.showNav = !this.showNav
-      }
-    })
-    EventBus.$on('closeNav', () => {
-      if (this.view != 'settings') {
-        this.showNav = false
-      }
-    })
-
-    this.$nextTick(() => {
-      this.focused = 'text'
-    })
-  },
-  destroyed() {},
-
-  beforeDestroy() {
-    window.removeEventListener('keydown', this.hotkeys)
-    EventBus.$off('toggleCollab')
-    EventBus.$off('chatClosed')
-    EventBus.$off('chatOpened')
-    EventBus.$off('chatFocused')
-    EventBus.$off('reloadEditor')
-    EventBus.$off('toggleNav')
-    EventBus.$off('closeNav')
-    EventBus.$off('chatHidden')
-    EventBus.$off('openSettings')
-    EventBus.$off('openTextView')
-    EventBus.$off('abbModalClosed')
   },
 }
 </script>
