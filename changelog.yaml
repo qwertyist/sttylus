@@ -1,4 +1,12 @@
 changelog:
+  - date: 2024-12-03T10:00:00.000Z
+    changes:
+    - id: 0
+      type: version
+      description: VERSION 1.10.3
+    - id: 1
+      type: update
+      description: Anslut till-rutan i distanstolkningsrutan kan tolka distanstolkningslänkar, så man kan klistra in hela adressen istället för att plocka ut siffran.
   - date: 2024-12-02T10:00:00.000Z
     changes:
     - id: 0
