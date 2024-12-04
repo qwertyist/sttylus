@@ -1,4 +1,18 @@
 changelog:
+  - date: 2024-12-04T10:00:00.000Z
+    changes:
+    - id: 0
+      type: version
+      description: VERSION 1.10.4
+    - id: 1
+      type: fix
+      description: Alla beteenden kring att välja och byta mellan förkortningslistor har fått en ordentlig genomgång. Byten i farten med CTRL+1..5 uppdaterar "Lägg till förkortning" så den vet den nya mål-listan. Väljer man en standardlista i förkortningsvyn så visas den också och väljs till aktuell mål-lista.
+    - id: 2
+      type: update
+      description: Bättre feeback vid inloggning
+    - id: 3
+      type: update
+      description: Enklare administrering av lösenord
   - date: 2024-12-03T10:00:00.000Z
     changes:
     - id: 0

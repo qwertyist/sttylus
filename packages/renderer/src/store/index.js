@@ -258,6 +258,7 @@ export const store = new Vuex.Store({
       state.selectedWord = word
     },
     setTargetList(state, targetList) {
+      console.log(targetList)
       state.targetList = targetList
     },
     setSharedList(state, sharedList) {

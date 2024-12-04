@@ -45,6 +45,7 @@
                             v-model="selectedStandard"
                             class="float-right"
                             :value="data.item.id"
+                            @change="selectTarget(data.item)"
                         />
                     </template>
                 </b-table>
@@ -76,11 +77,11 @@
                     <template #cell(checkbox)="data">
                       <kbd v-if="selectedAddons.indexOf(data.item.id) != -1">{{ data.index + 1}}</kbd>
                         <b-form-checkbox
+                            :id="data.item.id + '_' + data.index"
+                            :key="data.item.id"
                             v-model="selectedAddons"
                             class="float-right"
                             :value="data.item.id"
-                            :key="data.item.id"
-                            :id="data.item.id + '_' + data.index"
                         />
                     </template>
                 </b-table>
@@ -403,6 +404,10 @@ export default {
     },
     methods: {
         onShow() {},
+        selectTarget(list) {
+          this.viewList(list.id)
+          this.$store.commit("setTargetList", list)
+        },
         quickSelectStandard(i) {
             if (i > this.standardLists.length) return
             this.loading = true
