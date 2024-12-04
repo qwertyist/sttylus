@@ -6,6 +6,7 @@ import {
   BIconChatDotsFill,
   BIconDownload,
   BIconExclamationCircleFill,
+  BIconKey,
   BIconPersonFill,
   BIconTrash,
   BInputGroup,
@@ -66,6 +67,7 @@ export default {
     app.component('BIconChatDotsFill', BIconChatDotsFill)
     app.component('BIconDownload', BIconDownload)
     app.component('BIconExclamationCircleFill', BIconExclamationCircleFill)
+    app.component('BIconKey', BIconKey)
     app.component('BIconPersonFill', BIconPersonFill)
     app.component('BIconTrash', BIconTrash)
     app.component('BInputGroup', BInputGroup)

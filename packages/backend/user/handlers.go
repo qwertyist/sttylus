@@ -326,6 +326,19 @@ func (h *userHandler) UpdatePassword(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *userHandler) ResetPassword(w http.ResponseWriter, r *http.Request) {
+	id_token := r.Header.Get("X-Id-Token")
+	if id_token == "" {
+		log.Printf("DeleteUser no X-Id-token provided\n")
+		LogUnauthorizedRequest(w, r)
+		return
+	}
+
+	auth := h.userService.Auth(id_token, "admin")
+	if auth != nil {
+		log.Printf("handler|UpdateUser failed: %s\n", auth.Error())
+		LogUnauthorizedRequest(w, r)
+		return
+	}
 	var credentials loginRequest
 
 	decoder := json.NewDecoder(r.Body)

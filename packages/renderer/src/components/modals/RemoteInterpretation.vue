@@ -416,7 +416,7 @@ export default {
       thirdpartyOptions: [
         { value: null, text: 'Ej valt...', disabled: true },
         { value: 'zoom', text: 'Zoom', disabled: false },
-       // { value: 'captions', text: 'Livetextning', disabled: true },
+        // { value: 'captions', text: 'Livetextning', disabled: true },
       ],
       password: '',
       ZoomUser: false,
@@ -623,10 +623,13 @@ export default {
           // An error occurred
         })
     },
-    joinRemoteSession() {
+    joinRemoteSession(id) {
+      if (id) {
+        this.session.id = id
+      }
       if (this.session.id) {
         let tmp = this.session.id.match(/([0-9]{8})/g)
-        if (tmp != "") {
+        if (tmp != '') {
           this.session.id = tmp[0]
         }
         axios

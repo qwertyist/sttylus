@@ -295,6 +295,9 @@ export default {
             cache: { ignoreCache: true },
         })
     },
+    resetUserPassword(user) {
+        return HTTP.put('/password', user)
+    },
     deleteUser(user) {
         return HTTP.delete('/user/' + user.id)
     },
