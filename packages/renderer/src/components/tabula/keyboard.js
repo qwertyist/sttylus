@@ -50,6 +50,7 @@ export default class keyboard extends Keyboard {
     this.currentWord = ''
     this.zeroWidthSpace = false
     this.dontExpand = false
+    this.dontExpandWord = ''
   }
 
   listen() {
@@ -130,7 +131,16 @@ export default class keyboard extends Keyboard {
     }*/
 
   wordBeforeCursor(prefix) {
-    this.currentWord = prefix.split(/[\u200B\s-.,:;_!?\/"'()]/).pop()
+    this.currentWord = ''
+    if (this.dontExpandWord != '') {
+      console.log('dontexpandword', this.dontExpandWord)
+      this.currentWord = prefix.split(this.dontExpandWord).pop()
+    }
+    if (this.currentWord == '') {
+      console.log('look for previous word')
+      this.currentWord = prefix.split(/[\u200B\s-.,:;_!?\/"'()]/).pop()
+    }
+    this.dontExpandWord = ''
     this.zeroWidthSpace = prefix.indexOf('\u200B') != -1
 
     return this.currentWord
@@ -178,17 +188,15 @@ export default class keyboard extends Keyboard {
         EventBus.$emit('sendCC', word + abbreviator)
         this.insertAbbreviation(index, abb, abbreviator, word, quill)
         setTimeout(() => {
-          quill.setSelection(
-            quill.getSelection().index,
-            0
-          )
+          quill.setSelection(quill.getSelection().index, 0)
           this.zeroWidthSpace = false
         }, 20)
-        return
+        return word
       }
 
       EventBus.$emit('sendCC', abb + abbreviator)
       quill.insertText(index, abbreviator)
+      return abb
     }
   }
 
@@ -251,7 +259,7 @@ export default class keyboard extends Keyboard {
         if (this.lastKey == 'Tab') {
           this.quill.insertText(range.index, ' ')
         }
-        this.dontExpand = true 
+        this.dontExpand = true
       },
     })
     //ESCAPE
@@ -429,7 +437,7 @@ export default class keyboard extends Keyboard {
         //console.log("word before cursor:", abb)
         this.abbreviated = false
         this.capitalize = false
-        this.abbreviate(range.index, abb, '\u200B', this.quill)
+        this.dontExpandWord = this.abbreviate(range.index, abb, '', this.quill)
       },
     })
     //Enter
