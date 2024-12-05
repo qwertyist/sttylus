@@ -75,7 +75,8 @@ export default {
     },
     mounted() {
         api.cacheAbbs()
-            .then(() => {})
+            .then(() => {
+            console.log("textview mounted, create cache!")})
             .catch((err) => {
                 console.log("couldn't create cache", err)
             })
@@ -343,6 +344,9 @@ export default {
         },
         addAbb() {},
         updateCache(abb) {
+            if (this.$store.state.cached) {
+              return 
+            }
             if (abb) {
                 console.log(abb)
                 this.quill.keyboard.cache.set(abb.abb, abb.word)

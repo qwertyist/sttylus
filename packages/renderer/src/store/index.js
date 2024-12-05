@@ -95,6 +95,10 @@ export const store = new Vuex.Store({
       },
       selectedManuscripts: [],
     },
+    //Det här minns jag inte vad det handlade om, men misstänker 
+    //att det har att göra med att
+    //skriva i samma text samtidigt?
+    cached: false,
     multiplayer: [],
   },
 
@@ -209,11 +213,14 @@ export const store = new Vuex.Store({
     },
     setSelectedStandard(state, list) {
       state.settings.selectedLists.standard = list
+      state.cached = false
     },
     setSelectedAddons(state, selectedLists) {
+      state.cached = false
       state.settings.selectedLists.addon = selectedLists
     },
     unsetSelectedAddon(state, list) {
+      state.cached = false
       let index = state.settings.selectedLists.addon.indexOf(list.id)
       if (index !== -1) {
         console.log('Found list')

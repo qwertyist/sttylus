@@ -47,6 +47,8 @@ export default class keyboard extends Keyboard {
     this.cache = null
     this.getAbbCache()
     this.timeout = null
+    this.currentWord = ''
+    this.zeroWidthSpace = false
   }
 
   listen() {
@@ -94,10 +96,26 @@ export default class keyboard extends Keyboard {
     super.listen()
   }
 
+  /*
+   * Alternativ 1:
+   * Om listan är uppdaterad genom "TouchList" i backend
+   * Om cachad listas längd är annorlunda än den sparade
+   * Ladda ner ny version av förkortningar från lista och cacha
+   *
+   * Gör cachen i webbläsaren något mer permanent.
+   * -- Vad händer när man byter lista med ctrl+1..5, då kommer den att cacha om varje gång
+   * -- och det är onödigt resurskrävande...
+   *
+   * Alternativ 2:
+   * Listor lagras i sin helhet i webbläsaren och uppdateras enligt reglerna ovan.
+   *
+   *
+   */
   getAbbCache() {
     api
       .getAbbCache()
       .then((resp) => {
+        console.log(`get abb cache with ${resp.data.length} abbs`)
         this.cache = new Map(Object.entries(resp.data))
         //console.log(this.instance, this.cache)
       })
@@ -112,7 +130,8 @@ export default class keyboard extends Keyboard {
 
   wordBeforeCursor(prefix) {
     this.currentWord = prefix.split(/[\u200B\s-.,:;_!?\/"'()]/).pop()
-    console.log(this.currentWord)
+    this.zeroWidthSpace = prefix.indexOf('\u200B') != -1
+
     return this.currentWord
   }
 
@@ -157,7 +176,13 @@ export default class keyboard extends Keyboard {
         }
         EventBus.$emit('sendCC', word + abbreviator)
         this.insertAbbreviation(index, abb, abbreviator, word, quill)
-        setTimeout(() => quill.setSelection(quill.getSelection().index, 0), 20)
+        setTimeout(() => {
+          quill.setSelection(
+            quill.getSelection().index,
+            0
+          )
+          this.zeroWidthSpace = false
+        }, 20)
         return
       }
 
@@ -173,8 +198,8 @@ export default class keyboard extends Keyboard {
       return
     }
     let delta = new Delta()
-      .retain(index - abb.length)
-      .delete(abb.length)
+      .retain(index - (this.zeroWidthSpace ? 1 : 0) - abb.length)
+      .delete(abb.length + (this.zeroWidthSpace ? 1 : 0))
       .insert(word + abbreviator, format)
     quill.updateContents(delta)
   }

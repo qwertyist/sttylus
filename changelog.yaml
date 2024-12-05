@@ -1,4 +1,20 @@
 changelog:
+  - date: 2024-12-05T10:00:00.000Z
+    changes:
+    - id: 0
+      type: version
+      description: VERSION 1.11.1
+    - id: 1
+      type: fix
+      description: <kbd>CTRL+SPACE</kbd> skapar inte radbrytningar. 
+  - date: 2024-12-05T10:00:00.000Z
+    changes:
+    - id: 0
+      type: version
+      description: VERSION 1.11.0
+    - id: 1
+      type: update
+      description: Identifierat varför servern äter upp allt minne vid hög belastning och skrivit in logik så att programmet inte cachar om användarens valda förkortningslistor i onödan. 
   - date: 2024-12-04T10:00:00.000Z
     changes:
     - id: 0

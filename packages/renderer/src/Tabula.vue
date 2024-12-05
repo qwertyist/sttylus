@@ -220,14 +220,17 @@ export default {
       }
     },
     cacheAbbs() {
-      api
-        .cacheAbbs()
-        .then(() => {
-          EventBus.$emit('getAbbCache')
-        })
-        .catch((err) => {
-          console.log("couldn't create cache", err)
-        })
+      console.log("cached: ", this.$store.state.cached)
+      if (!this.$store.state.cached) {
+        api
+          .cacheAbbs()
+          .then(() => {
+            EventBus.$emit('getAbbCache')
+          })
+          .catch((err) => {
+            console.log("couldn't create cache", err)
+          })
+      }
     },
     focusText() {
       this.focused = 'text'
