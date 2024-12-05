@@ -49,6 +49,7 @@ export default class keyboard extends Keyboard {
     this.timeout = null
     this.currentWord = ''
     this.zeroWidthSpace = false
+    this.dontExpand = false
   }
 
   listen() {
@@ -193,8 +194,9 @@ export default class keyboard extends Keyboard {
 
   insertAbbreviation(index, abb, abbreviator, word, quill) {
     let format = quill.getFormat(index)
-    if (abb == word) {
+    if (abb == word || this.dontExpand) {
       quill.insertText(index, abbreviator, format)
+      this.dontExpand = false
       return
     }
     let delta = new Delta()
@@ -249,7 +251,7 @@ export default class keyboard extends Keyboard {
         if (this.lastKey == 'Tab') {
           this.quill.insertText(range.index, ' ')
         }
-        this.quill.insertText(range.index, '\u200B')
+        this.dontExpand = true 
       },
     })
     //ESCAPE
