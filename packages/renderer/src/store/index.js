@@ -98,6 +98,7 @@ export const store = new Vuex.Store({
     //Det här minns jag inte vad det handlade om, men misstänker 
     //att det har att göra med att
     //skriva i samma text samtidigt?
+    lookup: "",
     cached: false,
     multiplayer: [],
   },
@@ -226,6 +227,10 @@ export const store = new Vuex.Store({
         console.log('Found list')
         state.settings.selectedLists.addon.splice(index, 1)
       }
+    },
+    setLookupPhrase(state, phrase) {
+      console.log("state,lookup =", phrase.toLowerCase())
+      state.lookup = phrase.toLowerCase()
     },
     saveDoc(state, doc) {
       state.doc = doc

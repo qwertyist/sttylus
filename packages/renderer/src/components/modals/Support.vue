@@ -176,6 +176,8 @@ export default {
       EventBus.$on('sharedAbbEvent', this.getSharedAbbs)
       EventBus.$emit('modalOpened')
       document.addEventListener('keydown', this.preventDefaults)
+      this.lookupPhrase = this.$store.state.lookup
+      if (this.lookupPhrase != '') this.lookup()
       this.getSelectedLists()
       this.getSharedAbbs()
       this.filterMissedAbbs()
@@ -195,6 +197,7 @@ export default {
       })
     },
     closeModal() {
+      this.$store.commit('setLookupPhrase', '')
       this.lookupPhrase = ''
       this.lookupResults = []
       this.$store.commit('setModalOpen', false)
@@ -528,6 +531,7 @@ export default {
       this.show.sharedAbbs = false
       this.show.suggestedAbbs = false
       this.lookupPhrase = this.lookupPhrase.replace(/\s+/g, ' ').trim()
+      console.log('lookup', this.lookupPhrase)
       if (this.lookupPhrase !== '') {
         api
           .lookup(this.lookupPhrase)

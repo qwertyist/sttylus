@@ -288,6 +288,7 @@ export default class keyboard extends Keyboard {
         } else {
           phrase = context.prefix.split(' ').pop()
         }
+        store.commit("setLookupPhrase", phrase)
         EventBus.$emit('lookupPhrase', phrase)
         return true
       },
