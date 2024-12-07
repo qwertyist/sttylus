@@ -1,5 +1,13 @@
 changelog:
-  - date: 2024-12-05T10:00:00.000Z
+  - date: 2024-12-07T10:00:00.000Z
+    changes:
+    - id: 0
+      type: version
+      description: VERSION 1.11.2
+    - id: 1
+      type: update
+      description: Slå upp förkortning-funktionen söker i första hand efter exakt fras. Lägger man till \* i slutet av frasen så söker man på allt som börjar med den frasen. Lägger man till ett frågetecken så söker man på allt som innehåller frasen. 
+  - date: 2024-12-06T10:00:00.000Z
     changes:
     - id: 0
       type: version
