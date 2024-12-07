@@ -530,11 +530,15 @@ export default {
       this.show.missedAbbs = false
       this.show.sharedAbbs = false
       this.show.suggestedAbbs = false
-      this.lookupPhrase = this.lookupPhrase.replace(/\s+/g, ' ').trim()
-      console.log('lookup', this.lookupPhrase)
+      this.lookupPhrase = this.lookupPhrase.trim()
+
       if (this.lookupPhrase !== '') {
+        let query = this.lookupPhrase
+        if (this.lookupPhrase.endsWith('?')) {
+          query = query.slice(0, -1) + "**"
+        }
         api
-          .lookup(this.lookupPhrase)
+          .lookup(query)
           .then((resp) => {
             if (resp.status == '204' || resp.data == {}) {
               this.lookupResults = [

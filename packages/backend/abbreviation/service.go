@@ -165,7 +165,23 @@ func (s *abbService) Lookup(userID, word string) AbbsInList {
 			log.Println("lookup couldnt get abbs from chached user list IDs", err)
 			return nil
 		}
-		matches := fuzzyFind(word, abbs)
+    matches := []*Abbreviation{}
+
+    if strings.HasSuffix(word, "**") {
+      matches = fuzzyFind(word[:len(word)-2], abbs)
+    } else if strings.HasSuffix(word, "*") {
+      for _, abb := range abbs {
+        if strings.HasPrefix(abb.Word, word[:len(word)-1]) {
+          matches = append(matches, abb)
+        }
+      }
+    } else {
+      for _, abb := range abbs {
+        if abb.Word == word {
+          matches = append(matches, abb)
+        }
+      }
+    }
 		if matches != nil {
 			list, err := s.GetList(listID)
 			if err != nil {
