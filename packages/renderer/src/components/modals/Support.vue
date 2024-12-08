@@ -23,6 +23,7 @@
         :autofocus="!sharingList"
         placeholder
       />
+        <small><em>Lägg  till <strong>*</strong> i slutet av frasen för "börjar med"-sökning<br /> Lägg till <strong>?</strong> för "innehåller frasen"-sökning<br />Sök i alla listor genom att avsluta med <strong>!</strong></em></small>
       <b-list-group>
         <b-list-group-item v-for="m in lookupResults" :key="'lookup_' + m.id">
           <span v-if="m.id >= 0">
@@ -534,6 +535,9 @@ export default {
 
       if (this.lookupPhrase !== '') {
         let query = this.lookupPhrase
+        if (this.lookupPhrase.endsWith('?!')) {
+          query = query.slice(0, -2) + "**!"
+        }
         if (this.lookupPhrase.endsWith('?')) {
           query = query.slice(0, -1) + "**"
         }

@@ -158,8 +158,18 @@ func (s *abbService) Abbreviate(userID, abbQuery string) (string, bool) {
 
 func (s *abbService) Lookup(userID, word string) AbbsInList {
 	result := make(AbbsInList)
-
-	for _, listID := range s.cache.UserAbbLists[userID] {
+  listIDs := []string{}
+  // Sök bland samtliga listor om frasen avslutas med !
+  if strings.HasSuffix(word, "!") {
+    ll, _ := s.GetUserLists(userID)
+    for _, l := range ll {
+      listIDs = append(listIDs, l.ID)
+    }
+    word = word[:len(word)-1]
+  } else {
+    listIDs = s.cache.UserAbbLists[userID] 
+  }
+	for _, listID := range listIDs {
 		abbs, err := s.GetAbbs(listID)
 		if err != nil {
 			log.Println("lookup couldnt get abbs from chached user list IDs", err)
