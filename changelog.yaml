@@ -1,4 +1,12 @@
 changelog:
+  - date: 2024-12-08T10:00:00.000Z
+    changes:
+    - id: 0
+      type: version
+      description: VERSION 1.11.3
+    - id: 1
+      type: update
+      description: Slå upp förkortning-funktionen söker i alla listor om frasen avslutas med ett utropstecken. Sök t.ex. efter alla ord som börjar med "utveckl" i alla listor genom att slå upp <pre>utveckl*!</pre>.
   - date: 2024-12-07T10:00:00.000Z
     changes:
     - id: 0
@@ -6,7 +14,7 @@ changelog:
       description: VERSION 1.11.2
     - id: 1
       type: update
-      description: Slå upp förkortning-funktionen söker i första hand efter exakt fras. Lägger man till \* i slutet av frasen så söker man på allt som börjar med den frasen. Lägger man till ett frågetecken så söker man på allt som innehåller frasen. 
+      description: Slå upp förkortning-funktionen söker i första hand efter exakt fras. Lägger man till * i slutet av frasen så söker man på allt som börjar med den frasen. Lägger man till ett frågetecken så söker man på allt som innehåller frasen. 
   - date: 2024-12-06T10:00:00.000Z
     changes:
     - id: 0
