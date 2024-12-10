@@ -1,253 +1,261 @@
 changelog:
+  - date: 2024-12-09T10:00:00.000Z
+    changes:
+      - id: 0
+        type: version
+        description: VERSION 1.11.4
+      - id: 1
+        type: update
+        description: Sökrutan i förkortningsvyn söker enligt "börjar med"-metoden i första hand. Lägger man till ? så söker man på allt som innehåller frasen.
   - date: 2024-12-08T10:00:00.000Z
     changes:
-    - id: 0
-      type: version
-      description: VERSION 1.11.3
-    - id: 1
-      type: update
-      description: Slå upp förkortning-funktionen söker i alla listor om frasen avslutas med ett utropstecken. Sök t.ex. efter alla ord som börjar med "utveckl" i alla listor genom att slå upp <pre>utveckl*!</pre>.
+      - id: 0
+        type: version
+        description: VERSION 1.11.3
+      - id: 1
+        type: update
+        description: Slå upp förkortning-funktionen söker i alla listor om frasen avslutas med ett utropstecken.<br/> Sök t.ex. efter alla ord som börjar med "utveckl" i alla listor genom att slå upp <pre>utveckl*!</pre>
   - date: 2024-12-07T10:00:00.000Z
     changes:
-    - id: 0
-      type: version
-      description: VERSION 1.11.2
-    - id: 1
-      type: update
-      description: Slå upp förkortning-funktionen söker i första hand efter exakt fras. Lägger man till * i slutet av frasen så söker man på allt som börjar med den frasen. Lägger man till ett frågetecken så söker man på allt som innehåller frasen. 
+      - id: 0
+        type: version
+        description: VERSION 1.11.2
+      - id: 1
+        type: update
+        description: Slå upp förkortning-funktionen söker i första hand efter exakt fras. Lägger man till * i slutet av frasen så söker man på allt som börjar med den frasen. Lägger man till ett frågetecken så söker man på allt som innehåller frasen.
   - date: 2024-12-06T10:00:00.000Z
     changes:
-    - id: 0
-      type: version
-      description: VERSION 1.11.1
-    - id: 1
-      type: fix
-      description: <kbd>CTRL+SPACE</kbd> skapar inte radbrytningar. 
+      - id: 0
+        type: version
+        description: VERSION 1.11.1
+      - id: 1
+        type: fix
+        description: <kbd>CTRL+SPACE</kbd> skapar inte radbrytningar.
   - date: 2024-12-05T10:00:00.000Z
     changes:
-    - id: 0
-      type: version
-      description: VERSION 1.11.0
-    - id: 1
-      type: update
-      description: Identifierat varför servern äter upp allt minne vid hög belastning och skrivit in logik så att programmet inte cachar om användarens valda förkortningslistor i onödan. 
+      - id: 0
+        type: version
+        description: VERSION 1.11.0
+      - id: 1
+        type: update
+        description: Identifierat varför servern äter upp allt minne vid hög belastning och skrivit in logik så att programmet inte cachar om användarens valda förkortningslistor i onödan.
   - date: 2024-12-04T10:00:00.000Z
     changes:
-    - id: 0
-      type: version
-      description: VERSION 1.10.4
-    - id: 1
-      type: fix
-      description: Alla beteenden kring att välja och byta mellan förkortningslistor har fått en ordentlig genomgång. Byten i farten med CTRL+1..5 uppdaterar "Lägg till förkortning" så den vet den nya mål-listan. Väljer man en standardlista i förkortningsvyn så visas den också och väljs till aktuell mål-lista.
-    - id: 2
-      type: update
-      description: Bättre feeback vid inloggning
-    - id: 3
-      type: update
-      description: Enklare administrering av lösenord
+      - id: 0
+        type: version
+        description: VERSION 1.10.4
+      - id: 1
+        type: fix
+        description: Alla beteenden kring att välja och byta mellan förkortningslistor har fått en ordentlig genomgång. Byten i farten med CTRL+1..5 uppdaterar "Lägg till förkortning" så den vet den nya mål-listan. Väljer man en standardlista i förkortningsvyn så visas den också och väljs till aktuell mål-lista.
+      - id: 2
+        type: update
+        description: Bättre feeback vid inloggning
+      - id: 3
+        type: update
+        description: Enklare administrering av lösenord
   - date: 2024-12-03T10:00:00.000Z
     changes:
-    - id: 0
-      type: version
-      description: VERSION 1.10.3
-    - id: 1
-      type: update
-      description: Anslut till-rutan i distanstolkningsrutan kan tolka distanstolkningslänkar, så man kan klistra in hela adressen istället för att plocka ut siffran.
+      - id: 0
+        type: version
+        description: VERSION 1.10.3
+      - id: 1
+        type: update
+        description: Anslut till-rutan i distanstolkningsrutan kan tolka distanstolkningslänkar, så man kan klistra in hela adressen istället för att plocka ut siffran.
   - date: 2024-12-02T10:00:00.000Z
     changes:
-    - id: 0
-      type: version
-      description: VERSION 1.10.2
-    - id: 1
-      type: minor
-      description: Mottagarfältet i chatten omarbetas för att bli tydligare om vem som får meddelandet till sig.
+      - id: 0
+        type: version
+        description: VERSION 1.10.2
+      - id: 1
+        type: minor
+        description: Mottagarfältet i chatten omarbetas för att bli tydligare om vem som får meddelandet till sig.
   - date: 2024-12-01T10:00:00.000Z
     changes:
-    - id: 0
-      type: version
-      description: VERSION 1.10.1
-    - id: 1
-      type: fix
-      description: Chatten stänger oavsett vilket fält som är markerat.
+      - id: 0
+        type: version
+        description: VERSION 1.10.1
+      - id: 1
+        type: fix
+        description: Chatten stänger oavsett vilket fält som är markerat.
   - date: 2024-11-03T10:00:00.000Z
     changes:
-    - id: 0
-      type: version
-      description: VERSION 1.10.0
-    - id: 1
-      type: update
-      description: Distanstolkningsservern loggar en massa intressant (men säker) information.
-    - id: 2
-      type: fix
-      description: Skydd mot "conccurrent writes" till delat minne, något som fick distanstolkningsservern att gå ner 17 oktober.
-    - id: 3
-      type: minor
-      description: Nya konton fastnar inte vid första inloggningen.
+      - id: 0
+        type: version
+        description: VERSION 1.10.0
+      - id: 1
+        type: update
+        description: Distanstolkningsservern loggar en massa intressant (men säker) information.
+      - id: 2
+        type: fix
+        description: Skydd mot "conccurrent writes" till delat minne, något som fick distanstolkningsservern att gå ner 17 oktober.
+      - id: 3
+        type: minor
+        description: Nya konton fastnar inte vid första inloggningen.
   - date: 2023-12-24T10:00:00.000Z
     changes:
-    - id: 0
-      type: version
-      description: VERSION 1.9.2
-    - id: 1
-      type: update
-      description: Skriver man *killercat* till kollegan i chatten så händer det grejer. 
+      - id: 0
+        type: version
+        description: VERSION 1.9.2
+      - id: 1
+        type: update
+        description: Skriver man *killercat* till kollegan i chatten så händer det grejer.
   - date: 2023-12-23T10:00:00.000Z
     changes:
-    - id: 0
-      type: version
-      description: VERSION 1.9.1
-    - id: 1
-      type: update
-      description: När du ansluter till en kollegas tolkning (eller för er det berör permanent återkommande bokningar) så registreras din användare som tolk på bokningen. Bokningen kommer alltså att dyka upp i din lista över tolkningar tills det att den tas bort eller du väljer att lämna/dölja tolkningen. 
+      - id: 0
+        type: version
+        description: VERSION 1.9.1
+      - id: 1
+        type: update
+        description: När du ansluter till en kollegas tolkning (eller för er det berör permanent återkommande bokningar) så registreras din användare som tolk på bokningen. Bokningen kommer alltså att dyka upp i din lista över tolkningar tills det att den tas bort eller du väljer att lämna/dölja tolkningen.
   - date: 2023-12-22T10:00:00.000Z
     changes:
-    - id: 0
-      type: version
-      description: VERSION 1.9.0
-    - id: 1
-      type: minor
-      description: Snabbknappar är markerade i toppmenyn, <kbd>F9</kbd> öppnar "Distanstolkning".
-    - id: 2
-      type: update
-      description: Uppdaterat Zoom-kopplingen till senaste specifikationen.
-    - id: 3
-      type: minor
-      description: (admin) Backend-loggningen är mer överskådlig och loggar bara sånt som är avvikande.
+      - id: 0
+        type: version
+        description: VERSION 1.9.0
+      - id: 1
+        type: minor
+        description: Snabbknappar är markerade i toppmenyn, <kbd>F9</kbd> öppnar "Distanstolkning".
+      - id: 2
+        type: update
+        description: Uppdaterat Zoom-kopplingen till senaste specifikationen.
+      - id: 3
+        type: minor
+        description: (admin) Backend-loggningen är mer överskådlig och loggar bara sånt som är avvikande.
   - date: 2023-12-21T10:00:00.000Z
     changes:
-    - id: 0
-      type: version
-      description: VERSION 1.8.14
-    - id: 1
-      type: minor
-      description: Ännu ett försök att få markören att hamna längst ner i texten när man stängt en dialogruta. När det händer beror det på en fördröjning antingen i webbläsaren eller mellan STTylus och servern som jag inte lyckats identifiera uppkomsten till ännu. Men säger man åt "fokusera längst ner"-funktionen att vänta en stund innan den gör det så funkar den bättre.
-    - id: 2
-      type: fix
-      description: Räknaren för Antal förkortningar uppdateras när man lägger till eller tar bort en förkortning
-    - id: 3
-      type: update
-      description: Ämneslistor sorteras efter bokstavsordning men tar först hänsyn till vald ordning.
+      - id: 0
+        type: version
+        description: VERSION 1.8.14
+      - id: 1
+        type: minor
+        description: Ännu ett försök att få markören att hamna längst ner i texten när man stängt en dialogruta. När det händer beror det på en fördröjning antingen i webbläsaren eller mellan STTylus och servern som jag inte lyckats identifiera uppkomsten till ännu. Men säger man åt "fokusera längst ner"-funktionen att vänta en stund innan den gör det så funkar den bättre.
+      - id: 2
+        type: fix
+        description: Räknaren för Antal förkortningar uppdateras när man lägger till eller tar bort en förkortning
+      - id: 3
+        type: update
+        description: Ämneslistor sorteras efter bokstavsordning men tar först hänsyn till vald ordning.
   - date: 2023-12-20T10:00:00.000Z
     changes:
-    - id: 0
-      type: version
-      description: VERSION 1.8.13
-    - id: 1
-      type: minor
-      description: Det blir inte stor bokstav efter citationstecken.
+      - id: 0
+        type: version
+        description: VERSION 1.8.13
+      - id: 1
+        type: minor
+        description: Det blir inte stor bokstav efter citationstecken.
   - date: 2023-12-19T10:00:00.000Z
     changes:
-    - id: 0
-      type: version
-      description: VERSION 1.8.12
-    - id: 1
-      type: update
-      description: Infoga Protype-klubban med <kbd>CTRL+K</kbd>
+      - id: 0
+        type: version
+        description: VERSION 1.8.12
+      - id: 1
+        type: update
+        description: Infoga Protype-klubban med <kbd>CTRL+K</kbd>
   - date: 2023-12-16T10:00:00.000Z
     changes:
-    - id: 0
-      type: version
-      description: VERSION 1.8.11
-    - id: 1
-      type: minor
-      description: Rutan för "Lägg till förkortning" stänger betydligt snabbare.
-    - id: 2
-      type: minor
-      description: <kbd>Shift+Enter</kbd> skapar förkortningen och öppnar modalen igen med samma fras i högra textrutan. Bra om man t.ex. sitter och lägger in förkortningar för en fras med alla tänkbara böjningar.
+      - id: 0
+        type: version
+        description: VERSION 1.8.11
+      - id: 1
+        type: minor
+        description: Rutan för "Lägg till förkortning" stänger betydligt snabbare.
+      - id: 2
+        type: minor
+        description: <kbd>Shift+Enter</kbd> skapar förkortningen och öppnar modalen igen med samma fras i högra textrutan. Bra om man t.ex. sitter och lägger in förkortningar för en fras med alla tänkbara böjningar.
   - date: 2023-12-15T10:00:00.000Z
     changes:
-    - id: 0
-      type: version
-      description: VERSION 1.8.10
-    - id: 1
-      type: update
-      description: Chatten färgar meddelanden från andra tolkar/användare med grön bakgrund.
-    - id: 2
-      type: fix
-      description: Programmet beter sig likadant när tolken använder musen för att byta fält som när F10 används.
-    - id: 3
-      type: minor
-      description: Listan på tangentbordsgenvägar i "Snabbkommandon" är uppdaterad.
+      - id: 0
+        type: version
+        description: VERSION 1.8.10
+      - id: 1
+        type: update
+        description: Chatten färgar meddelanden från andra tolkar/användare med grön bakgrund.
+      - id: 2
+        type: fix
+        description: Programmet beter sig likadant när tolken använder musen för att byta fält som när F10 används.
+      - id: 3
+        type: minor
+        description: Listan på tangentbordsgenvägar i "Snabbkommandon" är uppdaterad.
   - date: 2023-12-14T10:00:00.000Z
     changes:
-    - id: 0
-      type: version
-      description: VERSION 1.8.9
-    - id: 1
-      type: minor
-      description: <kbd>Shift+F10</kbd> stänger chatten.
-    - id: 2
-      type: fix
-      description: Förkortningsvyn stannar kvar i samma lista efter att man tagit bort en förkortning.
-    - id: 3
-      type: fix
-      description: Ännu några till dumheter med chatt/text-fokus igentäppta.
+      - id: 0
+        type: version
+        description: VERSION 1.8.9
+      - id: 1
+        type: minor
+        description: <kbd>Shift+F10</kbd> stänger chatten.
+      - id: 2
+        type: fix
+        description: Förkortningsvyn stannar kvar i samma lista efter att man tagit bort en förkortning.
+      - id: 3
+        type: fix
+        description: Ännu några till dumheter med chatt/text-fokus igentäppta.
   - date: 2023-12-13T10:00:00.000Z
     changes:
-    - id: 0
-      type: version
-      description: VERSION 1.8.8
-    - id: 1
-      type: minor
-      description: Chatten har fått lite kosmetiska ingrepp, bl.a. hur scrollning fungerar och att meddelandet är fetat istället för avsändaren.
-    - id: 2
-      type: minor
-      description: Listen som indikerar om textfältet är markerat eller inte är synligare (12px istället för 4px)
-    - id: 3
-      type: fix
-      description: Försökt ringa in och åtgärda alla orsaker till att chatten tappar markören/fokus, t.ex. av att kollegan skriver.
-    - id: 4
-      type: update
-      description: Förkortningar med . i början av frasen kan användas om man vill att frasen skrivs ut exakt så som den är inlagd. För förkortningen <pre>eleg=.eLegitimation</pre> gäller då att ordet matas ut exakt så, oavsett om man skulle skriva eleg, Eleg eller ELEG. Kan också användas i ämneslistor för att släcka ett ord enligt idé från Linda Fransson. Om man t.ex. blir galen på nån enskild förkortning, typ att <pre>of=ordförande</pre> så kan man t.ex. i en ämneslista lägga in <pre>of=.of</pre> så matas inte ordet ut, utan att behöva ta bort ursprungsförkortningen. En sån där bra fixa-i-farten-lösning kan tänkas.
+      - id: 0
+        type: version
+        description: VERSION 1.8.8
+      - id: 1
+        type: minor
+        description: Chatten har fått lite kosmetiska ingrepp, bl.a. hur scrollning fungerar och att meddelandet är fetat istället för avsändaren.
+      - id: 2
+        type: minor
+        description: Listen som indikerar om textfältet är markerat eller inte är synligare (12px istället för 4px)
+      - id: 3
+        type: fix
+        description: Försökt ringa in och åtgärda alla orsaker till att chatten tappar markören/fokus, t.ex. av att kollegan skriver.
+      - id: 4
+        type: update
+        description: Förkortningar med . i början av frasen kan användas om man vill att frasen skrivs ut exakt så som den är inlagd. För förkortningen <pre>eleg=.eLegitimation</pre> gäller då att ordet matas ut exakt så, oavsett om man skulle skriva eleg, Eleg eller ELEG. Kan också användas i ämneslistor för att släcka ett ord enligt idé från Linda Fransson. Om man t.ex. blir galen på nån enskild förkortning, typ att <pre>of=ordförande</pre> så kan man t.ex. i en ämneslista lägga in <pre>of=.of</pre> så matas inte ordet ut, utan att behöva ta bort ursprungsförkortningen. En sån där bra fixa-i-farten-lösning kan tänkas.
   - date: 2023-12-12T10:00:00.000Z
     changes:
-    - id: 0
-      type: version
-      description: VERSION 1.8.7
-    - id: 1
-      type: update
-      description: Programmet låser sig inte i Inställningsvyn om inställningarna inte kunde sparas, vilket oftast beror på att kontakten till servern svajar, men såklart kan bero på att servern helt enkelt inte vill vara med.
-    - id: 2
-      type: minor
-      description: Längst upp i chatten visas tiden med en liten s.k. digital klocka.
+      - id: 0
+        type: version
+        description: VERSION 1.8.7
+      - id: 1
+        type: update
+        description: Programmet låser sig inte i Inställningsvyn om inställningarna inte kunde sparas, vilket oftast beror på att kontakten till servern svajar, men såklart kan bero på att servern helt enkelt inte vill vara med.
+      - id: 2
+        type: minor
+        description: Längst upp i chatten visas tiden med en liten s.k. digital klocka.
   - date: 2023-12-10T10:00:00.000Z
     changes:
-    - id: 0
-      type: version
-      description: VERSION 1.8.6
-    - id: 1
-      type: update
-      description: Indikatorn för antal anslutna till distanstolkningen beter sig som den ska.
+      - id: 0
+        type: version
+        description: VERSION 1.8.6
+      - id: 1
+        type: update
+        description: Indikatorn för antal anslutna till distanstolkningen beter sig som den ska.
   - date: 2023-12-09T10:00:00.000Z
     changes:
-    - id: 0
-      type: version
-      description: VERSION 1.8.5
-    - id: 1
-      type: minor
-      description: Tvinga gemener i förkortningar genom att lägga till ett understreck _ i början av förkortingen.
+      - id: 0
+        type: version
+        description: VERSION 1.8.5
+      - id: 1
+        type: minor
+        description: Tvinga gemener i förkortningar genom att lägga till ett understreck _ i början av förkortingen.
   - date: 2023-12-08T10:00:00.000Z
     changes:
-    - id: 0
-      type: version
-      description: VERSION 1.8.4
-    - id: 1
-      type: minor
-      description: Chatten vänstra kant blir grön när chatten är markerad eller röd om textfältet eller något annat är markerat. Så kanske det blir lite tydligare om man håller på och fipplar och multitaskar mellan olika fönster.
-    - id: 2
-      type: minor
-      description: Chatten vänstra kant blir grön när chatten är markerad eller röd om textfältet eller något annat är markerat. Så kanske det blir lite tydligare om man håller på och fipplar och multitaskar mellan olika fönster.
+      - id: 0
+        type: version
+        description: VERSION 1.8.4
+      - id: 1
+        type: minor
+        description: Chatten vänstra kant blir grön när chatten är markerad eller röd om textfältet eller något annat är markerat. Så kanske det blir lite tydligare om man håller på och fipplar och multitaskar mellan olika fönster.
+      - id: 2
+        type: minor
+        description: Chatten vänstra kant blir grön när chatten är markerad eller röd om textfältet eller något annat är markerat. Så kanske det blir lite tydligare om man håller på och fipplar och multitaskar mellan olika fönster.
   - date: 2023-12-07T10:00:00.000Z
     changes:
-    - id: 0
-      type: version
-      description: VERSION 1.8.3
-    - id: 1
-      type: minor
-      description: Återfokusera efter att dialogrutorna för Stödtolkning och Lägg till förkortning stängts. Fokuserar bara chatten om den är öppen.
-    - id: 2
-      type: minor
-      description: Fokusera det viktigaste fältet när dialogrutor öppnas. T.ex. fältet för sessions-ID när "Distanstolkning" visas.
+      - id: 0
+        type: version
+        description: VERSION 1.8.3
+      - id: 1
+        type: minor
+        description: Återfokusera efter att dialogrutorna för Stödtolkning och Lägg till förkortning stängts. Fokuserar bara chatten om den är öppen.
+      - id: 2
+        type: minor
+        description: Fokusera det viktigaste fältet när dialogrutor öppnas. T.ex. fältet för sessions-ID när "Distanstolkning" visas.
   - date: 2023-12-06T10:00:00.000Z
     changes:
       - id: 0
@@ -313,7 +321,7 @@ changelog:
       - id: 3
         type: update
         description: <kbd>F10</kbd> öppnar en <b>CHATT</b> i tolkvyn. Tolkar kan skicka meddelanden sinsemellan, till tolkanvändare eller till alla. Tolkanvändare kan skicka meddelanden till tolkarna. Tolkanvändaren väljer sitt namn första gången den vill skicka meddelande, sen <b><i>ska</i></b> det lagras på enheten. Har testats på tyskreggad ThinkPad och begagnad och sen skärmsprucken Android-telefon och det har funkat.
-        action: "Meddela om det inte funkar, och var utförlig i beskrivningen av situationen tack! På vilka enheter tolkades och lästes det och med vilka webbläsare, och hur många användare, och vilket sessions-ID, och när var det."
+        action: 'Meddela om det inte funkar, och var utförlig i beskrivningen av situationen tack! På vilka enheter tolkades och lästes det och med vilka webbläsare, och hur många användare, och vilket sessions-ID, och när var det.'
       - id: 4
         type: fix
         description: Löser ut förkortningar efter vanligt snedstreck (/).

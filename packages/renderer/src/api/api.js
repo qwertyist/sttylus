@@ -1,4 +1,3 @@
-import axios from 'axios'
 import { store } from '../store'
 import { setup } from 'axios-cache-adapter'
 import localforage from 'localforage'
@@ -15,7 +14,7 @@ const cache = {
     query: false,
     methods: ['post', 'patch', 'put', 'delete'],
   },
-  invalidate: async (config, request) => { },
+  invalidate: async (config, request) => {},
 }
 
 const markAbbsUncached = () => {
@@ -313,6 +312,6 @@ export default {
   deleteUser(user) {
     return HTTP.delete('/user/' + user.id)
   },
-  startLocal(options) { },
-  stopLocal() { },
+  startLocal(options) {},
+  stopLocal() {},
 }

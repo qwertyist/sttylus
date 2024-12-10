@@ -240,6 +240,7 @@ import EditList from '../modals/EditList.vue'
 import RemoveList from '../modals/RemoveList.vue'
 
 import api from '../../api/api.js'
+import db from '../../store/db.js'
 
 export default {
   name: 'AbbListsView',
@@ -649,6 +650,7 @@ export default {
     },
     abbProvider(ctx, callback) {
       ctx.listId = this.viewedList.id
+      if (ctx.filter.endsWith("?")) { ctx.filter = ctx.filter.slice(0, -1) + "**" }
       if (ctx.listId != '' || ctx.listId == undefined) {
         api
           .filterAbbs(ctx)
@@ -657,6 +659,7 @@ export default {
             callback(resp.data.abbs)
           })
           .catch((err) => {
+            console.error(err)
             this.$toast.warning('Kunde inte ladda förkortningar', {
               duration: 5000,
             })

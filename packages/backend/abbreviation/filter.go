@@ -2,8 +2,10 @@ package abbreviation
 
 import (
 	"encoding/json"
+	//"log"
 	"net/http"
 	"sort"
+	"strings"
 
 	"github.com/lithammer/fuzzysearch/fuzzy"
 )
@@ -58,13 +60,28 @@ func (h *abbHandler) FilterAbbs(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	abbs, err := h.abbService.GetAbbs(ctx.ListID)
+	abbs := []*Abbreviation{}
+	listAbbs, err := h.abbService.GetAbbs(ctx.ListID)
 	if err != nil {
 		w.WriteHeader(http.StatusNoContent)
 		w.Write([]byte("couldn't get abbs for list" + ctx.ListID))
 		return
 	}
 	//log.Println(ctx)
+
+	if ctx.Filter != "" {
+		if strings.HasSuffix(ctx.Filter, "**") {
+		  abbs = fuzzyFind(ctx.Filter[:len(ctx.Filter)-2], listAbbs)
+		} else {
+		  for _, abb := range listAbbs {
+			if strings.HasPrefix(abb.Word, ctx.Filter) {
+			  abbs = append(abbs, abb)
+			}
+		  }
+		}
+	} else {
+		abbs = listAbbs
+	}
 
 	switch ctx.SortBy {
 	case "abb":
@@ -95,9 +112,6 @@ func (h *abbHandler) FilterAbbs(w http.ResponseWriter, r *http.Request) {
 
 	//log.Println(ctx.Filter)
 
-	if ctx.Filter != "" {
-		abbs = fuzzyFind(ctx.Filter, abbs)
-	}
 
 	result := struct {
 		Rows int             `json:"rows"`
