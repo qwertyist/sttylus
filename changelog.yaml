@@ -1,4 +1,12 @@
 changelog:
+  - date: 2024-12-12T10:00:00.000Z
+    changes:
+      - id: 0
+        type: version
+        description: VERSION 1.12.0-TEST
+      - id: 1
+        type: update
+        description: STTylus laddar in förkortningsfunktioner lokalt i webbläsaren istället för att luta sig mot servern. Programmet tar lite längre tid på sig att ladda, men sen ska benägenheten till lagg och spökförkortningar vara borta.
   - date: 2024-12-09T10:00:00.000Z
     changes:
       - id: 0
