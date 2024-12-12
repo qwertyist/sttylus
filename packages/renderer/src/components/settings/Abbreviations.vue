@@ -576,6 +576,7 @@ export default {
         })
     },
     removeAbb(abb, listID) {
+      db.deleteAbb(abb.abb, listID)
       api.deleteAbb(listID, abb).then(() => {
         this.getAbbs(listID)
         this.getLists(false)
@@ -650,7 +651,9 @@ export default {
     },
     abbProvider(ctx, callback) {
       ctx.listId = this.viewedList.id
-      if (ctx.filter.endsWith("?")) { ctx.filter = ctx.filter.slice(0, -1) + "**" }
+      if (ctx.filter.endsWith('?')) {
+        ctx.filter = ctx.filter.slice(0, -1) + '**'
+      }
       if (ctx.listId != '' || ctx.listId == undefined) {
         api
           .filterAbbs(ctx)

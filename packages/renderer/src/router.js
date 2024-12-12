@@ -26,11 +26,11 @@ const ifAuthenticated = (to, from, next) => {
 
 function createRouter() {
     if (import.meta.env.VITE_STTYLUS_MODE == 'api') {
-        console.log('Create webapp router')
-        console.log('staging:', import.meta.env.VITE_STTYLUS_STAGING)
+        //        console.log('Create webapp router')
+        //       console.log('staging:', import.meta.env.VITE_STTYLUS_STAGING)
         const base =
             import.meta.env.VITE_STTYLUS_STAGING == 'true' ? '/test/' : '/app/'
-        console.log('router base:', base)
+        //      console.log('router base:', base)
         return new VueRouter({
             mode: 'history',
             base: base,
@@ -51,8 +51,8 @@ function createRouter() {
         })
     }
 
-    console.log('Create desktop router')
-    console.log('router base: /')
+    // console.log('Create desktop router')
+    //console.log('router base: /')
     return new VueRouter({
         mode: 'hash',
         base: '/',

@@ -40,19 +40,20 @@
     </b-navbar>
     <Support @addAbb="addAbb" :view="view" />
     <RemoteInterpretation />
-    <LocalInterpretation />
+    <!--   <LocalInterpretation />-->
   </div>
 </template>
 
 <script>
 import Support from './modals/Support.vue'
 import RemoteInterpretation from './modals/RemoteInterpretation.vue'
-import LocalInterpretation from './modals/LocalInterpretation.vue'
+
+//import LocalInterpretation from './modals/LocalInterpretation.vue'
 import EventBus from '../eventbus.js'
 
 export default {
   name: 'Navigation',
-  components: { Support, RemoteInterpretation, LocalInterpretation },
+  components: { Support, RemoteInterpretation, /*LocalInterpretation */},
   props: ['view'],
   data() {
     return {

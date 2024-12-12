@@ -1,6 +1,7 @@
 import Quill from 'quill'
 import Delta from 'quill-delta'
 import api from '../../api/api'
+import db from '../../store/db'
 import { store } from '../../store'
 import EventBus from '../../eventbus'
 import { promptManuscript, queryManuscript, removePreviews } from './manuscript'
@@ -114,16 +115,30 @@ export default class keyboard extends Keyboard {
    *
    */
   getAbbCache() {
-    api
-      .getAbbCache()
-      .then((resp) => {
-        console.log(`get abb cache with ${resp.data.length} abbs`)
-        this.cache = new Map(Object.entries(resp.data))
-        //console.log(this.instance, this.cache)
-      })
-      .catch((err) => {
-        console.error("couldn't get cached abbs", err)
-      })
+    if (db.lastSyncOk) {
+      this.cache = new Map()
+      db.getAbbCache()
+        .then((cache) => {
+          this.cache = cache
+
+          console.log('set up db abb cache')
+          console.log(this.cache)
+        })
+        .catch((err) => console.error(err))
+    } else {
+      api
+        .getAbbCache()
+        .then((resp) => {
+          console.log(`get abb cache with ${resp.data.length} abbs`)
+          this.cache = new Map(Object.entries(resp.data))
+          //console.log(this.instance, this.cache)
+          console.log('set up api abb cache')
+          console.log(this.cache)
+        })
+        .catch((err) => {
+          console.error("couldn't get cached abbs", err)
+        })
+    }
   }
 
   /*unloadAbb(abb) {
@@ -168,7 +183,7 @@ export default class keyboard extends Keyboard {
             })
           }
         })
-        .catch(() => {})
+        .catch(() => { })
       if (match) {
         let word = match
 
@@ -230,8 +245,8 @@ export default class keyboard extends Keyboard {
       ? (e.originalEvent || e).clipboardData.getData('text/plain')
       : // For IE
       window.clipboardData
-      ? window.clipboardData.getData('Text')
-      : ''
+        ? window.clipboardData.getData('Text')
+        : ''
 
     if (document.queryCommandSupported('insertText')) {
       // eslint-disable-line
@@ -255,7 +270,7 @@ export default class keyboard extends Keyboard {
     // TAB
     this.bindings[9].unshift({
       key: 9,
-      handler: function (range) {
+      handler: function(range) {
         if (this.lastKey == 'Tab') {
           this.quill.insertText(range.index, ' ')
         }
@@ -265,7 +280,7 @@ export default class keyboard extends Keyboard {
     //ESCAPE
     this.addBinding({
       key: 27,
-      handler: function (range, _context) {
+      handler: function(range, _context) {
         EventBus.$emit('closeNav', true)
         let end = this.quill.getText().length - 1
         if (this.lastKey == 'Escape') {
@@ -281,14 +296,14 @@ export default class keyboard extends Keyboard {
     this.addBinding({
       key: 112,
       shiftKey: false,
-      handler: function (range, context) {
+      handler: function(range, context) {
         let phrase = ''
         if (range.length > 0) {
           phrase = this.quill.getText(range.index, range.length)
         } else {
           phrase = context.prefix.split(' ').pop()
         }
-        store.commit("setLookupPhrase", phrase)
+        store.commit('setLookupPhrase', phrase)
         EventBus.$emit('lookupPhrase', phrase)
         return true
       },
@@ -297,7 +312,7 @@ export default class keyboard extends Keyboard {
     this.addBinding({
       key: 113,
       shiftKey: false,
-      handler: function (range, context) {
+      handler: function(range, context) {
         let phrase = ''
         if (range.length > 0) {
           phrase = this.quill.getText(range.index, range.length)
@@ -311,7 +326,7 @@ export default class keyboard extends Keyboard {
     this.addBinding({
       key: 113,
       shiftKey: true,
-      handler: function (range, context) {
+      handler: function(range, context) {
         let phrase = ''
         if (range.length > 0) {
           phrase = this.quill.getText(range.index, range.length)
@@ -325,14 +340,14 @@ export default class keyboard extends Keyboard {
     this.addBinding({
       key: 114,
       shiftKey: false,
-      handler: function () {
+      handler: function() {
         //EventBus.$emit('toggleCollab')
       },
     })
     //F4
     this.addBinding({
       key: 115,
-      handler: function (range, _context) {
+      handler: function(range, _context) {
         removePreviews(range.index, this.quill)
         this.URL = false
         this.quill.setText('')
@@ -346,7 +361,7 @@ export default class keyboard extends Keyboard {
     this.addBinding({
       key: 117,
       ctrlKey: false,
-      handler: function () {
+      handler: function() {
         EventBus.$emit('sizeChange', { inc: false, send: false })
       },
     })
@@ -354,7 +369,7 @@ export default class keyboard extends Keyboard {
     this.addBinding({
       key: 117,
       ctrlKey: true,
-      handler: function () {
+      handler: function() {
         EventBus.$emit('sizeChange', { inc: false, send: true })
       },
     })
@@ -362,7 +377,7 @@ export default class keyboard extends Keyboard {
     this.addBinding({
       key: 118,
       ctrlKey: false,
-      handler: function () {
+      handler: function() {
         EventBus.$emit('sizeChange', { inc: true, send: false })
       },
     })
@@ -370,7 +385,7 @@ export default class keyboard extends Keyboard {
     this.addBinding({
       key: 118,
       ctrlKey: true,
-      handler: function () {
+      handler: function() {
         //console.log('keybinding ctrl+f7')
         EventBus.$emit('sizeChange', { inc: true, send: true })
       },
@@ -379,7 +394,7 @@ export default class keyboard extends Keyboard {
     this.addBinding({
       key: 119,
       ctrlKey: false,
-      handler: function () {
+      handler: function() {
         EventBus.$emit('colorChange', false)
       },
     })
@@ -387,14 +402,14 @@ export default class keyboard extends Keyboard {
     this.addBinding({
       key: 119,
       ctrlKey: true,
-      handler: function () {
+      handler: function() {
         EventBus.$emit('colorChange', true)
       },
     })
     //F9 (Create)
     this.addBinding({
       key: 120,
-      handler: function () {
+      handler: function() {
         //console.log('keybinding F9')
         EventBus.$emit('createSession', true)
       },
@@ -402,7 +417,7 @@ export default class keyboard extends Keyboard {
     //F10 (Join)
     this.addBinding({
       key: 121,
-      handler: function () {
+      handler: function() {
         EventBus.$emit('joinSession')
       },
     })
@@ -411,7 +426,7 @@ export default class keyboard extends Keyboard {
     this.addBinding({
       key: 32,
       shiftKey: null,
-      handler: function (range, context) {
+      handler: function(range, context) {
         if (this.abbreviated) {
           this.abbreviated = false
           return true
@@ -432,7 +447,7 @@ export default class keyboard extends Keyboard {
     this.addBinding({
       key: 32,
       ctrlKey: true,
-      handler: function (range, context) {
+      handler: function(range, context) {
         let abb = this.wordBeforeCursor(context.prefix)
         //console.log(abb.length)
         //console.log("word before cursor:", abb)
@@ -444,7 +459,7 @@ export default class keyboard extends Keyboard {
     //Enter
     this.bindings[13].unshift({
       key: 13,
-      handler: function (range, context) {
+      handler: function(range, context) {
         this.url = false
         let scroll = range.index == this.quill.getLength() - 1
         let abb = this.wordBeforeCursor(context.prefix)
@@ -469,7 +484,7 @@ export default class keyboard extends Keyboard {
     this.bindings[13].unshift({
       key: 13,
       shiftKey: true,
-      handler: function (range, context) {
+      handler: function(range, context) {
         let abb = this.wordBeforeCursor(context.prefix)
         this.url = false
         if (abb) {
@@ -491,7 +506,7 @@ export default class keyboard extends Keyboard {
     //Backspace
     this.addBinding({
       key: 8,
-      handler: function () {
+      handler: function() {
         this.capitalizeNext = false
         return true
       },
@@ -500,7 +515,7 @@ export default class keyboard extends Keyboard {
     this.addBinding({
       key: 8,
       ctrlKey: true,
-      handler: function () {
+      handler: function() {
         this.capitalizeNext = false
         return true
       },
@@ -509,7 +524,7 @@ export default class keyboard extends Keyboard {
     //Period
     this.addBinding({
       key: 190,
-      handler: function (range, context) {
+      handler: function(range, context) {
         let abb = this.wordBeforeCursor(context.prefix)
         if (abb == '..' || !abb.trim()) {
           EventBus.$emit('sendCC', '.')
@@ -525,7 +540,7 @@ export default class keyboard extends Keyboard {
     this.addBinding({
       key: 190,
       shiftKey: true,
-      handler: function (range, context) {
+      handler: function(range, context) {
         this.capitalizeNext = true
         context.prefix.split(' ').map((w) => {
           if (w[0] == undefined) {
@@ -546,7 +561,7 @@ export default class keyboard extends Keyboard {
     //Comma
     this.addBinding({
       key: 188,
-      handler: function (range, context) {
+      handler: function(range, context) {
         let abb = this.wordBeforeCursor(context.prefix)
         if (abb.length == 0) {
           EventBus.$emit('sendCC', ',')
@@ -559,7 +574,7 @@ export default class keyboard extends Keyboard {
     this.addBinding({
       key: 188,
       shiftKey: true,
-      handler: function (range, context) {
+      handler: function(range, context) {
         let abb = this.wordBeforeCursor(context.prefix)
         if (abb.length == 0) {
           EventBus.$emit('sendCC', ';')
@@ -571,7 +586,7 @@ export default class keyboard extends Keyboard {
     //Dash
     this.addBinding({
       key: 189,
-      handler: function (range, context) {
+      handler: function(range, context) {
         let abb = this.wordBeforeCursor(context.prefix)
         if (abb.length == 0) {
           EventBus.$emit('sendCC', '-')
@@ -584,7 +599,7 @@ export default class keyboard extends Keyboard {
     this.addBinding({
       key: 49,
       shiftKey: true,
-      handler: function (range, context) {
+      handler: function(range, context) {
         let abb = this.wordBeforeCursor(context.prefix)
         if (abb.length == 0) {
           EventBus.$emit('sendCC', '!')
@@ -599,7 +614,7 @@ export default class keyboard extends Keyboard {
     this.addBinding({
       key: 187,
       shiftKey: true,
-      handler: function (range, context) {
+      handler: function(range, context) {
         let abb = this.wordBeforeCursor(context.prefix)
         if (abb.length == 0) {
           EventBus.$emit('sendCC', '?')
@@ -614,7 +629,7 @@ export default class keyboard extends Keyboard {
     this.addBinding({
       key: 57,
       shiftKey: true,
-      handler: function (range, context) {
+      handler: function(range, context) {
         let abb = this.wordBeforeCursor(context.prefix)
         if (abb.length == 0) {
           EventBus.$emit('sendCC', ')')
@@ -629,7 +644,7 @@ export default class keyboard extends Keyboard {
     this.addBinding({
       key: 55,
       shiftKey: true,
-      handler: function (range, context) {
+      handler: function(range, context) {
         let abb = this.wordBeforeCursor(context.prefix)
         if (abb.length == 0) {
           EventBus.$emit('sendCC', '/')
@@ -644,7 +659,7 @@ export default class keyboard extends Keyboard {
     this.addBinding({
       key: 50,
       shiftKey: true,
-      handler: function (range, context) {
+      handler: function(range, context) {
         let abb = this.wordBeforeCursor(context.prefix)
         if (abb.length == 0) {
           EventBus.$emit('sendCC', '"')
@@ -658,7 +673,7 @@ export default class keyboard extends Keyboard {
     // Quotation mark '
     this.addBinding({
       key: 191,
-      handler: function (range, context) {
+      handler: function(range, context) {
         //console.log("' quotation mark")
         let abb = this.wordBeforeCursor(context.prefix)
         if (abb.length == 0) {
@@ -674,7 +689,7 @@ export default class keyboard extends Keyboard {
     this.bindings[8].unshift({
       key: 8,
       ctrlKey: true,
-      handler: function (_range, context) {
+      handler: function(_range, context) {
         //console.log('prefix:', context.prefix, 'length.', context.prefix.length)
         if (context.prefix.trim().split(' ').length == 1) {
           this.capitalizeNext = true
@@ -685,7 +700,7 @@ export default class keyboard extends Keyboard {
     // Right →
     this.bindings[39].unshift({
       key: 39,
-      handler: function () {
+      handler: function() {
         if (this.prompt != '') {
           let index = this.quill.getText().length - 1
           let offset = promptManuscript(index, this.quill, 'insertWord')
@@ -704,7 +719,7 @@ export default class keyboard extends Keyboard {
     this.bindings[39].unshift({
       key: 39,
       ctrlKey: true,
-      handler: function (range, _context) {
+      handler: function(range, _context) {
         if (range.index == this.quill.getText().length - 1) return false
         return true
       },
@@ -714,7 +729,7 @@ export default class keyboard extends Keyboard {
     this.bindings[39].unshift({
       key: 39,
       altKey: true,
-      handler: function () {
+      handler: function() {
         if (this.prompt != '') {
           let index = this.quill.getText().length - 1
           let offset = promptManuscript(index, this.quill, 'skipWord')
@@ -733,7 +748,7 @@ export default class keyboard extends Keyboard {
     // Down ↓
     this.addBinding({
       key: 40,
-      handler: function () {
+      handler: function() {
         if (this.prompt != '') {
           let index = this.quill.getText().length - 1
           let offset = promptManuscript(index, this.quill, 'insertClause')
@@ -752,7 +767,7 @@ export default class keyboard extends Keyboard {
     this.addBinding({
       key: 40,
       altKey: true,
-      handler: function () {
+      handler: function() {
         if (this.prompt != '') {
           let index = this.quill.getText().length - 1
           let offset = promptManuscript(index, this.quill, 'skipClause')
@@ -770,7 +785,7 @@ export default class keyboard extends Keyboard {
     //Left
     this.bindings[37].unshift({
       key: 37,
-      handler: function (_range, context) {
+      handler: function(_range, context) {
         if (this.prompt != '') {
           let index = this.quill.getText().length - 1
           let offset = promptManuscript(
@@ -788,7 +803,7 @@ export default class keyboard extends Keyboard {
     this.addBinding({
       key: 86,
       ctrlKey: true,
-      handler: function () {
+      handler: function() {
         return this.manuscriptEditor ? true : false
       },
     })
@@ -796,7 +811,7 @@ export default class keyboard extends Keyboard {
     this.addBinding({
       key: 75,
       ctrlKey: true,
-      handler: function (range, _context) {
+      handler: function(range, _context) {
         this.quill.insertEmbed(range.index, 'protype', 'A')
         this.quill.setSelection(range.index + 1)
         return false
@@ -806,7 +821,7 @@ export default class keyboard extends Keyboard {
     this.addBinding({
       key: 49,
       ctrlKey: true,
-      handler: function () {
+      handler: function() {
         if (store.getters.getModalOpen == false) {
           EventBus.$emit('changeStandardList', 1)
           return false
@@ -818,7 +833,7 @@ export default class keyboard extends Keyboard {
     this.addBinding({
       key: 50,
       ctrlKey: true,
-      handler: function () {
+      handler: function() {
         if (store.getters.getModalOpen == false) {
           EventBus.$emit('changeStandardList', 2)
           return false
@@ -830,7 +845,7 @@ export default class keyboard extends Keyboard {
     this.addBinding({
       key: 51,
       ctrlKey: true,
-      handler: function () {
+      handler: function() {
         if (store.getters.getModalOpen == false) {
           EventBus.$emit('changeStandardList', 3)
           return false
@@ -842,7 +857,7 @@ export default class keyboard extends Keyboard {
     this.addBinding({
       key: 52,
       ctrlKey: true,
-      handler: function () {
+      handler: function() {
         if (store.getters.getModalOpen == false) {
           EventBus.$emit('changeStandardList', 4)
           return false
@@ -854,7 +869,7 @@ export default class keyboard extends Keyboard {
     this.addBinding({
       key: 53,
       ctrlKey: true,
-      handler: function () {
+      handler: function() {
         if (!store.getters.getModalOpen) {
           EventBus.$emit('changeStandardList', 5)
           return false

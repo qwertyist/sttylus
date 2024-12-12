@@ -14,7 +14,7 @@ const cache = {
     query: false,
     methods: ['post', 'patch', 'put', 'delete'],
   },
-  invalidate: async (config, request) => {},
+  invalidate: async (config, request) => { },
 }
 
 const markAbbsUncached = () => {
@@ -52,7 +52,6 @@ function createAxiosInstance() {
   }
 }
 const HTTP = createAxiosInstance()
-console.log(HTTP)
 
 export default {
   checkForToken() {
@@ -312,6 +311,6 @@ export default {
   deleteUser(user) {
     return HTTP.delete('/user/' + user.id)
   },
-  startLocal(options) {},
-  stopLocal() {},
+  startLocal(options) { },
+  stopLocal() { },
 }

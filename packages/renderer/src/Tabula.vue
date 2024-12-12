@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+    <Dashboard />
     <Navigation
       :key="editorKey"
       :view="view"
@@ -27,11 +28,14 @@ import Settings from './Settings.vue'
 import Navigation from './components/Navigation.vue'
 import TextView from './components/TextView.vue'
 import Chat from './components/Chat.vue'
+import Dashboard from './components/modals/DashboardModal.vue'
 import api from './api/api.js'
+import db from './store/db.js'
 export default {
   name: 'Tabula',
   components: {
     Navigation,
+    Dashboard,
     TextView,
     Settings,
     Chat,
@@ -55,6 +59,8 @@ export default {
     },
   },
   mounted() {
+    this.setupDexieStorage() 
+    this.$bvModal.show('dashboard')
     //TEMP
     //this.$bvModal.show("support");
     //ENDTEMP
@@ -116,6 +122,9 @@ export default {
     EventBus.$off('abbModalClosed')
   },
   methods: {
+    setupDexieStorage() {
+      db.syncData()
+    },
     dbclick() {
       if (this.view != 'settings') {
         this.showNav = !this.showNav
@@ -220,7 +229,7 @@ export default {
       }
     },
     cacheAbbs() {
-      console.log("cached: ", this.$store.state.cached)
+      console.log('cached: ', this.$store.state.cached)
       if (!this.$store.state.cached) {
         api
           .cacheAbbs()

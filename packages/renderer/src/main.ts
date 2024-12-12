@@ -57,17 +57,17 @@ Vue.use(Vue2TouchEvents)
 Vue.use(Vuex)
 Vue.use(VueCookie)
 
-Vue.filter('formatDate', function (value: string) {
+Vue.filter('formatDate', function(value: string) {
   if (value) {
     return moment(String(value)).format('YYYY/MM/DD HH:mm')
   }
 })
-Vue.filter('formatHour', function (value: string) {
+Vue.filter('formatHour', function(value: string) {
   if (value) {
     return moment(String(value)).format('HH:mm')
   }
 })
-Vue.filter('formatChangeLogDate', function (value: string) {
+Vue.filter('formatChangeLogDate', function(value: string) {
   if (value) {
     return moment(value).format('DD MMMM YYYY')
   }
@@ -77,7 +77,7 @@ Vue.prototype.$version = __APP_VERSION__ // eslint-disable-line
 Vue.prototype.$lastUpdate = import.meta.env.VITE_STTYLUS_BUILD_DATE
 Vue.config.productionTip = false
 
-console.log('App mode:', import.meta.env.VITE_STTYLUS_MODE)
+//console.log('App mode:', import.meta.env.VITE_STTYLUS_MODE)
 
 if (
   import.meta.env.VITE_STTYLUS_MODE == undefined ||
@@ -94,12 +94,12 @@ if (import.meta.env.VITE_STTYLUS_MODE == 'api') {
   Vue.prototype.$mode = 'webapp'
   Vue.prototype.$staging = import.meta.env.VITE_STTYLUS_STAGING
   if (import.meta.env.PROD) {
-    console.log('Running in production')
+    //console.log('Running in production')
     Vue.prototype.$backend = import.meta.env.VITE_STTYLUS_BACKEND
     Vue.prototype.$collabServer = 'wss://sttylus.se/ws/'
     Vue.prototype.$collabAPI = 'https://sttylus.se/ws/'
   } else {
-    console.log('Running in development')
+    //console.log('Running in development')
     Vue.prototype.$backend = import.meta.env.VITE_STTYLUS_LOCAL_BACKEND
     Vue.prototype.$collabServer = 'ws://localhost:8888/'
     Vue.prototype.$collabAPI = 'http://localhost:8888/'
@@ -107,7 +107,7 @@ if (import.meta.env.VITE_STTYLUS_MODE == 'api') {
   }
 }
 
-console.log('pointing to backend ', Vue.prototype.$backend)
+//console.log('pointing to backend ', Vue.prototype.$backend)
 
 import EventBus from './eventbus.js'
 

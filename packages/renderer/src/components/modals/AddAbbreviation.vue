@@ -77,6 +77,7 @@
 </template>
 <script>
 import api from '../../api/api.js'
+import db from '../../store/db.js'
 import EventBus from '../../eventbus.js'
 
 export default {
@@ -204,6 +205,10 @@ export default {
       }
 
       this.$bvModal.hide('addAbb')
+
+      if (data.abb === data.word) {
+        db.deleteAbb(data.abb, targetListId)
+      }
       api
         .createAbb(targetListId, {
           abb: data.abb,
