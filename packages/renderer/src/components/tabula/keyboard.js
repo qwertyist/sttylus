@@ -115,25 +115,23 @@ export default class keyboard extends Keyboard {
    *
    */
   getAbbCache() {
-    if (db.lastSyncOk) {
+    if (store.state.synced) {
+      console.log('last sync ok')
       this.cache = new Map()
       db.getAbbCache()
         .then((cache) => {
           this.cache = cache
 
           console.log('set up db abb cache')
-          console.log(this.cache)
         })
         .catch((err) => console.error(err))
     } else {
       api
         .getAbbCache()
         .then((resp) => {
-          console.log(`get abb cache with ${resp.data.length} abbs`)
           this.cache = new Map(Object.entries(resp.data))
           //console.log(this.instance, this.cache)
           console.log('set up api abb cache')
-          console.log(this.cache)
         })
         .catch((err) => {
           console.error("couldn't get cached abbs", err)
@@ -152,7 +150,6 @@ export default class keyboard extends Keyboard {
       this.currentWord = prefix.split(this.dontExpandWord).pop()
     }
     if (this.currentWord == '') {
-      console.log('look for previous word')
       this.currentWord = prefix.split(/[\u200B\s-.,:;_!?\/"'()]/).pop()
     }
     this.dontExpandWord = ''

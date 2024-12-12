@@ -206,8 +206,11 @@ export default {
 
       this.$bvModal.hide('addAbb')
 
+      var deleted = false
       if (data.abb === data.word) {
         db.deleteAbb(data.abb, targetListId)
+        deleted = true
+
       }
       api
         .createAbb(targetListId, {
@@ -216,8 +219,9 @@ export default {
           creator: data.creator,
         })
         .then((resp) => {
+          console.log('hello')
           EventBus.$emit('createdAbb', data)
-          EventBus.$emit('getAbbCache', data)
+          if (!deleted) db.addAbb(resp.data, targetListId)
           this.$store.commit('setSelectedWord', '')
           this.$bvModal.hide('addAbb')
           if (e.shiftKey) {

@@ -566,6 +566,7 @@ export default {
       api
         .updateAbb(listId, abb)
         .then(() => {
+          db.updateAbb(abb, listId)
           if (this.sortBy !== 'updated') {
             this.getAbbs(listId)
             this.currentPage = currentPage

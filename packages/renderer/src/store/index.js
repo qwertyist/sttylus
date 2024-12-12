@@ -95,10 +95,11 @@ export const store = new Vuex.Store({
       },
       selectedManuscripts: [],
     },
-    //Det här minns jag inte vad det handlade om, men misstänker 
+    //Det här minns jag inte vad det handlade om, men misstänker
     //att det har att göra med att
     //skriva i samma text samtidigt?
-    lookup: "",
+    lookup: '',
+    synced: false,
     cached: false,
     multiplayer: [],
   },
@@ -212,6 +213,12 @@ export const store = new Vuex.Store({
     setFocus(state, focus) {
       state.focus = focus
     },
+    setDbSynced(state) {
+      state.synced = true
+    },
+    setCached(state, cached) {
+      state.cached = cached
+    },
     setSelectedStandard(state, list) {
       state.settings.selectedLists.standard = list
       state.cached = false
@@ -229,7 +236,7 @@ export const store = new Vuex.Store({
       }
     },
     setLookupPhrase(state, phrase) {
-      console.log("state,lookup =", phrase.toLowerCase())
+      console.log('state,lookup =', phrase.toLowerCase())
       state.lookup = phrase.toLowerCase()
     },
     saveDoc(state, doc) {
@@ -405,8 +412,8 @@ export const store = new Vuex.Store({
          state.userData.subscriptions.splice(index)
        }*/
     },
-    addInterpreter() {},
-    removeInterpreter() {},
+    addInterpreter() { },
+    removeInterpreter() { },
     reset(state) {
       state.settings.selectedManuscripts = []
       state.settings.selectedLists.addon = []

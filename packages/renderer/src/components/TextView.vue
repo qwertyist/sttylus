@@ -79,14 +79,6 @@ export default {
     },
   },
   mounted() {
-    api
-      .cacheAbbs()
-      .then(() => {
-        //console.log("textview mounted, create cache!")
-      })
-      .catch((err) => {
-        console.error("couldn't create cache", err)
-      })
     this.websocket = null
     this.initializeEditor()
     this.quill.version = 0
@@ -351,22 +343,20 @@ export default {
     addAbb() {},
     updateCache(abb) {
       if (this.$store.state.cached) {
+        console.log('dont update untouched cache')
         return
       }
-      if (abb) {
-        console.log(abb)
-        this.quill.keyboard.cache.set(abb.abb, abb.word)
-      }
 
-      if (db.lastSyncOk) {
+      if (this.$store.state.synced) {
         this.quill.keyboard.cache = new Map()
         db.getAbbCache()
           .then((cache) => {
             this.quill.keyboard.cache = cache
+            console.log(cache)
             console.log('set up db abb cache')
           })
           .catch((err) => console.error(err))
-      } else {
+      } else { 
         api
           .getAbbCache()
           .then((resp) => {

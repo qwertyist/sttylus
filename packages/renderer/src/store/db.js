@@ -1,5 +1,6 @@
 import Dexie from 'dexie'
 import api from '../api/api.js'
+import EventBus from '../eventbus.js'
 import { store } from '../store/index.js'
 const db = new Dexie('sttylus')
 db.version(1).stores({
@@ -10,6 +11,7 @@ db.version(1).stores({
 
 export default {
   syncData: async (hard = false) => {
+    console.log(hard ? 'Performing full sync' : 'Performing partial sync')
     try {
       let syncStatus = {
         newLists: 0,
@@ -21,10 +23,22 @@ export default {
       const lastSync = await db.syncInfo.get('lastFullSync')
       const lastSyncTime = lastSync?.lastSync || 0
       if (hard || localListsCount === 0) {
+        db.lists
+          .clear()
+          .then()
+          .catch((err) => console.error(err))
+        db.abbreviations
+          .clear()
+          .then()
+          .catch((err) => console.error(err))
+        db.syncInfo.put({
+          key: 'lastFullSync',
+          lastSync: 0,
+        })
         ////Utför fullständig sync
-        api
+        await api
           .getUserLists()
-          .then((resp) => {
+          .then(async (resp) => {
             const stripped_lists = resp.data.map((list) => {
               return {
                 id: list.id,
@@ -38,8 +52,8 @@ export default {
               key: 'lastListSync',
               lastSync: Date.now(),
             })
-            stripped_lists.forEach((list) => {
-              api
+            await stripped_lists.forEach(async (list, i) => {
+              await api
                 .getAbbs(list.id)
                 .then((resp) => {
                   const stripped_abbs = resp.data.map((abb) => {
@@ -62,6 +76,13 @@ export default {
                         key: 'lastFullSync',
                         lastSync: Date.now(),
                       })
+                      if (i + 1 == stripped_lists.length) {
+                        store.commit('setDbSynced')
+                        console.log(
+                          'put abbs from last list, updating synced state'
+                        )
+                        EventBus.$emit('syncedAbbs')
+                      }
                     })
                     .catch((err) => console.error(err))
                 })
@@ -129,26 +150,46 @@ export default {
   getLists() {
     return db.table('lists').toArray()
   },
-  addAbb(abb) {
+  addAbb(abb, listId) {
     const stripped_abb = {
       id: abb.id,
       abb: abb.abb,
       word: abb.word,
       updated: abb.updated,
       remind: abb.remind,
-      listId: abb.listId,
+      listId: listId,
     }
 
     db.abbreviations
       .add(stripped_abb)
-      .then()
+      .then(() => {
+        EventBus.$emit('getAbbCache')
+      })
+      .catch((err) => console.error(err))
+  },
+  updateAbb(abb, listId) {
+    const stripped_abb = {
+      id: abb.id,
+      abb: abb.abb,
+      word: abb.word,
+      updated: abb.updated,
+      remind: abb.remind,
+      listId: listId,
+    }
+    db.abbreviations
+      .put(stripped_abb)
+      .then(() => {
+        EventBus.$emit('getAbbCache')
+      })
       .catch((err) => console.error(err))
   },
   deleteAbb(abb, listId) {
     db.abbreviations
       .where({ abb: abb, listId: listId })
       .delete()
-      .then((n) => console.log('deleted', n, 'abb'))
+      .then(() => {
+        EventBus.$emit('getAbbCache')
+      })
   },
   setAbbs(abbs) {
     const stripped_abbs = abbs.map((abb) => {
@@ -171,7 +212,6 @@ export default {
       .table('abbreviations')
       .toArray()
       .then((abbs) => {
-        console.log(store.state.settings.selectedLists.standard)
         let cache = new Map()
         const listIds = [store.state.settings.selectedLists.standard].concat(
           store.state.settings.selectedLists.addon
@@ -188,7 +228,9 @@ export default {
       })
   },
   lastSyncOk: async () => {
-    const lastSync = await db.syncInfo.get('lastFullSync')
+    const lastSync = await db.syncInfo
+      .get('lastFullSync')
+      .catch((err) => console.error(err))
     const lastSyncTime = lastSync?.lastSync || 0
     return lastSyncTime > 0
   },

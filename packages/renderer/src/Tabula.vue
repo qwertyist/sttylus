@@ -60,7 +60,7 @@ export default {
   },
   mounted() {
     this.setupDexieStorage() 
-    this.$bvModal.show('dashboard')
+    //this.$bvModal.show('dashboard')
     //TEMP
     //this.$bvModal.show("support");
     //ENDTEMP
@@ -100,6 +100,11 @@ export default {
         this.showNav = false
       }
     })
+    EventBus.$on('syncedAbbs', (n) => {
+      this.$toast.success("Dina förkortningslistor laddades in i programmet")
+      this.$store.commit("setCached", false)
+      EventBus.$emit("getAbbCache") // det är alldeles för mycket Rube Goldberg-maskin över den här lösningen...
+    })
 
     this.$nextTick(() => {
       this.focused = 'text'
@@ -120,10 +125,12 @@ export default {
     EventBus.$off('openSettings')
     EventBus.$off('openTextView')
     EventBus.$off('abbModalClosed')
+    EventBus.$off('syncedAbbs')
   },
   methods: {
     setupDexieStorage() {
-      db.syncData()
+      db.syncData(true) // Som det är nu, ladda ner hela förkortingslistan EN gång vid varje anslutning
+      this.$toast.info("Laddar förkortningslistor ...")
     },
     dbclick() {
       if (this.view != 'settings') {
