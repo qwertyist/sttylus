@@ -361,11 +361,9 @@ export default {
       if (db.lastSyncOk) {
         this.quill.keyboard.cache = new Map()
         db.getAbbCache()
-          .then((abbs) => {
-            console.log(abbs)
-            abbs.map((abb) => this.quill.keyboard.cache.set(abb.abb, abb.word))
+          .then((cache) => {
+            this.quill.keyboard.cache = cache
             console.log('set up db abb cache')
-            console.log(this.cache)
           })
           .catch((err) => console.error(err))
       } else {
