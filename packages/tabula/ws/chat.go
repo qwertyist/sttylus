@@ -3,9 +3,10 @@ package ws
 import "fmt"
 
 type ChatMessage struct {
-	To      string `json:"to,omitempty"`
-	Msg     string `json:"message,omitempty"`
-	Name    string `json:"name,omitempty"`
+	To          string `json:"to,omitempty"`
+	Msg         string `json:"message,omitempty"`
+	Name        string `json:"name,omitempty"`
+	Interpreter bool   `json:"interpreter"`
 }
 
 func (c *Client) sendChat(msg *ChatMessage) {

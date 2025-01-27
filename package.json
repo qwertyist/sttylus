@@ -1,6 +1,6 @@
 {
   "name": "sttylus",
-  "version": "1.11.4",
+  "version": "1.11.5",
   "main": "dist/main/index.cjs",
   "author": "David Johansson",
   "license": "MIT",
@@ -67,7 +67,8 @@
     "vue-tsc": "^0.31.1",
     "vue2-touch-events": "^2.3.2",
     "vuex": "^3.5.1",
-    "vuex-persist": "^2.2.0"
+    "vuex-persist": "^2.2.0",
+    "yarn-audit-fix": "^10.1.1"
   },
   "env": {
     "//": "Used in build scripts",

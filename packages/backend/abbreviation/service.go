@@ -11,7 +11,7 @@ import (
 	"github.com/jaevor/go-nanoid"
 )
 
-//AbbService is
+// AbbService is
 type AbbService interface {
 	Abbreviate(userID, abbQuery string) (string, bool)
 	Lookup(userID, abb string) AbbsInList
@@ -71,7 +71,7 @@ type abbService struct {
 	globalStandard string
 }
 
-//NewAbbService returns an abbService connected to the repo db and initializes the suggestion datatype
+// NewAbbService returns an abbService connected to the repo db and initializes the suggestion datatype
 func NewAbbService(repo AbbRepository, globalStandard string) AbbService {
 	suggs := make(map[string]int)
 	a := abbService{
@@ -157,41 +157,42 @@ func (s *abbService) Abbreviate(userID, abbQuery string) (string, bool) {
 }
 
 func (s *abbService) Lookup(userID, word string) AbbsInList {
+	word = strings.ToLower(word)
 	result := make(AbbsInList)
-  listIDs := []string{}
-  // Sök bland samtliga listor om frasen avslutas med !
-  if strings.HasSuffix(word, "!") {
-    ll, _ := s.GetUserLists(userID)
-    for _, l := range ll {
-      listIDs = append(listIDs, l.ID)
-    }
-    word = word[:len(word)-1]
-  } else {
-    listIDs = s.cache.UserAbbLists[userID] 
-  }
+	listIDs := []string{}
+	// Sök bland samtliga listor om frasen avslutas med !
+	if strings.HasSuffix(word, "!") {
+		ll, _ := s.GetUserLists(userID)
+		for _, l := range ll {
+			listIDs = append(listIDs, l.ID)
+		}
+		word = word[:len(word)-1]
+	} else {
+		listIDs = s.cache.UserAbbLists[userID]
+	}
 	for _, listID := range listIDs {
 		abbs, err := s.GetAbbs(listID)
 		if err != nil {
 			log.Println("lookup couldnt get abbs from chached user list IDs", err)
 			return nil
 		}
-    matches := []*Abbreviation{}
+		matches := []*Abbreviation{}
 
-    if strings.HasSuffix(word, "**") {
-      matches = fuzzyFind(word[:len(word)-2], abbs)
-    } else if strings.HasSuffix(word, "*") {
-      for _, abb := range abbs {
-        if strings.HasPrefix(abb.Word, word[:len(word)-1]) {
-          matches = append(matches, abb)
-        }
-      }
-    } else {
-      for _, abb := range abbs {
-        if abb.Word == word {
-          matches = append(matches, abb)
-        }
-      }
-    }
+		if strings.HasSuffix(word, "**") {
+			matches = fuzzyFind(word[:len(word)-2], abbs)
+		} else if strings.HasSuffix(word, "*") {
+			for _, abb := range abbs {
+				if strings.HasPrefix(strings.ToLower(abb.Word), word[:len(word)-1]) {
+					matches = append(matches, abb)
+				}
+			}
+		} else {
+			for _, abb := range abbs {
+				if strings.ToLower(abb.Word) == word {
+					matches = append(matches, abb)
+				}
+			}
+		}
 		if matches != nil {
 			list, err := s.GetList(listID)
 			if err != nil {

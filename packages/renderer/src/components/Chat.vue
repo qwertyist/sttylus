@@ -32,18 +32,18 @@
         <b-icon icon="chat-dots-fill" />
         <span class="float-right"> Chatt &mdash; {{ time }} </span>
       </div>
-      <div style="height: 93%; overflow-y: scroll">
+      <div style="height: 93%; overflow-y: scroll; font-size: 1.3em">
         <b-list-group v-for="(msg, i) in messages" :key="msg.id + '_' + i">
           <b-list-group-item
-            style="white-space: pre-wrap"
-            :class="{ bgOther: !msg.me }"
+            style="white-space: pre-wrap;padding: 0.2em;"
+            :class="{ bgOther: !msg.me, bgUser: !msg.interpreter}"
           >
             <small
-              ><i>[{{ msg.timestamp }}]</i> &ndash; {{ msg.name }}:</small
+                >[{{ msg.timestamp }}] {{ msg.name }}:</small
             ><span v-if="msg.message == 'killercat'"
               ><img src="../../assets/killercat.gif" /></span
             ><span v-else
-              ><b>{{ msg.message }}</b></span
+                   ><b>{{ msg.message }}</b></span
             >
           </b-list-group-item>
         </b-list-group>
@@ -260,6 +260,7 @@ export default {
           to: this.form.to,
           message: this.form.message,
           name: this.name,
+          interpreter: true,
         })
         this.form.message = ''
       })
@@ -275,9 +276,10 @@ export default {
       this.messages.push({
         timestamp: timestamp,
         id: msg.id,
-        name: msg.chat.name,
+        name: msg.chat.name.split(" ")[0],
         message: msg.chat.message,
         me: me,
+        interpreter: msg.chat.interpreter, 
       })
       if (this.show) {
         this.$nextTick(() => {
@@ -290,7 +292,11 @@ export default {
         }
       } else {
         this.unread++
-        this.$toast.info('Oläst chatmeddelande (' + this.unread + ')')
+        const breakAtLength = new RegExp(`(.{1,27})(\\s|$)`, 'g')
+
+        const pre = msg.chat.name.split(" ")[0] + ": " + msg.chat.message
+        const post = pre.match(breakAtLength).join("<br />")
+        this.$toast.info(post)
       }
     },
     clearMessages() {
@@ -338,6 +344,9 @@ export default {
 }
 .bgOther {
   background-color: #d5e6e6;
+}
+.bgUser {
+  background-color: #c6c8ff;
 }
 .dropdown-menu {
   height: 8em !important;

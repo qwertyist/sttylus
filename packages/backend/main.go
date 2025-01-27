@@ -29,6 +29,8 @@ func init() {
 }
 
 func main() {
+	cwd, _ := os.Getwd()
+	fmt.Println("running in", cwd)
 	if cfg.mode == "desktop" {
 		/*		if cfg.version != "0.0.0" {
 					log.Println("Build version", cfg.version)
@@ -77,6 +79,7 @@ func main() {
 	user.Endpoints(r, userHandler)
 	users, err := user.GetUsers(userService)
 
+	fmt.Println(users)
 	abbService.InitCache(users)
 
 	backupService := backup.NewBackupService(repo)

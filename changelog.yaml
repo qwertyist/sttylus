@@ -1,4 +1,21 @@
 changelog:
+  - date: 2025-01-27T10:00:00.000Z
+    changes:
+      - id: 0
+        type: version
+        description: VERSION 1.12.0
+      - id: 1
+        type: update
+        description: Chattmeddelanden visas i blå inforuta om inte chatten är öppnen.
+      - id: 2
+        type: update
+        description: Tolkanvändares meddelanden visas i annan färg i chatten.
+      - id: 3
+        type: minor
+        description: Ändra textstorlek och format i chattens lista över meddelanden, samt visa bara förnamnet på avsändaren.
+      - id: 4
+        type: minor
+        description: Hantera stora och små bokstäver på korrekt sätt när man söker efter förkortningar 
   - date: 2024-12-09T10:00:00.000Z
     changes:
       - id: 0
