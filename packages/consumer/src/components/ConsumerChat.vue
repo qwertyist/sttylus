@@ -93,7 +93,7 @@ export default {
         return
       }
       this.$nextTick(() => {
-        EventBus.$emit("TXChat", { to: this.form.to, message: this.form.message, name: this.name})
+        EventBus.$emit("TXChat", { to: this.form.to, message: this.form.message, name: this.name, interpreter: false})
         this.form.message = "";
         this.scrollToBottom()
       })

@@ -21,7 +21,7 @@ tasks:
       - sh ./build.sh
   changelog:
       - nvim changelog.yaml
-      - yq -o=json eval changelog.yaml > changelog.json
+      - lq --input yaml --output jq . changelog.yaml > changelog.json
       - cp changelog.json packages/renderer/src
   prebuild:
     slient: true
@@ -86,12 +86,10 @@ tasks:
       STTYLUS_PORT: 14411
       STTYLUS_MODE: webapp
     cmds:
-      - cp ../sttylus.db ./offline
       - (cd packages/backend && go build . && mv webapp ../../offline/backend)
       - cp ./packages/backend/script/protype.py offline/script/
         # - sudo setcap CAP_NET_BIND_SERVICE=+eip ./offline/backend
       - (cd ./offline && ./backend)
-      - rm ./offline/sttylus.db
     silent: true
   local:
     env:
@@ -154,7 +152,7 @@ tasks:
       VITE_STTYLUS_BACKEND: https://sttylus.se/api2/
     cmds:
       - task: webapp:build
-      - scp -r dist/renderer/assets dist/renderer/index.html datajocke@sttylus.se:/var/www/html/staging/
+      - scp -r dist/renderer/assets dist/renderer/index.html datajocke@sttylus.se:/var/www/html/app/
   deploy:staging:
     env:
       STTYLUS_MODE: webapp
@@ -170,8 +168,8 @@ tasks:
   deploy:consumer:
     cmds:
       - task: consumer
-      - scp -r dist/consumer/* qwertyist@sttylus.se:/var/www/html/visa/
-      - scp -r packages/tabula/* qwertyist@sttylus.se:tabula/
+      - scp -r dist/consumer/* datajocke@sttylus.se:/var/www/html/visa/
+      #- scp -r packages/tabula/* qwertyist@sttylus.se:tabula/
   router:
     cmds:
       #- task: prebuild
