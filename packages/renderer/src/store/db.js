@@ -191,6 +191,12 @@ export default {
         EventBus.$emit('getAbbCache')
       })
   },
+  useAbb(abb) {
+    db.abbreviations.where(abb).modify((usedAbb) => {
+      ++usedAbb.uses
+      usedAbb.lastUse = Date.now()
+    })
+  },
   setAbbs(abbs) {
     const stripped_abbs = abbs.map((abb) => {
       return {

@@ -202,6 +202,10 @@ export default class keyboard extends Keyboard {
         setTimeout(() => {
           quill.setSelection(quill.getSelection().index, 0)
           this.zeroWidthSpace = false
+          db.useAbb({
+            abb: abb.toLowerCase(),
+            word: this.cache.get(abb.toLowerCase()),
+          })
         }, 20)
         return word
       }
