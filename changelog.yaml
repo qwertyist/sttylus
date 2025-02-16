@@ -6,7 +6,10 @@ changelog:
         description: VERSION 1.13.0
       - id: 1
         type: update
-        description: STTylus laddar in förkortningsfunktioner lokalt i webbläsaren istället för att luta sig mot servern. Programmet tar lite längre tid på sig att ladda, men sen ska benägenheten till lagg och spökförkortningar vara borta.
+        description: STTylus laddar in förkortningsfunktioner lokalt i webbläsaren istället för att luta sig mot servern. Programmet tar lite längre tid på sig att ladda, men sen ska benägenheten till lagg och spökförkortningar vara betydligt mer avlägsen.
+      - id: 2 
+        type: fix
+        description: Åtgärdat ett problem som uppstått där "tyst mellanslag" råkat bli del i förkortningar.
   - date: 2025-01-27T10:00:00.000Z
     changes:
       - id: 0

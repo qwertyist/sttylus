@@ -150,10 +150,9 @@ export default class keyboard extends Keyboard {
       this.currentWord = prefix.split(this.dontExpandWord).pop()
     }
     if (this.currentWord == '') {
-      this.currentWord = prefix.split(/[\u200B\s-.,:;_!?\/"'()]/).pop()
+      this.currentWord = prefix.split(/[\s-.,:;_!?\/"'()]/).pop()
     }
     this.dontExpandWord = ''
-    this.zeroWidthSpace = prefix.indexOf('\u200B') != -1
 
     return this.currentWord
   }
