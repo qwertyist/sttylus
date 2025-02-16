@@ -36,10 +36,10 @@
         <b-list-group v-for="(msg, i) in messages" :key="msg.id + '_' + i">
           <b-list-group-item
             style="white-space: pre-wrap;padding: 0.2em;"
-            :class="{ bgOther: !msg.me, bgUser: !msg.interpreter}"
+            :class="{ bgOther: !msg.me }"
           >
             <small
-                >[{{ msg.timestamp }}] {{ msg.name }}:</small
+                >[{{ msg.timestamp }}] {{ msg.name }}: </small
             ><span v-if="msg.message == 'killercat'"
               ><img src="../../assets/killercat.gif" /></span
             ><span v-else
@@ -279,7 +279,6 @@ export default {
         name: msg.chat.name.split(" ")[0],
         message: msg.chat.message,
         me: me,
-        interpreter: msg.chat.interpreter, 
       })
       if (this.show) {
         this.$nextTick(() => {
