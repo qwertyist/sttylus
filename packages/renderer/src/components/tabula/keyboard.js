@@ -197,6 +197,7 @@ export default class keyboard extends Keyboard {
             word = match.slice(1).toLowerCase()
           }
         }
+        word.replaceAll("\u200B", "")
         EventBus.$emit('sendCC', word + abbreviator)
         this.insertAbbreviation(index, abb, abbreviator, word, quill)
         setTimeout(() => {
