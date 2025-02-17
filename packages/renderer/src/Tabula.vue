@@ -237,6 +237,7 @@ export default {
     },
     cacheAbbs() {
       console.log('cached: ', this.$store.state.cached)
+
       if (!this.$store.state.cached) {
         api
           .cacheAbbs()
@@ -284,6 +285,7 @@ export default {
     },
     abbModalClosed() {
       console.log(this.focused)
+      this.cacheAbbs()
       if (this.focused == 'text') {
         this.focusText()
       } else if (this.showChat && this.focused == 'chat') {

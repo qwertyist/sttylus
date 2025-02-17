@@ -163,25 +163,19 @@ export default {
     db.abbreviations
       .add(stripped_abb)
       .then(() => {
+        console.log("created abb:", stripped_abb)
         EventBus.$emit('getAbbCache')
       })
       .catch((err) => console.error(err))
   },
   updateAbb(abb, listId) {
-    const stripped_abb = {
-      id: abb.id,
-      abb: abb.abb,
-      word: abb.word,
-      updated: abb.updated,
-      remind: abb.remind,
-      listId: listId,
-    }
+
     db.abbreviations
-      .put(stripped_abb)
+      .where({ abb: abb, listId: listId })
+      .delete()
       .then(() => {
-        EventBus.$emit('getAbbCache')
+        addAbb(abb, listId)
       })
-      .catch((err) => console.error(err))
   },
   deleteAbb(abb, listId) {
     db.abbreviations

@@ -212,8 +212,9 @@ export default {
         deleted = true
 
       }
+      if (this.exists) {
       api
-        .createAbb(targetListId, {
+        .updateAbb(targetListId, {
           abb: data.abb,
           word: data.word,
           creator: data.creator,
@@ -221,7 +222,13 @@ export default {
         .then((resp) => {
           console.log('hello')
           EventBus.$emit('createdAbb', data)
-          if (!deleted) db.addAbb(resp.data, targetListId)
+          if (!deleted) { 
+            if(this.exists) {
+              db.deleteAbb(resp.data, targetListId)
+              db.addAbb(resp.data, targetListId) 
+            }
+            return
+          }
           this.$store.commit('setSelectedWord', '')
           this.$bvModal.hide('addAbb')
           if (e.shiftKey) {
@@ -233,6 +240,32 @@ export default {
           console.log('Failed creating abbreviation:', err)
           this.$bvModal.hide('addAbb')
         })
+       } else {
+        api
+          .createAbb(targetListId, {
+            abb: data.abb,
+            word: data.word,
+            creator: data.creator,
+          })
+          .then((resp) => {
+            console.log('hello')
+            EventBus.$emit('createdAbb', data)
+            if (!deleted) { 
+              db.addAbb(resp.data, targetListId) 
+              return
+            }
+            this.$store.commit('setSelectedWord', '')
+            this.$bvModal.hide('addAbb')
+            if (e.shiftKey) {
+              this.$store.commit('setSelectedWord', data.word)
+              this.$bvModal.show('addAbb')
+            }
+          })
+          .catch((err) => {
+            console.log('Failed creating abbreviation:', err)
+            this.$bvModal.hide('addAbb')
+          })
+        }
     },
     nextList() {
       if (this.form.lists.length < 2) return

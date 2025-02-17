@@ -353,7 +353,7 @@ export default {
           .then((cache) => {
             this.quill.keyboard.cache = cache
             console.log(cache)
-            console.log('set up db abb cache')
+            console.log('set up local db abb cache')
           })
           .catch((err) => console.error(err))
       } else { 
