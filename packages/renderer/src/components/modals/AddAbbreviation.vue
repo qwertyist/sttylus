@@ -210,9 +210,11 @@ export default {
       if (data.abb === data.word) {
         db.deleteAbb(data.abb, targetListId)
         deleted = true
-
+        return
       }
-      if (this.exists) {
+
+      if (this.existing != "") {
+        console.log("modal says update existing")
       api
         .updateAbb(targetListId, {
           abb: data.abb,
@@ -223,9 +225,8 @@ export default {
           console.log('hello')
           EventBus.$emit('createdAbb', data)
           if (!deleted) { 
-            if(this.exists) {
-              db.deleteAbb(resp.data, targetListId)
-              db.addAbb(resp.data, targetListId) 
+            if(this.existing != "") {
+              db.addAbb(resp.data, targetListId)
             }
             return
           }
@@ -251,7 +252,7 @@ export default {
             console.log('hello')
             EventBus.$emit('createdAbb', data)
             if (!deleted) { 
-              db.addAbb(resp.data, targetListId) 
+              db.addAbb(resp.data, targetListId)
               return
             }
             this.$store.commit('setSelectedWord', '')

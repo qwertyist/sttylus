@@ -5,7 +5,7 @@ import { store } from '../store/index.js'
 const db = new Dexie('sttylus')
 db.version(1).stores({
   lists: '++id, name, type, updated',
-  abbreviations: '++id, abb, word, updated, remind, uses, lastUse, listId',
+  abbreviations: '++id, [listId+abb], word, updated, remind, uses, lastUse',
   syncInfo: 'key, lastSync',
 })
 
@@ -150,7 +150,7 @@ export default {
   getLists() {
     return db.table('lists').toArray()
   },
-  addAbb(abb, listId) {
+  addAbb: async (abb, listId) => {
     const stripped_abb = {
       id: abb.id,
       abb: abb.abb,
@@ -160,22 +160,46 @@ export default {
       listId: listId,
     }
 
-    db.abbreviations
-      .add(stripped_abb)
-      .then(() => {
-        console.log("created abb:", stripped_abb)
-        EventBus.$emit('getAbbCache')
-      })
-      .catch((err) => console.error(err))
+    console.log("add abb", abb.abb, abb.word)
+
+    const exists = await db.abbreviations.where({ listId: listId, abb: abb.abb }).first()
+    if (exists) {
+      await db.abbreviations
+        .where("[listId+abb]").equals([listId, abb.abb])
+        .modify(stripped_abb)
+        .then(() => {
+          console.log("updated", abb.abb, "in", listId)
+          EventBus.$emit('getAbbCache')
+        })
+        .catch(err => console.error("updateAbb failed:", err))
+    } else {
+      await db.abbreviations
+        .add(stripped_abb)
+        .then(() => {
+          console.log("created abb:", stripped_abb)
+          EventBus.$emit('getAbbCache')
+        })
+        .catch((err) => console.error(err))
+    }
   },
   updateAbb(abb, listId) {
 
+    const stripped_abb = {
+      id: abb.id,
+      abb: abb.abb,
+      word: abb.word,
+      updated: abb.updated,
+      remind: abb.remind,
+      listId: listId,
+    }
     db.abbreviations
-      .where({ abb: abb, listId: listId })
-      .delete()
+      .where("[listId+abb]").equals([listId, abb.abb])
+      .modify(stripped_abb)
       .then(() => {
-        addAbb(abb, listId)
+        console.log("updated", abb.abb, "in", listId)
+        EventBus.$emit('getAbbCache')
       })
+      .catch(err => console.error("updateAbb failed:", err))
   },
   deleteAbb(abb, listId) {
     db.abbreviations
@@ -207,8 +231,8 @@ export default {
       .then()
       .catch((err) => console.error(err))
   },
-  getAbbCache() {
-    return db
+  getAbbCache: async () => {
+    const abbCache = await db
       .table('abbreviations')
       .toArray()
       .then((abbs) => {
@@ -223,9 +247,9 @@ export default {
             }
           })
         })
-
         return cache
       })
+    return abbCache
   },
   lastSyncOk: async () => {
     const lastSync = await db.syncInfo

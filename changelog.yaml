@@ -1,4 +1,12 @@
 changelog:
+  - date: 2025-02-18T10:00:00.000Z
+    changes:
+      - id: 0
+        type: version
+        description: VERSION 1.13.2
+      - id: 1
+        type: fix
+        description: Fler buggfixar kring lokal lagring av förkortningar. 
   - date: 2025-02-17T10:00:00.000Z
     changes:
       - id: 0

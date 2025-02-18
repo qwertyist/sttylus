@@ -164,6 +164,7 @@ tasks:
       - task: webapp
       - yarn run prebuild
       - yarn run build:consumer
+      - rsync -rv dist/renderer/* datajocke@sttylus.se:/var/www/html/test/
     silent: true
   deploy:consumer:
     cmds:
